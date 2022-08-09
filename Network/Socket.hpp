@@ -26,10 +26,7 @@ namespace ws
 			   int port,
 			   u_long ip);
 
-		~Socket();
-
-		virtual int openNewConnection(int socket,
-									  struct sockaddr_in address) = 0;
+		virtual int openNewConnection(int socket, struct sockaddr_in address) = 0;
 
 		void connectionStatus(int item);
 
@@ -37,6 +34,7 @@ namespace ws
 		int getSocket();
 		int getConnection();
 
+		void setConnection(int connection);
 	};
 
 } // ws

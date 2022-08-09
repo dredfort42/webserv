@@ -1,6 +1,10 @@
 NAME		= 	webserv
-HDRS		=	Socket.hpp
-SRCS 		=	Socket.cpp
+HDRS		=	Server/Server.hpp Server/WebServer.hpp\
+				Network/Binding.hpp Network/Connecting.hpp Network/Listening.hpp Network/Socket.hpp
+SRCS 		=	Server/Server.cpp Server/WebServer.cpp\
+				Network/Binding.cpp Network/Connecting.cpp Network/Listening.cpp Network/Socket.cpp
+
+
 OBJS		=	$(patsubst %.cpp, %.o,$(SRCS))
 
 CC			= 	c++

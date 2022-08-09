@@ -1,0 +1,52 @@
+//
+// Created by Dmitry Novikov on 09.08.2022.
+//
+
+#include <unistd.h>
+#include "WebServer.hpp"
+
+ws::WebServer::WebServer() :
+Server(WS_DOMAIN, WS_SERVICE, WS_PROTOCOL, WS_PORT, WS_IP, WS_BACKLOG)
+{ launcher(); }
+
+void ws::WebServer::_accepter()
+{
+	int					socket = getSocket()->getSocket();
+	struct sockaddr_in	address = getSocket()->getAddress();
+	int					addressLen = sizeof(address);
+
+
+	_newSocket = accept(socket,
+						(struct sockaddr *)&address,
+						(socklen_t *)&addressLen);
+	read(_newSocket, _buffer, WS_BUFF_SIZE);
+}
+
+void ws::WebServer::_handler()
+{
+	std::cout << _buffer << std::endl;
+}
+
+void ws::WebServer::_responder()
+{
+	char message[20] = "[message received]\n";
+	write(_newSocket, message, sizeof(message));
+	close(_newSocket);
+}
+
+void ws::WebServer::launcher()
+{
+	while (true)
+	{
+		std::cout << ">>>>>" << std::endl;
+		_accepter();
+		_handler();
+		_responder();
+		std::cout << "<<<<<\n" << std::endl;
+	}
+}
+
+int main()
+{
+	ws::WebServer webServer;
+}
