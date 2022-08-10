@@ -23,9 +23,7 @@ void ws::WebServer::_accepter()
 }
 
 void ws::WebServer::_handler()
-{
-	std::cout << _buffer << std::endl;
-}
+{ std::cout << _buffer << std::endl; }
 
 void ws::WebServer::_responder()
 {
@@ -47,6 +45,4 @@ void ws::WebServer::launcher()
 }
 
 int main()
-{
-	ws::WebServer webServer;
-}
+{ ws::WebServer webServer; }
