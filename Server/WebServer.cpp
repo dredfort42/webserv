@@ -53,7 +53,15 @@ int main(int argc, char **argv)
 		return (1);
 	}
 	ws::Parser parseConf(argv[1]);
+	try {
+		parseConf.openFile();
+		parseConf.readFile();
+	}
+	catch (const std::exception& e){
+		std::cerr << e.what();
+		return (2);
+	}
 	std::cout << parseConf.getPath() << "\n";
-
+	std::cout << parseConf.getRawText() << "\n";
 	ws::WebServer webServer; 
 }
