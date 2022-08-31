@@ -14,10 +14,12 @@ ip)
 
 	// Establish socket
 	_socket = socket(domain, service, protocol);
+	socklen_t socklen = 1;
+	setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &socklen, sizeof(socklen));
 	connectionStatus(_socket);
 }
 
-//exaption
+//exception
 void ws::Socket::connectionStatus(int item)
 {
 	if (item < 0)
