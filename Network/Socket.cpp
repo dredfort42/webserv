@@ -17,6 +17,7 @@ ip)
 	connectionStatus(_socket);
 }
 
+//exaption
 void ws::Socket::connectionStatus(int item)
 {
 	if (item < 0)

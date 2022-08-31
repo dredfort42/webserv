@@ -27,8 +27,15 @@ void ws::WebServer::_handler()
 
 void ws::WebServer::_responder()
 {
-	char message[20] = "[message received]\n";
-	write(_newSocket, message, sizeof(message));
+	std::string message = "HTTP/1.1 200 OK\nContent-Type: "
+						  "text/plain\nContent-Length: 12\n\nHello world!!!";
+	uint strlen = message.length();
+	char messageChr[strlen];
+	for (int i = 0; message[i]; i++)
+	{
+		messageChr[i] = message[i];
+	}
+	write(_newSocket, messageChr, sizeof(messageChr));
 	close(_newSocket);
 }
 
