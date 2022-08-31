@@ -44,5 +44,14 @@ void ws::WebServer::launcher()
 	}
 }
 
-int main()
-{ ws::WebServer webServer; }
+int main(int argc, char **argv)
+{
+	if (argc != 2)
+	{
+		std::cerr << argv[0] <<  ": Wrong number of args!\n";
+		return (1);
+	}
+	//ws::Parser parseConf(argv[1]);
+
+	ws::WebServer webServer; 
+}
