@@ -17,28 +17,27 @@ namespace ws {
 			Parser& operator=(const Parser &other);
 			void		openFile();
 			void		readFile();
+			void		parseFile();
 			std::string& Split(std::string &line, std::string delimiter);
 			std::string getPath() const;
 			std::string getRawText() const;
 			inline std::string &trim( std::string &line, const std::string &trimmer);
 
+			void checkBrackets();
 
-
-			class OpenFileException: public std::exception
+			class parseException: public std::exception
 		{
+			private:
+				const char* _err;
+				parseException() {};
+
 			public:
+				parseException(const char *str): _err(str) {};
+				~parseException() throw() {};
+
 				virtual const char* what() const throw()
 				{
-					return ("Can't open file\n");
-				}
-		};
-
-			class ReadFileException: public std::exception
-		{
-			public:
-				virtual const char* what() const throw()
-				{
-					return ("Can't read file\n");
+					return (_err);
 				}
 		};
 
@@ -46,6 +45,6 @@ namespace ws {
 			std::ifstream		_fd;
 			std::string			_path;
 			std::string			_rawFile;
-			std::vector<Config>	_cfg;
+			std::vector<Config*>	_cfg;
 	};
 }

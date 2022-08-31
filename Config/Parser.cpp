@@ -4,7 +4,10 @@ ws::Parser::Parser(): _path("default.conf") {};
 
 ws::Parser::Parser(const std::string &p): _path(p) {};
 
-ws::Parser::~Parser() {};
+ws::Parser::~Parser() {
+	if (this->_cfg.empty() == false)
+		this->_cfg.clear();
+};
 
 std::string	ws::Parser::getPath() const { return _path; };
 
@@ -41,10 +44,28 @@ std::string& ws::Parser::Split(std::string &line, std::string delimiter)
 	return (trim(token, " \t"));
 };
 
+void ws::Parser::checkBrackets()
+{
+	std::string::iterator begin = _rawFile.begin();
+	size_t bracket = 0;
+	while (begin != _rawFile.end())
+	{
+		if (*begin == '{')
+			bracket += 1;
+		else if (!bracket && *begin == '}')
+			throw(parseException("Bracket have closed before open\n"));//todo  make parse exception
+		else if (*begin == '}')
+			bracket -= 1;
+		begin++;
+	}
+	if (bracket != 0)
+		throw(parseException("Brackets still opened\n"));//todo  make parse exception
+}
+
 void  ws::Parser::openFile() {
 	this->_fd.open(this->_path.c_str(), std::ios::in);
 	if (this->_fd.is_open() == false)
-		throw OpenFileException();
+		throw parseException("Can't open File\n");
 };
 
 void  ws::Parser::readFile() {
@@ -54,7 +75,7 @@ void  ws::Parser::readFile() {
 		if ((this->_fd).fail())
 		{
 			this->_fd.close();
-			throw ReadFileException();
+			throw parseException("Can't readFile\n");
 		}
 		buf = trim(buf, " \t");
 		if (buf.empty() || buf[0] == '#')
@@ -65,4 +86,17 @@ void  ws::Parser::readFile() {
 	this->_fd.close();
 
 };
+
+void	ws::Parser::parseFile() {
+	Config *cfg = new(Config);
+	
+	checkBrackets();
+
+//	while (_rawFile.empty() == false){
+//		parseServerBlock(cfg);
+//	}
+
+	
+	this->_cfg.push_back(cfg);
+}
 

@@ -56,6 +56,7 @@ int main(int argc, char **argv)
 	try {
 		parseConf.openFile();
 		parseConf.readFile();
+		parseConf.parseFile();	
 	}
 	catch (const std::exception& e){
 		std::cerr << e.what();
