@@ -12,7 +12,7 @@ ws::Binding::Binding(int domain,
 	ws::Socket(domain, service, protocol, port, ip)
 {
 	// Establish network connection
-	setConnection(openNewConnection(getSocket(), getAddress()));
+	setConnection(openNewConnection(getListeningSocket(), getAddress()));
 	connectionStatus(getConnection());
 }
 

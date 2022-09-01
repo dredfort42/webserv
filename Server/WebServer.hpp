@@ -13,7 +13,7 @@
 # define WS_PROTOCOL 0
 # define WS_PORT 8080
 # define WS_IP INADDR_ANY
-# define WS_BACKLOG 100
+# define WS_BACKLOG 64
 
 namespace ws
 {
@@ -22,7 +22,9 @@ namespace ws
 	{
 	private:
 		char	_buffer[WS_BUFF_SIZE];
-		int		_newSocket;
+		int		_clientSocket;
+		fd_set	_fdSet;
+		int		_selectNumerator;
 
 		void _accepter();
 		void _handler();

@@ -15,5 +15,5 @@ ws::Listening::Listening(int domain, int service, int protocol,
 
 void ws::Listening::startListening()
 {
-	_listening = listen(getSocket(), _backlog);
+	_listening = listen(getListeningSocket(), _backlog);
 }

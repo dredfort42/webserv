@@ -16,7 +16,7 @@ namespace ws
 	{
 	private:
 		struct sockaddr_in _address;
-		int _socket;
+		int _listeningSocket;
 		int _connection;
 
 	public:
@@ -26,12 +26,12 @@ namespace ws
 			   int port,
 			   u_long ip);
 
-		virtual int openNewConnection(int socket, struct sockaddr_in address) = 0;
+		virtual int openNewConnection(int listeningSocket, struct sockaddr_in address) = 0;
 
 		void connectionStatus(int item);
 
 		struct sockaddr_in getAddress();
-		int getSocket();
+		int getListeningSocket();
 		int getConnection();
 
 		void setConnection(int connection);

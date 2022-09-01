@@ -13,10 +13,11 @@ ip)
 	_address.sin_addr.s_addr = htonl(ip);
 
 	// Establish socket
-	_socket = socket(domain, service, protocol);
+	_listeningSocket = socket(domain, service, protocol);
 	socklen_t socklen = 1;
-	setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &socklen, sizeof(socklen));
-	connectionStatus(_socket);
+	setsockopt(_listeningSocket, SOL_SOCKET, SO_REUSEADDR, &socklen, sizeof(socklen));
+	connectionStatus(_listeningSocket);
+
 }
 
 //exception
@@ -32,8 +33,8 @@ void ws::Socket::connectionStatus(int item)
 struct sockaddr_in ws::Socket::getAddress()
 { return _address; }
 
-int ws::Socket::getSocket()
-{ return _socket; }
+int ws::Socket::getListeningSocket()
+{ return _listeningSocket; }
 
 int ws::Socket::getConnection()
 { return _connection; }

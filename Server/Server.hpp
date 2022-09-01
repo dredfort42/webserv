@@ -13,7 +13,7 @@ namespace ws
 	class Server
 	{
 	private:
-		Listening *_socket;
+		Listening *_listeningSocket;
 
 		virtual void _accepter() = 0;
 		virtual void _handler() = 0;
@@ -29,7 +29,7 @@ namespace ws
 
 		virtual void launcher() = 0;
 
-		Listening *getSocket();
+		Listening *getListeningSocket();
 	};
 
 } // ws

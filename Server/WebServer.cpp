@@ -3,23 +3,31 @@
 //
 
 #include <unistd.h>
+#include <fcntl.h>
 #include "WebServer.hpp"
 
 ws::WebServer::WebServer() :
 Server(WS_DOMAIN, WS_SERVICE, WS_PROTOCOL, WS_PORT, WS_IP, WS_BACKLOG)
-{ launcher(); }
+{
+	memset(_buffer, 0 ,sizeof(_buffer));
+	FD_ZERO(&_fdSet);
+	_selectNumerator = 0;
+	launcher();
+}
 
 void ws::WebServer::_accepter()
 {
-	int					socket = getSocket()->getSocket();
-	struct sockaddr_in	address = getSocket()->getAddress();
+	int					listeningSocket = getListeningSocket()->getListeningSocket();
+	struct sockaddr_in	address = getListeningSocket()->getAddress();
 	int					addressLen = sizeof(address);
 
-
-	_newSocket = accept(socket,
+	_clientSocket = accept(listeningSocket,
 						(struct sockaddr *)&address,
 						(socklen_t *)&addressLen);
-	read(_newSocket, _buffer, WS_BUFF_SIZE);
+	if (_clientSocket > _selectNumerator)
+		_selectNumerator = _clientSocket + 1;
+	fcntl(_clientSocket, F_SETFL, O_NONBLOCK);
+	read(_clientSocket, _buffer, WS_BUFF_SIZE);
 }
 
 void ws::WebServer::_handler()
@@ -28,15 +36,15 @@ void ws::WebServer::_handler()
 void ws::WebServer::_responder()
 {
 	std::string message = "HTTP/1.1 200 OK\nContent-Type: "
-						  "text/plain\nContent-Length: 12\n\nHello world!!!";
-	uint strlen = message.length();
-	char messageChr[strlen];
+						  "text/plain\nContent-Length: 22\n\nHello "
+						  "world 0123456789\n";
+	char messageChr[message.length()];
 	for (int i = 0; message[i]; i++)
-	{
 		messageChr[i] = message[i];
-	}
-	write(_newSocket, messageChr, sizeof(messageChr));
-	close(_newSocket);
+
+	write(_clientSocket, messageChr, sizeof(messageChr));
+
+	close(_clientSocket);
 }
 
 void ws::WebServer::launcher()
