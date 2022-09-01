@@ -62,7 +62,5 @@ int main(int argc, char **argv)
 		std::cerr << e.what();
 		return (2);
 	}
-	std::cout << parseConf.getPath() << "\n";
-	std::cout << parseConf.getRawText() << "\n";
 	ws::WebServer webServer; 
 }

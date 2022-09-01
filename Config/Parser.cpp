@@ -17,6 +17,7 @@ ws::Parser& ws::Parser::operator=(const Parser &other) {
 //	this->_fd = other._fd;
 	this->_path = other._path;
 	this->_cfg = other._cfg;
+	this->_rawFile = other._rawFile;
 	return *this;
 };
 
@@ -27,7 +28,7 @@ inline std::string& ws::Parser::trim( std::string &line, const std::string &trim
 	return line;
 };
 	
-std::string& ws::Parser::Split(std::string &line, std::string delimiter)
+std::string	ws::Parser::Split(std::string &line, std::string delimiter)
 {
 	size_t pos = 0;
 	std::string token;
@@ -46,9 +47,14 @@ std::string& ws::Parser::Split(std::string &line, std::string delimiter)
 
 void ws::Parser::checkBrackets()
 {
-	std::string::iterator begin = _rawFile.begin();
+	if (checkBracketsByPos(_rawFile.end()) != 0)
+		throw(parseException("Brackets still opened\n"));//todo  make parse exception
+}
+
+size_t ws::Parser::checkBracketsByPos(iterator pos) {
+	iterator begin = _rawFile.begin();
 	size_t bracket = 0;
-	while (begin != _rawFile.end())
+	while (begin != pos)
 	{
 		if (*begin == '{')
 			bracket += 1;
@@ -58,8 +64,7 @@ void ws::Parser::checkBrackets()
 			bracket -= 1;
 		begin++;
 	}
-	if (bracket != 0)
-		throw(parseException("Brackets still opened\n"));//todo  make parse exception
+	return bracket;
 }
 
 void  ws::Parser::openFile() {
@@ -88,15 +93,125 @@ void  ws::Parser::readFile() {
 };
 
 void	ws::Parser::parseFile() {
-	Config *cfg = new(Config);
+	Config *cfg;
 	
-	checkBrackets();
+	checkBrackets();//проверка валидности скобочек
 
-//	while (_rawFile.empty() == false){
-//		parseServerBlock(cfg);
+
+//	while (_rawFile.empty() == false) {
+		cfg = new(Config);
+		size_t pos = this->_rawFile.find("SERVER");
+		if (pos != std::string::npos)
+			parseServerBlock(cfg, pos);
+
+		this->_cfg.push_back(cfg);
 //	}
 
 	
-	this->_cfg.push_back(cfg);
 }
 
+std::string ws::Parser::takeBlock(size_t pos, size_t *end){
+
+	iterator it = this->_rawFile.begin() + pos;
+	while (*it++ != '{')
+		(*end)++;
+	iterator last = it;
+	size_t count = 1;
+	while (count)
+	{
+		(*end)++;
+		last++;
+		if (*last == '{')
+			count++;
+		else if (*last == '}')
+			count--;
+	}
+	return std::string(it, last);
+}
+
+void	ws::Parser::fillListen(std::string &line, Config *cnf)
+{
+	Split(line, " ");
+	if (line.empty())
+		throw parseException("Not Valid listen\n");
+	line = trim(line, "\t \n");
+	std::string split = Split(line, ":");
+	if (line.empty())
+	{
+		cnf->IP = "127.0.0.1";
+		cnf->PORT = trim(split, ";");
+	}
+	else
+	{
+		cnf->IP = split;
+		cnf->PORT = trim(line, ";");
+	}
+}
+
+int		ws::Parser::stoi(std::string line)
+{
+	int res = 0;
+	for (iterator it = line.begin(); it != line.end(); it++)
+	{
+		if (std::isdigit(*it) == false)
+			throw parseException("ATOI ERROR");
+		res *= 10;
+		res += *it;
+	}
+	return res;
+}
+
+void	ws::Parser::fillBodySize(std::string &line, Config *cnf)
+{
+	Split(line, " ");
+	if (line.empty())
+		throw parseException("Not Valid listen\n");
+	line = trim(line, "\t \n;");
+	cnf->bodySize = stoi(line);
+}
+
+void	ws::Parser::fillName(std::string &line, Config *cnf)
+{
+	Split(line, " ");
+	if (line.empty())
+		throw parseException("Not Valid listen\n");
+	line = trim(line, "\t \n;");
+	cnf->serverName = line;
+}
+
+void	ws::Parser::fillStruct(std::string &buf, Config *cnf)
+{
+	std::string line;
+	while (buf.empty() == false)
+	{
+		line = Split(buf, "\n");
+		if ((line[0] == '{' && line.size() <= 2) || line[0] == '}' || line[0] == '\n' || line.empty())
+			continue;
+		if (line.find("location") != std::string::npos)
+			continue;
+		if (*(line.rbegin()) != ';')
+		{	
+			std::cout << line << " exception\n";
+			throw parseException("Every parameter should end with ;\n");
+		}
+		if (cnf->IP.empty() && line.find("listen") != std::string::npos)
+			fillListen(line, cnf);
+		if (cnf->serverName.empty() && line.find("server_name") != std::string::npos)
+			fillName(line, cnf);
+		if (cnf->bodySize == 0 && line.find("client_max_body_size") != std::string::npos)
+			fillBodySize(line, cnf);
+	}
+}
+
+void	ws::Parser::parseServerBlock(Config *cfg, const size_t &pos){
+	size_t end = pos;
+	cfg->bodySize = 0;
+	std::string buf = takeBlock(pos, &end);
+	fillStruct(buf, cfg);
+	this->_rawFile.erase(pos, end);
+	if (cfg->bodySize == 0)
+		cfg->bodySize = 1024;
+	std::cout << cfg->IP << " IP | " << cfg->PORT << " PORT\n";
+	std::cout << cfg->serverName << " server_name\n";
+	std::cout << cfg->bodySize << " body size\n";
+}
