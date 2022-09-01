@@ -1,7 +1,7 @@
 NAME		= 	webserv
-HDRS		=	Server/Server.hpp Server/WebServer.hpp\
+HDRS		=	Server/Server.hpp Server/WebServer.hpp Config/Parser.hpp Config/ConfigStruct.hpp\
 				Network/Binding.hpp Network/Connecting.hpp Network/Listening.hpp Network/Socket.hpp
-SRCS 		=	Server/Server.cpp Server/WebServer.cpp\
+SRCS 		=	Server/Server.cpp Server/WebServer.cpp Config/Parser.cpp\
 				Network/Binding.cpp Network/Connecting.cpp Network/Listening.cpp Network/Socket.cpp
 
 

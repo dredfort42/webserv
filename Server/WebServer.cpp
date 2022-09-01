@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include "WebServer.hpp"
+#include "../Config/Parser.hpp"
 
 ws::WebServer::WebServer() :
 Server(WS_DOMAIN, WS_SERVICE, WS_PROTOCOL, WS_PORT, WS_IP, WS_BACKLOG)
@@ -66,7 +67,15 @@ int main(int argc, char **argv)
 		std::cerr << argv[0] <<  ": Wrong number of args!\n";
 		return (1);
 	}
-	//ws::Parser parseConf(argv[1]);
-
+	ws::Parser parseConf(argv[1]);
+	try {
+		parseConf.openFile();
+		parseConf.readFile();
+		parseConf.parseFile();	
+	}
+	catch (const std::exception& e){
+		std::cerr << e.what();
+		return (2);
+	}
 	ws::WebServer webServer; 
 }
