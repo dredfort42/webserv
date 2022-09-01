@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include "WebServer.hpp"
 #include "../Config/Parser.hpp"
+#include "../Config/ConfigStruct.hpp"
 
 ws::WebServer::WebServer() :
 Server(WS_DOMAIN, WS_SERVICE, WS_PROTOCOL, WS_PORT, WS_IP, WS_BACKLOG)
@@ -69,9 +70,7 @@ int main(int argc, char **argv)
 	}
 	ws::Parser parseConf(argv[1]);
 	try {
-		parseConf.openFile();
-		parseConf.readFile();
-		parseConf.parseFile();	
+		std::vector<ws::Config*> tokens = parseConf.getStruct();
 	}
 	catch (const std::exception& e){
 		std::cerr << e.what();

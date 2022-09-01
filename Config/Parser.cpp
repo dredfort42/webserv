@@ -92,6 +92,15 @@ void  ws::Parser::readFile() {
 
 };
 
+std::vector<ws::Config*> ws::Parser::getStruct() {
+
+	openFile();
+	readFile();
+	parseFile();
+	std::cout << (this->_cfg).size() << "\n";
+	return (this->_cfg);
+}
+
 void	ws::Parser::parseFile() {
 	Config *cfg;
 	
@@ -99,14 +108,13 @@ void	ws::Parser::parseFile() {
 
 
 //	while (_rawFile.empty() == false) {
-		cfg = new(Config);
-		size_t pos = this->_rawFile.find("SERVER");
-		if (pos != std::string::npos)
-			parseServerBlock(cfg, pos);
+	cfg = new(Config);
+	size_t pos = this->_rawFile.find("SERVER");
+	if (pos != std::string::npos)
+		parseServerBlock(cfg, pos);
 
-		this->_cfg.push_back(cfg);
+	this->_cfg.push_back(cfg);
 //	}
-
 	
 }
 

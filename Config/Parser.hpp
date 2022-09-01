@@ -1,4 +1,3 @@
-#pragma once
 #include <iostream>
 #include <vector>
 #include "ConfigStruct.hpp"
@@ -11,7 +10,6 @@ namespace ws {
 		public:
 
 			typedef  std::string::iterator	iterator;
-			typedef std::vector<Config*>			value_type;
 			
 			Parser();
 			Parser(const std::string &_path);
@@ -22,6 +20,7 @@ namespace ws {
 			void		openFile();
 			void		readFile();
 			void		parseFile();
+			std::vector<Config*> getStruct();
 			void		fillStruct(std::string &buf, Config *cnf);
 			void		fillListen(std::string &line, Config *cnf);
 			void		fillName(std::string &line, Config *cnf);
