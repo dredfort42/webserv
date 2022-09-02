@@ -1,5 +1,9 @@
 #pragma once
 #include <string>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <vector>
 
 namespace ws {
 
@@ -8,11 +12,11 @@ namespace ws {
 	};
 
 	struct Config {
-		std::string IP;
-		std::string PORT;
+		std::string		IP;
+		std::string		PORT;
 		std::string serverName;
 		int			bodySize;
 		std::string errorPage;
-		//std::vector<Location> Locations;
+		std::vector<ws::Location> Locations;
 	};
 }
