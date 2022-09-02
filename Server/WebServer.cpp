@@ -69,12 +69,14 @@ int main(int argc, char **argv)
 		return (1);
 	}
 	ws::Parser parseConf(argv[1]);
+	std::vector<ws::Config> tokens;
 	try {
-		std::vector<ws::Config*> tokens = parseConf.getStruct();
+		tokens = parseConf.getStruct();
 	}
 	catch (const std::exception& e){
 		std::cerr << e.what();
 		return (2);
 	}
+	std::cout << tokens[0].IP << "\n";
 	ws::WebServer webServer; 
 }

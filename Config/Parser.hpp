@@ -20,18 +20,18 @@ namespace ws {
 			void		openFile();
 			void		readFile();
 			void		parseFile();
-			std::vector<Config*> getStruct();
-			void		fillStruct(std::string &buf, Config *cnf);
-			void		fillListen(std::string &line, Config *cnf);
-			void		fillName(std::string &line, Config *cnf);
-			void		fillBodySize(std::string &line, Config *cnf);
+			std::vector<Config> getStruct();
+			void		fillStruct(std::string &buf, Config &cnf);
+			void		fillListen(std::string &line, Config &cnf);
+			void		fillName(std::string &line, Config &cnf);
+			void		fillBodySize(std::string &line, Config &cnf);
 			std::string Split(std::string &line, std::string delimiter);
 			std::string takeBlock(size_t pos, size_t *end);
 			std::string getPath() const;
 			std::string getRawText() const;
 			inline std::string &trim( std::string &line, const std::string &trimmer);
 			
-			void parseServerBlock(Config *cfg, const size_t &pos);
+			void parseServerBlock(Config &cfg, const size_t &pos);
 			void checkBrackets();
 			
 			
@@ -58,6 +58,6 @@ namespace ws {
 			std::ifstream		_fd;
 			std::string			_path;
 			std::string			_rawFile;
-			std::vector<Config*>	_cfg;
+			std::vector<Config>	_cfg;
 	};
 }
