@@ -12,8 +12,8 @@ namespace ws {
 	};
 
 	struct Config {
-		u_long		IP;
-		int			PORT;
+		std::string		IP;
+		std::string		PORT;
 		std::string serverName;
 		int			bodySize;
 		std::string errorPage;
