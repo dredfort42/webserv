@@ -77,6 +77,5 @@ int main(int argc, char **argv)
 		std::cerr << e.what();
 		return (2);
 	}
-	std::cout << tokens[0].IP << "\n";
 	ws::WebServer webServer; 
 }

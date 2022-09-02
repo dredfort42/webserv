@@ -1,5 +1,4 @@
 #include "Parser.hpp"
-
 ws::Parser::Parser(): _path("default.conf") {};
 
 ws::Parser::Parser(const std::string &p): _path(p) {};
@@ -103,7 +102,10 @@ std::vector<ws::Config> ws::Parser::getStruct() {
 
 void	ws::Parser::parseFile() {
 	Config cfg;
-	
+
+	cfg.IP = 0;
+	cfg.PORT = 0;
+	cfg.bodySize = 0;
 	checkBrackets();//проверка валидности скобочек
 
 
@@ -145,13 +147,13 @@ void	ws::Parser::fillListen(std::string &line, Config &cnf)
 	std::string split = Split(line, ":");
 	if (line.empty())
 	{
-		cnf.IP = "127.0.0.1";
-		cnf.PORT = trim(split, ";");
+		cnf.IP = inet_addr("127.0.0.1");
+		cnf.PORT = stoi(trim(split, ";"));
 	}
 	else
 	{
-		cnf.IP = split;
-		cnf.PORT = trim(line, ";");
+		cnf.IP = inet_addr(split.c_str());
+		cnf.PORT = stoi(trim(line, ";"));
 	}
 }
 
@@ -163,7 +165,7 @@ int		ws::Parser::stoi(std::string line)
 		if (std::isdigit(*it) == false)
 			throw parseException("ATOI ERROR");
 		res *= 10;
-		res += *it;
+		res += *it - '0';
 	}
 	return res;
 }
@@ -198,10 +200,10 @@ void	ws::Parser::fillStruct(std::string &buf, Config &cnf)
 			continue;
 		if (*(line.rbegin()) != ';')
 		{	
-			std::cout << line << " exception\n";
+		//	std::cout << line << " exception\n";
 			throw parseException("Every parameter should end with ;\n");
 		}
-		if (cnf.IP.empty() && line.find("listen") != std::string::npos)
+		if (cnf.IP == 0 && line.find("listen") != std::string::npos)
 			fillListen(line, cnf);
 		if (cnf.serverName.empty() && line.find("server_name") != std::string::npos)
 			fillName(line, cnf);
@@ -212,7 +214,6 @@ void	ws::Parser::fillStruct(std::string &buf, Config &cnf)
 
 void	ws::Parser::parseServerBlock(Config &cfg, const size_t &pos){
 	size_t end = pos;
-	cfg.bodySize = 0;
 	std::string buf = takeBlock(pos, &end);
 	fillStruct(buf, cfg);
 	this->_rawFile.erase(pos, end);
