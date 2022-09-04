@@ -8,7 +8,7 @@
 # include <list>
 
 # include "Service.hpp"
-# include "../Config/ConfigStruct.hpp"
+//# include "../Config/ConfigStruct.hpp"
 
 # define WS_BUFF_SIZE 1024
 

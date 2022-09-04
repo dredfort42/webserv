@@ -10,8 +10,8 @@
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include <fcntl.h>
-
-# include "../Config/ConfigStruct.hpp"
+# include "../Config/Parser.hpp"
+//# include "../Config/ConfigStruct.hpp"
 
 # define WS_BACKLOG 64
 

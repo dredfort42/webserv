@@ -4,6 +4,16 @@
 #include "ConfigStruct.hpp"
 #include <fstream>
 
+#define errFillName "Not Valid Server Name"
+#define errFillListen "Not Valid Listen"
+#define errFillBodySize "Not Valid Body Size"
+#define errFillAutoInd "Not Valid Auto Index"
+#define errFillRoot "Not Valid Root"
+#define errFillMethods "Not Valid Methods"
+#define errFillError "Not Valid Error line"
+#define errFillIndex "Not Valid Index"
+#define errFillUpPath "Not Valid Upload Path"
+
 namespace ws {
 
 
@@ -22,10 +32,18 @@ namespace ws {
 			void		readFile();
 			void		parseFile();
 			std::vector<Config> getStruct();
+			void  		prepareLine(std::string& line, const char *err);
+			bool		checkLine(std::string &line, Config &cnf);
 			void		fillStruct(std::string &buf, Config &cnf);
-			void		fillListen(std::string &line, Config &cnf);
-			void		fillName(std::string &line, Config &cnf);
-			void		fillBodySize(std::string &line, Config &cnf);
+			bool		fillListen(std::string &line, Config &cnf);
+			bool		fillName(std::string &line, Config &cnf);
+			bool		fillBodySize(std::string &line, Config &cnf);
+			bool		fillAutoInd(std::string &line, Config &cnf);
+			bool		fillRoot(std::string &line, Config &cnf);
+			bool		fillMethods(std::string &line, Config &cnf);
+			bool		fillError(std::string &line, Config &cnf);
+			bool		fillIndex(std::string &line, Config &cnf);
+			bool		fillUploadPath(std::string &line, Config &cnf);
 			std::string Split(std::string &line, std::string delimiter);
 			std::string takeBlock(size_t pos, size_t *end);
 			std::string getPath() const;
@@ -47,6 +65,7 @@ namespace ws {
 
 			public:
 				parseException(const char *str): _err(str) {};
+				parseException(const std::string &str): _err(str.c_str()) {};
 				~parseException() throw() {};
 
 				virtual const char* what() const throw()
