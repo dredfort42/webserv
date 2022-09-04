@@ -5,35 +5,53 @@
 #ifndef WEBSERV_WEBSERVER_HPP
 #define WEBSERV_WEBSERVER_HPP
 
-# include "Server.hpp"
+# include <list>
+
+# include "Service.hpp"
+# include "../Config/ConfigStruct.hpp"
 
 # define WS_BUFF_SIZE 1024
-# define WS_DOMAIN AF_INET
-# define WS_SERVICE SOCK_STREAM
-# define WS_PROTOCOL 0
-# define WS_PORT 8080
-# define WS_IP INADDR_ANY
-# define WS_BACKLOG 64
 
 namespace ws
 {
 
-	class WebServer: public Server
+	class WebServer
 	{
 	private:
-		char	_buffer[WS_BUFF_SIZE];
-		int		_clientSocket;
-		fd_set	_fdSet;
-		int		_selectNumerator;
+		int				_maxFdInMasterSet;
+		fd_set			_masterFdSet;
+		fd_set			_readFdSet;
+		fd_set			_writeFdSet;
 
-		void _accepter();
-		void _handler();
-		void _responder();
+		std::list<Service>	_servicesPool;
 
-	public:
 		WebServer();
 
-		void launcher();
+
+
+//		int					_maxClientSocket;
+//		fd_set				_serviceSockets;
+//		char				_buffer[WS_BUFF_SIZE];
+
+//		char						_buffer[WS_BUFF_SIZE];
+//		int							_selectNumerator;
+//		std::vector<ws::Service> 	_servicesPool;
+//
+//		WebServer();
+//
+//		void _accepter();
+//		void _handler();
+//		void _responder();
+//
+	public:
+		WebServer(std::vector<ws::Config> conf);
+
+//		static fd_set	_fdSet;
+//
+//		WebServer(std::vector<ws::Config> config);
+//
+//
+//		void launcher();
 	};
 
 } // ws

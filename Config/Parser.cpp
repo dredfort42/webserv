@@ -1,4 +1,5 @@
 #include "Parser.hpp"
+
 ws::Parser::Parser(): _path("default.conf") {};
 
 ws::Parser::Parser(const std::string &p): _path(p) {};
@@ -108,8 +109,8 @@ void	ws::Parser::parseFile() {
 	size_t pos = this->_rawFile.find("SERVER");
 
 	while (pos != std::string::npos) {
-		cfg.IP.clear();
-		cfg.PORT.clear();
+		cfg.ip.clear();
+		cfg.port.clear();
 		cfg.bodySize = 0;
 		cfg.serverName.clear();
 
@@ -150,13 +151,13 @@ void	ws::Parser::fillListen(std::string &line, Config &cnf)
 	std::string split = Split(line, ":");
 	if (line.empty())
 	{
-		cnf.IP = "127.0.0.1";
-		cnf.PORT = trim(split, ";");
+		cnf.ip = "127.0.0.1";
+		cnf.port = trim(split, ";");
 	}
 	else
 	{
-		cnf.IP = split.c_str();
-		cnf.PORT = trim(line, ";");
+		cnf.ip = split.c_str();
+		cnf.port = trim(line, ";");
 	}
 }
 
@@ -206,7 +207,7 @@ void	ws::Parser::fillStruct(std::string &buf, Config &cnf)
 		//	std::cout << line << " exception\n";
 			throw parseException("Every parameter should end with ;\n");
 		}
-		if (cnf.IP.empty() && line.find("listen") != std::string::npos)
+		if (cnf.ip.empty() && line.find("listen") != std::string::npos)
 			fillListen(line, cnf);
 		if (cnf.serverName.empty() && line.find("server_name") != std::string::npos)
 			fillName(line, cnf);
@@ -222,7 +223,7 @@ void	ws::Parser::parseServerBlock(Config &cfg, const size_t &pos){
 	this->_rawFile.erase(pos, end + 1);
 	if (cfg.bodySize == 0)
 		cfg.bodySize = 1024;
-	std::cout << cfg.IP << " IP | " << cfg.PORT << " PORT\n";
+	std::cout << cfg.ip << " IP | " << cfg.port << " PORT\n";
 	std::cout << cfg.serverName << " server_name\n";
 	std::cout << cfg.bodySize << " body size\n";
 	std::cout << "---------------------------------------\n";
