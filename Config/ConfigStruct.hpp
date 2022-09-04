@@ -22,7 +22,7 @@ namespace ws {
 		std::string 				errorPage;
 		std::vector<ws::Location>	Locations;
 	};
-/*
+
 	std::ostream&	operator<<(std::ostream &o, const Config& cnf) {
 		o << cnf.ip << " IP\n";
 		o << cnf.port << " PORT\n";
@@ -35,5 +35,5 @@ namespace ws {
 		o << cnf.bodySize << " bodySize\n";
 		o << cnf.errorPage << " errorPage\n";
 		return o;
-	} */
+	} 
 }
