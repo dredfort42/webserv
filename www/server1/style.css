@@ -1,0 +1,47 @@
+body {
+    font-family: "Inconsolata", Arial, sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.7;
+    color: #333333;
+    background: #fff;
+  }
+
+  a {
+    color: #4D77FF;
+    -webkit-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+  }
+
+  a:hover, a:active, a:focus {
+    color: #4D77FF;
+    outline: none;
+    text-decoration: none;
+  }
+  
+  p {
+    margin-bottom: 30px;
+  }
+  
+  h1, h2, h3, h4, h5, h6, figure {
+    color: #000;
+    font-family: "Inconsolata", Arial, sans-serif;
+    font-weight: 400;
+    margin: 0 0 20px 0;
+  }
+
+  .container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hero {
+    margin: 0 0 2rem 0;
+    width: 75%;
+    text-align: center;
+    border: 3px solid #4D77FF;
+    padding: 10px;
+  }
