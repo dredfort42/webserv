@@ -26,16 +26,18 @@ namespace ws
 		bool 				_serviceStartedSuccessfully;
 
 		Service();
+
+		bool 				getServiceStatus(int rtn, std::string step);
 		void				establishListeningSocket();
 		void 				getSockAddr(ws::Config serviceConfig);
 		void 				establishNetworkConnection();
 		void 				startListeningSocket();
+		void 				printServiceInfo(ws::Config serviceConfig);
+
 
 	public:
 		Service(ws::Config serviceConfig);
 
-		bool 				serviceStatus(int rtn, std::string step);
-		struct sockaddr_in 	getServiceAddress();
 		int					getServiceListeningSocket();
 	};
 

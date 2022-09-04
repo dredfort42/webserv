@@ -6,6 +6,8 @@
 #define WEBSERV_WEBSERVER_HPP
 
 # include <list>
+# include <sys/select.h>
+# include <unistd.h>
 
 # include "Service.hpp"
 # include "../Config/ConfigStruct.hpp"
@@ -18,40 +20,28 @@ namespace ws
 	class WebServer
 	{
 	private:
-		int				_maxFdInMasterSet;
-		fd_set			_masterFdSet;
-		fd_set			_readFdSet;
-		fd_set			_writeFdSet;
-
+		int					_maxFdInMasterSet;
+		fd_set				_masterFdSet;
+		fd_set				_readFdSet;
+		fd_set				_writeFdSet;
 		std::list<Service>	_servicesPool;
+		std::list<int>		_clientsPool;
 
 		WebServer();
 
+		void 				acceptor();
+		void 				handler();
+		void				responder();
+		void				addToMasterFdSet(int socket);
+		void				removeFromMasterFdSet(int socket);
+		void				openConnection(int listeningSocket);
+		bool				receiveData(int clientSocket);
+		bool				sendData(int clientSocket, std::string respond);
 
-
-//		int					_maxClientSocket;
-//		fd_set				_serviceSockets;
-//		char				_buffer[WS_BUFF_SIZE];
-
-//		char						_buffer[WS_BUFF_SIZE];
-//		int							_selectNumerator;
-//		std::vector<ws::Service> 	_servicesPool;
-//
-//		WebServer();
-//
-//		void _accepter();
-//		void _handler();
-//		void _responder();
-//
 	public:
 		WebServer(std::vector<ws::Config> conf);
 
-//		static fd_set	_fdSet;
-//
-//		WebServer(std::vector<ws::Config> config);
-//
-//
-//		void launcher();
+		void				startWebServer();
 	};
 
 } // ws
