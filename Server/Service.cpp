@@ -6,6 +6,8 @@
 
 ws::Service::Service(ws::Config serviceConfig)
 {
+	_serviceStartedSuccessfully = true;
+	_bodySize = serviceConfig.bodySize;
 	establishListeningSocket();
 	getSockAddr(serviceConfig);
 	establishNetworkConnection();
@@ -13,15 +15,15 @@ ws::Service::Service(ws::Config serviceConfig)
 	printServiceInfo(serviceConfig);
 }
 
-bool ws::Service::getServiceStatus(int rtn, std::string step)
+void ws::Service::checkServiceStatus(int rtn, std::string step)
 {
 	if (rtn < 0)
 	{
 		std::cout << "\033[31m" << "[-] " << step << "\033[0m" << std::endl;
-		return false;
+		_serviceStartedSuccessfully = false;
 	}
-	std::cout << "\033[32m" << "[+] " << "\033[0m" << step << std::endl;
-	return true;
+	else
+		std::cout << "\033[32m" << "[+] " << "\033[0m" << step << std::endl;
 }
 
 void	ws::Service::establishListeningSocket()
@@ -29,17 +31,19 @@ void	ws::Service::establishListeningSocket()
 	// Establish socket
 	_listeningSocket = socket(AF_INET, SOCK_STREAM, 0);
 	fcntl(_listeningSocket, F_SETFL, O_NONBLOCK);
-	_serviceStartedSuccessfully = getServiceStatus(_listeningSocket,
-												   "Establish socket");
+	checkServiceStatus(_listeningSocket,
+					   "Establish socket");
 	if (_serviceStartedSuccessfully)
 	{
 		int optionLen = 1;
-		_serviceStartedSuccessfully = getServiceStatus(
-				setsockopt(_listeningSocket,
-						   SOL_SOCKET,
-						   SO_REUSEADDR,
-						   &optionLen,
-						   sizeof(optionLen)), "Make socket reusable");
+		checkServiceStatus(
+			setsockopt(_listeningSocket,
+				SOL_SOCKET,
+				SO_REUSEADDR,
+				&optionLen,
+				sizeof(optionLen)),
+			"Make socket reusable"
+		);
 	}
 }
 
@@ -60,13 +64,11 @@ void 	ws::Service::establishNetworkConnection()
 	// Establish network connection
 	if (_serviceStartedSuccessfully)
 	{
-		_serviceStartedSuccessfully = getServiceStatus(
-				bind(
-						_listeningSocket,
-						(struct sockaddr *) &_address,
-						sizeof(_address)
-				),
-				"Establish network connection"
+		checkServiceStatus(
+			bind(_listeningSocket,
+					(struct sockaddr *)&_address,
+					sizeof(_address)),
+			"Establish network connection"
 		);
 	}
 }
@@ -76,9 +78,9 @@ void ws::Service::startListeningSocket()
 	// Start listening socket
 	if (_serviceStartedSuccessfully)
 	{
-		_serviceStartedSuccessfully = getServiceStatus(
-				listen(_listeningSocket, WS_BACKLOG),
-				"Start listening socket"
+		checkServiceStatus(
+			listen(_listeningSocket, WS_BACKLOG),
+			"Start listening socket"
 		);
 	}
 }
@@ -104,6 +106,12 @@ void ws::Service::printServiceInfo(ws::Config serviceConfig)
 	}
 	std::cout << "----------------------------------------\n" << std::endl;
 }
+
+bool ws::Service::getServiceStatus()
+{ return _serviceStartedSuccessfully; }
+
+int ws::Service::getBodySize()
+{ return _bodySize; }
 
 int ws::Service::getServiceListeningSocket()
 { return _listeningSocket; }

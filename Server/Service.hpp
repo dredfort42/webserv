@@ -21,13 +21,14 @@ namespace ws
 	class Service
 	{
 	private:
-		int 				_listeningSocket;
-		struct sockaddr_in 	_address;
 		bool 				_serviceStartedSuccessfully;
+		int 				_bodySize;
+		int					_listeningSocket;
+		struct sockaddr_in 	_address;
 
 		Service();
 
-		bool 				getServiceStatus(int rtn, std::string step);
+		void 				checkServiceStatus(int rtn, std::string step);
 		void				establishListeningSocket();
 		void 				getSockAddr(ws::Config serviceConfig);
 		void 				establishNetworkConnection();
@@ -38,7 +39,9 @@ namespace ws
 	public:
 		Service(ws::Config serviceConfig);
 
-		int					getServiceListeningSocket();
+		bool 				getServiceStatus();
+		int 				getBodySize();
+		int 				getServiceListeningSocket();
 	};
 
 } // ws

@@ -17,9 +17,12 @@ ws::WebServer::WebServer(std::vector<ws::Config> conf)
 		it++)
 	{
 		ws::Service service(*it);
-		_servicesPool.push_front(service);
+		if (service.getServiceStatus())
+			_servicesPool.push_front(service);
 		addToMasterFdSet(service.getServiceListeningSocket());
 	}
+	if (!_servicesPool.empty())
+		startWebServer();
 }
 
 void ws::WebServer::startWebServer()
@@ -46,11 +49,22 @@ void ws::WebServer::acceptor()
 		 it++)
 	{
 		if (FD_ISSET(it->getServiceListeningSocket(), &_readFdSet))
-			openConnection(it->getServiceListeningSocket());
+		{
+			int clientSocket = openConnection(it->getServiceListeningSocket());
+			if (clientSocket != -1)
+			{
+				fcntl(clientSocket, F_SETFL, O_NONBLOCK);
+				addToMasterFdSet(clientSocket);
+				_clientsPool.push_front(Client(clientSocket, it->getBodySize()));
+
+				std::cout << "Listening socket: " << it->getServiceListeningSocket();
+				std::cout << " | New connection socket: " << clientSocket << std::endl;
+			}
+		}
 	}
 }
 
-void ws::WebServer::openConnection(int listeningSocket)
+int ws::WebServer::openConnection(int listeningSocket)
 {
 	struct sockaddr		address;
 	socklen_t 			addressLen;
@@ -58,41 +72,34 @@ void ws::WebServer::openConnection(int listeningSocket)
 
 	addressLen = sizeof(address);
 	clientSocket = accept(listeningSocket, &address, &addressLen);
-	if (clientSocket != -1)
-	{
-		fcntl(clientSocket, F_SETFL, O_NONBLOCK);
-		addToMasterFdSet(clientSocket);
-		_clientsPool.push_front(clientSocket);
-	}
-
-	std::cout << "Listening socket: " << listeningSocket;
-	std::cout << " | New connection socket: " << clientSocket << std::endl;
+	if (clientSocket == -1)
+		return -1;
+	return clientSocket;
 }
 
 void ws::WebServer::handler()
 {
-	for (std::list<int>::iterator it = _clientsPool.begin();
+	for (std::list<Client>::iterator it = _clientsPool.begin();
 		it != _clientsPool.end();
 		it++)
 	{
-		if (FD_ISSET(*it, &_readFdSet) && !receiveData(*it))
+		if (FD_ISSET(it->_clientSocket, &_readFdSet)
+			&& !receiveData(*it))
 		{
-			removeFromMasterFdSet(*it);
+			removeFromMasterFdSet(it->_clientSocket);
 			it = _clientsPool.erase(it);
 			continue;
 		}
 	}
 }
 
-bool ws::WebServer::receiveData(int clientSocket)
+bool ws::WebServer::receiveData(Client client)
 {
-//	removeFromMasterFdSet(clientSocket);
-
-	char buffer[WS_BUFF_SIZE];
+	char buffer[client._bodySize];
 	int receivedBytes;
 
 	memset(buffer, 0, sizeof(buffer));
-	receivedBytes = recv(clientSocket, buffer, WS_BUFF_SIZE, 0);
+	receivedBytes = recv(client._clientSocket, buffer, client._bodySize, 0);
 	if (receivedBytes <= 0)
 		return false;
 
@@ -103,13 +110,13 @@ bool ws::WebServer::receiveData(int clientSocket)
 
 void ws::WebServer::responder()
 {
-	for (std::list<int>::iterator it = _clientsPool.begin();
+	for (std::list<Client>::iterator it = _clientsPool.begin();
 		 it != _clientsPool.end();
 		 it++)
 	{
 		std::string message;
 		message.append("Hello client on socket: ");
-		message.append(std::to_string(*it));
+		message.append(std::to_string(it->_clientSocket));
 
 		std::string respond;
 		respond.append("HTTP/1.1 200 OK\n");
@@ -119,13 +126,30 @@ void ws::WebServer::responder()
 		respond.append("\n\n");
 		respond.append(message);
 
-		if (FD_ISSET(*it, &_readFdSet) && !sendData(*it, respond))
+		if (FD_ISSET(it->_clientSocket, &_readFdSet)
+			&& !sendData(*it, respond))
 		{
-			removeFromMasterFdSet(*it);
+			removeFromMasterFdSet(it->_clientSocket);
 			it = _clientsPool.erase(it);
 			continue;
 		}
 	}
+}
+
+bool ws::WebServer::sendData(Client client, std::string respond)
+{
+	std::cout << respond << std::endl;
+
+	char buffer[respond.length()];
+	for (int i = 0; respond[i]; i++)
+		buffer[i] = respond[i];
+	int sendBytes;
+
+	sendBytes = send(client._clientSocket, buffer, sizeof(buffer), 0);
+	if (sendBytes - sizeof(buffer) > 0)
+		return true;
+
+	return false;
 }
 
 void ws::WebServer::addToMasterFdSet(int socket)
@@ -142,20 +166,4 @@ void ws::WebServer::removeFromMasterFdSet(int clientSocket)
 	std::cout << "\033[1;31m";
 	std::cout << "Close socket: " << clientSocket;
 	std::cout << "\033[0m" << std::endl;
-}
-
-bool ws::WebServer::sendData(int clientSocket, std::string respond)
-{
-	std::cout << respond << std::endl;
-
-	char buffer[respond.length()];
-	for (int i = 0; respond[i]; i++)
-		buffer[i] = respond[i];
-	int sendBytes;
-
-	sendBytes = send(clientSocket, buffer, sizeof(buffer), 0);
-	if (sendBytes - sizeof(buffer) > 0)
-		return true;
-
-	return false;
 }
