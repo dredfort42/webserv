@@ -1,9 +1,8 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include "ConfigStruct.hpp"
 #include <fstream>
-
+#include "ConfigStruct.hpp"
 #define errFillName "Not Valid Server Name"
 #define errFillListen "Not Valid Listen"
 #define errFillBodySize "Not Valid Body Size"
@@ -13,10 +12,8 @@
 #define errFillError "Not Valid Error line"
 #define errFillIndex "Not Valid Index"
 #define errFillUpPath "Not Valid Upload Path"
-
+#define errLocationParse "Not Valid location Syntax"
 namespace ws {
-
-
 	class Parser {
 		public:
 
@@ -43,9 +40,10 @@ namespace ws {
 			bool		fillMethods(std::string &line, Config &cnf);
 			bool		fillError(std::string &line, Config &cnf);
 			bool		fillIndex(std::string &line, Config &cnf);
+			void		fillLocation(std::string &line, Config &cnf);
 			bool		fillUploadPath(std::string &line, Config &cnf);
 			std::string Split(std::string &line, std::string delimiter);
-			std::string takeBlock(size_t pos, size_t *end);
+			std::string takeBlock(std::string &config, size_t pos, size_t *end);
 			std::string getPath() const;
 			std::string getRawText() const;
 			inline std::string &trim( std::string &line, const std::string &trimmer);
@@ -80,4 +78,5 @@ namespace ws {
 			std::string			_rawFile;
 			std::vector<Config>	_cfg;
 	};
+
 }

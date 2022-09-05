@@ -228,6 +228,17 @@ bool	ws::Parser::fillUploadPath(std::string &line, Config &cnf) {
 
 }
 
+void	ws::Parser::fillLocation(std::string &buf, Config &cnf) {
+	ws::Location loc;
+	size_t end = 0;
+
+	prepareLine(buf, errLocationParse);
+	loc.raw = takeBlock(buf, 0, &end);
+	buf.erase(0, end);
+
+	cnf.Locations.push_back(loc);
+}
+
 bool	ws::Parser::checkLine(std::string &line, Config &cnf)
 {
 		if ((line[0] == '{' && line.size() <= 2) || line[0] == '}' || line[0] == '\n' || line.empty())
@@ -264,13 +275,14 @@ void	ws::Parser::fillStruct(std::string &buf, Config &cnf)
 	{
 		line = Split(buf, "\n");
 		//std::cout << line << "\n";
+		if (line.find("location") != std::string::npos)
+		{
+			fillLocation(buf, cnf);
+			continue;
+		}
 		if (checkLine(line, cnf) == false)
 		{
-			//const char *err = (line + " : No any matches with parameter\n").c_str();
-			if (line.empty() == true) 
-				throw parseException(line + " : No any matches with parameter\n");
-			else 
-				throw parseException("No any matches with parameter\n");
+			throw parseException("Wrong parameter");
 		}
 	}
 }
@@ -279,21 +291,21 @@ void	ws::Parser::fillStruct(std::string &buf, Config &cnf)
 
 void	ws::Parser::parseServerBlock(Config &cfg, const size_t &pos){
 	size_t end = pos;
-	std::string buf = takeBlock(pos, &end);
+	std::string buf = takeBlock(this->_rawFile, pos, &end);
 	fillStruct(buf, cfg);
 	this->_rawFile.erase(pos, end + 1);
 	if (cfg.bodySize == 0)
 		cfg.bodySize = 1024;
-	//std::cout << cfg;
+	std::cout << cfg;
 //	std::cout << cfg.ip << " IP | " << cfg.port << " PORT\n";
 //	std::cout << cfg.serverName << " server_name\n";
 //	std::cout << cfg.bodySize << " body size\n";
 //	std::cout << "---------------------------------------\n";
 }
 
-std::string ws::Parser::takeBlock(size_t pos, size_t *end){
+std::string ws::Parser::takeBlock(std::string &config, size_t pos, size_t *end){
 
-	iterator it = this->_rawFile.begin() + pos;
+	iterator it = config.begin() + pos;
 	while (*it++ != '{')
 		(*end)++;
 	iterator last = it;
@@ -310,3 +322,4 @@ std::string ws::Parser::takeBlock(size_t pos, size_t *end){
 	(*end)++;
 	return std::string(it, last);
 }
+

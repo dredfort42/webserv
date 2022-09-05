@@ -2,15 +2,15 @@
 // Created by Dmitry Novikov on 08.08.2022.
 //
 
-#ifndef WEBSERV_SERVICE_HPP
+#pragma once
 #define WEBSERV_SERVICE_HPP
 
-# include <iostream>
-# include <sys/socket.h>
-# include <netinet/in.h>
-# include <arpa/inet.h>
-# include <fcntl.h>
-# include "../Config/Parser.hpp"
+#include <iostream>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include "../Config/Parser.hpp"
 //# include "../Config/ConfigStruct.hpp"
 
 # define WS_BACKLOG 64
@@ -41,4 +41,3 @@ namespace ws
 
 } // ws
 
-#endif //WEBSERV_SERVICE_HPP

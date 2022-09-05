@@ -1,10 +1,8 @@
 //
 // Created by Dmitry Novikov on 04.09.2022.
 //
-
 #include <iostream>
 
-#include "Config/Parser.hpp"
 #include "Server/WebServer.hpp"
 
 int main(int argc, char **argv)
