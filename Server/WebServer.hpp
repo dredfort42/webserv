@@ -1,8 +1,7 @@
 //
 // Created by Dmitry Novikov on 09.08.2022.
 //
-
-#ifndef WEBSERV_WEBSERVER_HPP
+#pragma once
 #define WEBSERV_WEBSERVER_HPP
 
 # include <list>
@@ -10,7 +9,7 @@
 # include <unistd.h>
 
 # include "Service.hpp"
-# include "../Config/ConfigStruct.hpp"
+//# include "../Config/ConfigStruct.hpp"
 
 namespace ws
 {
@@ -52,4 +51,3 @@ namespace ws
 
 } // ws
 
-#endif //WEBSERV_WEBSERVER_HPP
