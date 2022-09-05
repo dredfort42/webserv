@@ -8,9 +8,14 @@ namespace ws {
 
 	struct Location {
 		std::string raw;
-		std::string path;
-		std::string options;
-		std::string body;
+		std::string 				path;
+		std::string					root;
+		std::string					index;
+		bool						autoindex;
+		std::string 				errorPage;
+		std::string 				redirect;
+		std::string					methods;
+
 	};
 
 	struct Config {

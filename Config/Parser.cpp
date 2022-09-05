@@ -58,7 +58,6 @@ void  ws::Parser::readFile() {
 		this->_rawFile += "\n";
 	}
 	this->_fd.close();
-
 };
 
 
@@ -72,7 +71,10 @@ void	ws::Parser::parseFile() {
 	while (pos != std::string::npos) {
 		resetConfig(cfg);
 		parseServerBlock(cfg, pos);
-
+		if (cfg.port.empty())
+			cfg.port = "8080";
+		if (cfg.ip.empty())
+			cfg.ip = "0.0.0.0";
 		pos = this->_rawFile.find("SERVER");
 		this->_cfg.push_back(cfg);
 	}
@@ -239,22 +241,21 @@ bool	ws::Parser::fillUploadPath(std::string &line, Config &cnf) {
 
 }
 
-void	ws::Parser::fillLocation(std::string &buf, Config &cnf) {
+void	ws::Parser::fillLocation(std::string &line, std::string &buf, Config &cnf) {
 	ws::Location loc;
 	size_t end = 0;
+	//std::string path;
 
-	prepareLine(buf, errLocationParse);
-	loc.raw = takeBlock(buf, 0, &end);
+	prepareLine(line, errLocationParse);
+	loc.raw = takeBlock(buf, 0, &end, true);
 	buf.erase(0, end);
-
+//	parseLocation(loc.raw
 	cnf.Locations.push_back(loc);
 }
 
 bool	ws::Parser::checkLine(std::string &line, Config &cnf)
 {
 		if ((line[0] == '{' && line.size() <= 2) || line[0] == '}' || line[0] == '\n' || line.empty())
-			return true;
-		if (line.find("location") != std::string::npos)
 			return true;
 		if (*(line.rbegin()) != ';')
 			throw parseException("Every parameter should end with ;\n");
@@ -288,7 +289,8 @@ void	ws::Parser::fillStruct(std::string &buf, Config &cnf)
 		//std::cout << line << "\n";
 		if (line.find("location") != std::string::npos)
 		{
-			fillLocation(buf, cnf);
+		//	std::cout<<line<<"\n";
+			fillLocation(line, buf, cnf);
 			continue;
 		}
 		if (checkLine(line, cnf) == false)
@@ -302,7 +304,7 @@ void	ws::Parser::fillStruct(std::string &buf, Config &cnf)
 
 void	ws::Parser::parseServerBlock(Config &cfg, const size_t &pos){
 	size_t end = pos;
-	std::string buf = takeBlock(this->_rawFile, pos, &end);
+	std::string buf = takeBlock(this->_rawFile, pos, &end, false);
 	fillStruct(buf, cfg);
 	this->_rawFile.erase(pos, end + 1);
 	if (cfg.bodySize == 0)
@@ -314,11 +316,14 @@ void	ws::Parser::parseServerBlock(Config &cfg, const size_t &pos){
 //	std::cout << "---------------------------------------\n";
 }
 
-std::string ws::Parser::takeBlock(std::string &config, size_t pos, size_t *end){
+std::string ws::Parser::takeBlock(std::string &config, size_t pos, size_t *end, bool loc){
 
 	iterator it = config.begin() + pos;
-	while (*it++ != '{')
-		(*end)++;
+	if (loc == false)
+	{
+		while (*it++ != '{')
+			(*end)++;
+	}
 	iterator last = it;
 	size_t count = 1;
 	while (count)
@@ -333,4 +338,8 @@ std::string ws::Parser::takeBlock(std::string &config, size_t pos, size_t *end){
 	(*end)++;
 	return std::string(it, last);
 }
+
+
+//Parse Locations
+
 

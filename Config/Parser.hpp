@@ -40,10 +40,11 @@ namespace ws {
 			bool		fillMethods(std::string &line, Config &cnf);
 			bool		fillError(std::string &line, Config &cnf);
 			bool		fillIndex(std::string &line, Config &cnf);
-			void		fillLocation(std::string &line, Config &cnf);
+			void		fillLocation(std::string &line, std::string &buf, Config &cnf);
 			bool		fillUploadPath(std::string &line, Config &cnf);
 			std::string Split(std::string &line, std::string delimiter);
-			std::string takeBlock(std::string &config, size_t pos, size_t *end);
+			std::string takeBlock(std::string &config, size_t pos, size_t *end, bool loc);
+			
 			std::string getPath() const;
 			std::string getRawText() const;
 			inline std::string &trim( std::string &line, const std::string &trimmer);
