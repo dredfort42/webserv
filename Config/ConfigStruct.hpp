@@ -14,8 +14,9 @@ namespace ws {
 		bool						autoindex;
 		std::string 				errorPage;
 		std::string 				redirect;
-		std::string					methods;
-
+		std::string					method;
+		std::string					uploadPath;
+		std::string					binPath;
 	};
 
 	struct Config {

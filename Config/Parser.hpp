@@ -30,18 +30,39 @@ namespace ws {
 			void		parseFile();
 			std::vector<Config> getStruct();
 			void  		prepareLine(std::string& line, const char *err);
+			bool		checkLine(std::string& line, Location &loc);
 			bool		checkLine(std::string &line, Config &cnf);
 			void		fillStruct(std::string &buf, Config &cnf);
 			bool		fillListen(std::string &line, Config &cnf);
 			bool		fillName(std::string &line, Config &cnf);
 			bool		fillBodySize(std::string &line, Config &cnf);
-			bool		fillAutoInd(std::string &line, Config &cnf);
-			bool		fillRoot(std::string &line, Config &cnf);
-			bool		fillMethods(std::string &line, Config &cnf);
-			bool		fillError(std::string &line, Config &cnf);
-			bool		fillIndex(std::string &line, Config &cnf);
+
+			template <class T>
+			bool		fillAutoInd(std::string &line, T &cnf);
+
+			template <class T>
+			bool		fillRoot(std::string &line, T &cnf);
+
+			template <class T>
+			bool		fillMethods(std::string &line, T &cnf);
+			
+			template <class T>
+			bool		fillError(std::string &line, T &cnf);
+			
+			template <class T>
+			bool		fillIndex(std::string &line, T &cnf);
+			
 			void		fillLocation(std::string &line, std::string &buf, Config &cnf);
-			bool		fillUploadPath(std::string &line, Config &cnf);
+			
+			template <class T>
+			bool		fillUploadPath(std::string &line, T &cnf);
+			
+			template <class T>
+			bool		fillUploadBinPath(std::string &line, T &cnf);
+
+			template <class T>
+			bool		fillRedirect(std::string &line, T &cnf);
+
 			std::string Split(std::string &line, std::string delimiter);
 			std::string takeBlock(std::string &config, size_t pos, size_t *end, bool loc);
 			
@@ -51,6 +72,7 @@ namespace ws {
 			void		resetConfig(Config &cfg);
 			
 			void parseServerBlock(Config &cfg, const size_t &pos);
+			void parseLocationBlock(std::string &line, ws::Location &loc);
 			void checkBrackets();
 			
 			

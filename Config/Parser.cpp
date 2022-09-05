@@ -198,7 +198,8 @@ bool	ws::Parser::fillName(std::string &line, Config &cnf)
 	return true;
 }
 
-bool	ws::Parser::fillAutoInd(std::string &line, Config &cnf)
+template <class T>
+bool	ws::Parser::fillAutoInd(std::string &line, T &cnf)
 {
 	prepareLine(line, errFillAutoInd);
 	if  (line == "off")
@@ -210,35 +211,53 @@ bool	ws::Parser::fillAutoInd(std::string &line, Config &cnf)
 	return true;
 }
 
-bool	ws::Parser::fillRoot(std::string &line, Config &cnf) {
+template <class T>
+bool	ws::Parser::fillRoot(std::string &line, T &cnf) {
 	prepareLine(line, errFillRoot);
 	cnf.root = line;
 	return true;
 }
 
-bool	ws::Parser::fillMethods(std::string &line, Config &cnf) {
+template <class T>
+bool	ws::Parser::fillMethods(std::string &line, T &cnf) {
 	prepareLine(line, errFillMethods);
 	cnf.method = line;
 	return true;
 }
 
-bool	ws::Parser::fillError(std::string &line, Config &cnf) {
+template <class T>
+bool	ws::Parser::fillError(std::string &line, T &cnf) {
 	prepareLine(line, errFillError);
 	cnf.errorPage = line;
 	return true;
 }
 
-bool	ws::Parser::fillIndex(std::string &line, Config &cnf) {
+template <class T>
+bool	ws::Parser::fillIndex(std::string &line, T &cnf) {
 	prepareLine(line, errFillIndex);
 	cnf.index = line;
 	return true;
 }
 
-bool	ws::Parser::fillUploadPath(std::string &line, Config &cnf) {
+template <class T>
+bool	ws::Parser::fillUploadPath(std::string &line, T &cnf) {
 	prepareLine(line, errFillUpPath);
 	cnf.uploadPath = line;
 	return true;
+}
 
+template <class T>
+bool	ws::Parser::fillUploadBinPath(std::string &line, T &cnf) {
+	prepareLine(line, errFillUpPath);
+	cnf.binPath = line;
+	return true;
+}
+
+template <class T>
+bool	ws::Parser::fillRedirect(std::string &line, T &cnf) {
+	prepareLine(line, errFillUpPath);
+	cnf.redirect = line;
+	return true;
 }
 
 void	ws::Parser::fillLocation(std::string &line, std::string &buf, Config &cnf) {
@@ -249,7 +268,7 @@ void	ws::Parser::fillLocation(std::string &line, std::string &buf, Config &cnf) 
 	prepareLine(line, errLocationParse);
 	loc.raw = takeBlock(buf, 0, &end, true);
 	buf.erase(0, end);
-//	parseLocation(loc.raw
+	parseLocationBlock(line, loc);
 	cnf.Locations.push_back(loc);
 }
 
@@ -277,6 +296,31 @@ bool	ws::Parser::checkLine(std::string &line, Config &cnf)
 			return fillIndex(line, cnf);
 		if (cnf.uploadPath.empty() && line.find("upload_path") != std::string::npos)
 			return fillUploadPath(line, cnf);
+		return true;
+}
+
+bool	ws::Parser::checkLine(std::string &line, Location &cnf)
+{
+		if ((line[0] == '{' && line.size() <= 2) || line[0] == '}' || line[0] == '\n' || line.empty())
+			return true;
+		if (*(line.rbegin()) != ';')
+			throw parseException("Every parameter should end with ;\n");
+		if (line.find("autoindex") != std::string::npos)
+			return fillAutoInd(line, cnf);
+		if (cnf.method.empty() && line.find("methods") != std::string::npos)
+			return fillMethods(line, cnf);
+		if (cnf.root.empty() && line.find("root") != std::string::npos)
+			return fillRoot(line, cnf);
+		if (cnf.errorPage.empty() && line.find("error_page") != std::string::npos)
+			return fillError(line, cnf);
+		if (cnf.index.empty() && line.find("index") != std::string::npos)
+			return fillIndex(line, cnf);
+		if (cnf.uploadPath.empty() && line.find("upload_path") != std::string::npos)
+			return fillUploadPath(line, cnf);
+		if (cnf.binPath.empty() && line.find("bin_path") != std::string::npos)
+			return fillUploadBinPath(line, cnf);
+		if (cnf.redirect.empty() && line.find("redirection") != std::string::npos)
+			return fillRedirect(line, cnf);
 		return true;
 }
 
@@ -341,5 +385,14 @@ std::string ws::Parser::takeBlock(std::string &config, size_t pos, size_t *end, 
 
 
 //Parse Locations
+
+void	ws::Parser::parseLocationBlock(std::string &line, Location &loc) {
+	loc.path = trim(line, "{ \t}");
+	std::cout << loc.raw << "\n";
+	while (loc.raw.empty() == false) {
+		line = Split(loc.raw, "\n");
+		checkLine(line, loc);
+	}
+}
 
 
