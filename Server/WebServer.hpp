@@ -5,29 +5,26 @@
 #ifndef WEBSERV_WEBSERVER_HPP
 #define WEBSERV_WEBSERVER_HPP
 
+# include <iostream>
 # include <list>
 # include <sys/select.h>
 # include <unistd.h>
 
 # include "Service.hpp"
+//# include "Client.hpp"
+# include "Acceptor.hpp"
+# include "Handler.hpp"
+# include "Responder.hpp"
 # include "../Config/ConfigStruct.hpp"
 
 namespace ws
 {
-	struct Client
-	{
-		int	_clientSocket;
-		int _bodySize;
-
-		Client(int clientSocket, int bodySize):
-			_clientSocket(clientSocket), _bodySize(bodySize) {};
-	};
 
 	class WebServer
 	{
 	private:
-		int						_maxFdInMasterSet;
-		fd_set					_masterFdSet;
+		int				_maxFdInMasterSet;
+		fd_set			_masterFdSet;
 		fd_set					_readFdSet;
 		fd_set					_writeFdSet;
 		std::list<Service>		_servicesPool;
@@ -35,19 +32,18 @@ namespace ws
 
 		WebServer();
 
-		void	acceptor();
-		void	handler();
-		void	responder();
-		int		openConnection(int listeningSocket);
-		bool	receiveData(Client client);
-		bool	sendData(Client client, std::string respond);
-		void	addToMasterFdSet(int socket);
-		void	removeFromMasterFdSet(int socket);
-
+//		void	acceptor();
+//		void	handler();
+//		void	responder();
+//		int		openConnection(int listeningSocket);
+//		bool	receiveData(Client client);
+//		bool	sendData(Client client);
 	public:
 		WebServer(std::vector<ws::Config> conf);
 
 		void	startWebServer();
+//		void	addToMasterFdSet(int socket);
+		void	removeFromMasterFdSet(int socket);
 	};
 
 } // ws

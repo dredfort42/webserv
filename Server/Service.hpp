@@ -22,7 +22,7 @@ namespace ws
 	{
 	private:
 		bool 				_serviceStartedSuccessfully;
-		int 				_bodySize;
+		int 				_maxBodySize;
 		int					_listeningSocket;
 		struct sockaddr_in 	_address;
 
@@ -40,7 +40,7 @@ namespace ws
 		Service(ws::Config serviceConfig);
 
 		bool 				getServiceStatus();
-		int 				getBodySize();
+		int 				getMaxBodySize();
 		int 				getServiceListeningSocket();
 	};
 

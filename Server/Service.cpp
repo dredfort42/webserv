@@ -7,7 +7,7 @@
 ws::Service::Service(ws::Config serviceConfig)
 {
 	_serviceStartedSuccessfully = true;
-	_bodySize = serviceConfig.bodySize;
+	_maxBodySize = serviceConfig.bodySize;
 	establishListeningSocket();
 	getSockAddr(serviceConfig);
 	establishNetworkConnection();
@@ -110,8 +110,8 @@ void ws::Service::printServiceInfo(ws::Config serviceConfig)
 bool ws::Service::getServiceStatus()
 { return _serviceStartedSuccessfully; }
 
-int ws::Service::getBodySize()
-{ return _bodySize; }
+int ws::Service::getMaxBodySize()
+{ return _maxBodySize; }
 
 int ws::Service::getServiceListeningSocket()
 { return _listeningSocket; }
