@@ -33,7 +33,7 @@ ws::WebServer::WebServer(std::vector<ws::Config> conf)
 void ws::WebServer::startWebServer()
 {
 	// Start web server
-	while (true)
+	while (!_servicesPool.empty())
 	{
 		_readFdSet = _masterFdSet;
 		_writeFdSet = _masterFdSet;
@@ -41,7 +41,8 @@ void ws::WebServer::startWebServer()
 		if (select(_maxFdInMasterSet, &_readFdSet, &_writeFdSet, NULL, 0) >= 0)
 		{
 			ws::Acceptor(_servicesPool, _clientsPool,
-						 _masterFdSet, _maxFdInMasterSet, _readFdSet);
+						 _maxFdInMasterSet, _masterFdSet);
+
 			for (std::list<Client>::iterator it = _clientsPool.begin();
 				 it != _clientsPool.end();
 				 it++)
@@ -50,6 +51,7 @@ void ws::WebServer::startWebServer()
 
 				if (FD_ISSET(clientSocket, &_readFdSet))
 				{
+					FD_CLR(clientSocket, &_readFdSet);
 					ws::Handler request(*it);
 					if (it->getBytesReceived() <= 0)
 					{
@@ -59,57 +61,21 @@ void ws::WebServer::startWebServer()
 					}
 				}
 
-//				if (FD_ISSET(clientSocket, &_writeFdSet))
-//				{
-//					ws::Responder response(*it);
-//					if (it->getResponse().length() - it->getBytesSent() <= 0)
-//					{
-//						removeFromMasterFdSet(clientSocket);
-//						it = _clientsPool.erase(it);
-//						continue;
-//					}
-//				}
+				if (FD_ISSET(clientSocket, &_writeFdSet))
+				{
+					FD_CLR(clientSocket, &_writeFdSet);
+					ws::Responder response(*it);
+					if (it->getResponse().length() - it->getBytesSent() <= 0)
+					{
+						removeFromMasterFdSet(clientSocket);
+						it = _clientsPool.erase(it);
+						continue;
+					}
+				}
 			}
 		}
 	}
 }
-
-
-//void ws::WebServer::responder()
-//{
-//
-//
-//
-//}
-
-//bool ws::WebServer::sendData(Client client)
-//{
-//	std::cout << client._response << std::endl;
-//	int sendBytes;
-//	std::string responsePart;
-//
-//	sendBytes = send(
-//			client._clientSocket,
-////			client._response.c_str() + client._bytesAlreadySent,
-////			client._responseLength - client._bytesAlreadySent,
-//			client._response.c_str(),
-//			client._responseLength,
-//			0);
-//	client._bytesAlreadySent += sendBytes;
-//	if (client._bytesAlreadySent >= client._responseLength)
-//	{
-//		client._bytesAlreadySent = 0;
-//		return true;
-//	}
-//	return false;
-//}
-
-//void ws::WebServer::addToMasterFdSet(int socket)
-//{
-//	FD_SET(socket, &_masterFdSet);
-//	if (socket >= _maxFdInMasterSet)
-//		_maxFdInMasterSet = socket + 1;
-//}
 
 void ws::WebServer::removeFromMasterFdSet(int clientSocket)
 {

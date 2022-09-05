@@ -7,7 +7,7 @@
 ws::Client::Client(int clientSocket, int maxBodySize)
 {
 	_clientSocket = clientSocket;
-	_bufferSize = 16;
+	_bufferSize = 64;
 	_maxBodySize = maxBodySize;
 	_bytesReceived = 0;
 	_bytesSent = 0;
@@ -24,7 +24,7 @@ size_t 		ws::Client::getBufferSize()
 size_t 		ws::Client::getBytesReceived()
 { return _bytesReceived; }
 
-size_t ws::Client::getBytesSent()
+size_t 		ws::Client::getBytesSent()
 { return _bytesSent; }
 
 std::string ws::Client::getRequest()

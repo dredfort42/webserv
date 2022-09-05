@@ -24,9 +24,8 @@ namespace ws
 	public:
 		Acceptor(std::list<Service> &servicesPool,
 				 std::list<Client> &clientsPool,
-				 fd_set &masterFdSet,
 				 int &maxFdInMasterSet,
-				 fd_set &readFdSet);
+				 fd_set &masterFdSet);
 
 	};
 } // ws

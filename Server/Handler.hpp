@@ -17,7 +17,7 @@ namespace ws
 		Handler();
 
 	public:
-		Handler(Client client);
+		Handler(Client &client);
 
 	};
 

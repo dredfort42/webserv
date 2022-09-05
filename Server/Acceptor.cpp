@@ -6,15 +6,14 @@
 
 ws::Acceptor::Acceptor(std::list<Service> &servicesPool,
 					   std::list<Client> &clientsPool,
-					   fd_set &masterFdSet,
 					   int &maxFdInMasterSet,
-					   fd_set &readFdSet)
+					   fd_set &masterFdSet)
 {
 	for (std::list<Service>::iterator it = servicesPool.begin();
 		 it != servicesPool.end();
 		 it++)
 	{
-		if (FD_ISSET(it->getServiceListeningSocket(), &readFdSet))
+		if (FD_ISSET(it->getServiceListeningSocket(), &masterFdSet))
 		{
 			int clientSocket = openConnection(it->getServiceListeningSocket());
 			if (clientSocket != -1)

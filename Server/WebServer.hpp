@@ -23,26 +23,19 @@ namespace ws
 	class WebServer
 	{
 	private:
-		int				_maxFdInMasterSet;
-		fd_set			_masterFdSet;
-		fd_set					_readFdSet;
-		fd_set					_writeFdSet;
-		std::list<Service>		_servicesPool;
-		std::list<Client>		_clientsPool;
+		int					_maxFdInMasterSet;
+		fd_set				_masterFdSet;
+		fd_set				_readFdSet;
+		fd_set				_writeFdSet;
+		std::list<Service>	_servicesPool;
+		std::list<Client>	_clientsPool;
 
 		WebServer();
 
-//		void	acceptor();
-//		void	handler();
-//		void	responder();
-//		int		openConnection(int listeningSocket);
-//		bool	receiveData(Client client);
-//		bool	sendData(Client client);
 	public:
 		WebServer(std::vector<ws::Config> conf);
 
 		void	startWebServer();
-//		void	addToMasterFdSet(int socket);
 		void	removeFromMasterFdSet(int socket);
 	};
 
