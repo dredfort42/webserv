@@ -30,7 +30,7 @@ std::vector<ws::Config> ws::Parser::getStruct() {
 	openFile();
 	readFile();
 	parseFile();
-	std::cout << (this->_cfg).size() << "\n";
+	std::cout << "----------------------------------------\n\n";
 	return (this->_cfg);
 }
 
@@ -70,11 +70,7 @@ void	ws::Parser::parseFile() {
 	size_t pos = this->_rawFile.find("SERVER");
 
 	while (pos != std::string::npos) {
-		cfg.ip.clear();
-		cfg.port.clear();
-		cfg.bodySize = 0;
-		cfg.serverName.clear();
-
+		resetConfig(cfg);
 		parseServerBlock(cfg, pos);
 
 		pos = this->_rawFile.find("SERVER");
@@ -84,6 +80,21 @@ void	ws::Parser::parseFile() {
 }
 
 //Utils
+
+void	ws::Parser::resetConfig(Config &cfg) {
+
+		cfg.ip.clear();
+		cfg.port.clear();
+		cfg.bodySize = 0;
+		cfg.serverName.clear();
+		cfg.autoindex = false;
+		cfg.root.clear();
+		cfg.method.clear();
+		cfg.index.clear();
+		cfg.uploadPath.clear();
+		cfg.errorPage.clear();
+		cfg.Locations.clear();
+}
 
 int		ws::Parser::stoi(std::string line)
 {

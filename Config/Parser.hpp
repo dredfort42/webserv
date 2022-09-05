@@ -47,6 +47,7 @@ namespace ws {
 			std::string getPath() const;
 			std::string getRawText() const;
 			inline std::string &trim( std::string &line, const std::string &trimmer);
+			void		resetConfig(Config &cfg);
 			
 			void parseServerBlock(Config &cfg, const size_t &pos);
 			void checkBrackets();
