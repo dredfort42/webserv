@@ -3,7 +3,7 @@ NAME		= 	webserv
 HDRS		=	Config/Parser.hpp		Config/ConfigStruct.hpp\
 				Server/Acceptor.hpp		Server/Handler.hpp			Server/Responder.hpp\
                 Server/Client.hpp		Server/Service.hpp   		Server/WebServer.hpp
-SRCS 		=	Config/Parser.cpp\
+SRCS 		=	Config/Parser.cpp		Config/ConfigStruct.cpp\
 				Server/Acceptor.cpp		Server/Handler.cpp			Server/Responder.cpp\
                 Server/Client.cpp		Server/Service.cpp			Server/WebServer.cpp\
 				main.cpp
