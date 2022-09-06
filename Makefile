@@ -1,4 +1,5 @@
 NAME		= 	webserv
+
 HDRS		=	Config/Parser.hpp Config/ConfigStruct.hpp\
 				Server/Acceptor.hpp  Server/Handler.hpp   Server/Service.hpp\
                 Server/Client.hpp    Server/Responder.hpp Server/WebServer.hpp

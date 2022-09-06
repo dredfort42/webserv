@@ -1,12 +1,19 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include "ConfigStruct.hpp"
 #include <fstream>
-
+#include "ConfigStruct.hpp"
+#define errFillName "Not Valid Server Name"
+#define errFillListen "Not Valid Listen"
+#define errFillBodySize "Not Valid Body Size"
+#define errFillAutoInd "Not Valid Auto Index"
+#define errFillRoot "Not Valid Root"
+#define errFillMethods "Not Valid Methods"
+#define errFillError "Not Valid Error line"
+#define errFillIndex "Not Valid Index"
+#define errFillUpPath "Not Valid Upload Path"
+#define errLocationParse "Not Valid location Syntax"
 namespace ws {
-
-
 	class Parser {
 		public:
 
@@ -22,17 +29,50 @@ namespace ws {
 			void		readFile();
 			void		parseFile();
 			std::vector<Config> getStruct();
+			void  		prepareLine(std::string& line, const char *err);
+			bool		checkLine(std::string& line, Location &loc);
+			bool		checkLine(std::string &line, Config &cnf);
 			void		fillStruct(std::string &buf, Config &cnf);
-			void		fillListen(std::string &line, Config &cnf);
-			void		fillName(std::string &line, Config &cnf);
-			void		fillBodySize(std::string &line, Config &cnf);
+			bool		fillListen(std::string &line, Config &cnf);
+			bool		fillName(std::string &line, Config &cnf);
+			bool		fillBodySize(std::string &line, Config &cnf);
+
+			template <class T>
+			bool		fillAutoInd(std::string &line, T &cnf);
+
+			template <class T>
+			bool		fillRoot(std::string &line, T &cnf);
+
+			template <class T>
+			bool		fillMethods(std::string &line, T &cnf);
+			
+			template <class T>
+			bool		fillError(std::string &line, T &cnf);
+			
+			template <class T>
+			bool		fillIndex(std::string &line, T &cnf);
+			
+			void		fillLocation(std::string &line, std::string &buf, Config &cnf);
+			
+			template <class T>
+			bool		fillUploadPath(std::string &line, T &cnf);
+			
+			template <class T>
+			bool		fillUploadBinPath(std::string &line, T &cnf);
+
+			template <class T>
+			bool		fillRedirect(std::string &line, T &cnf);
+
 			std::string Split(std::string &line, std::string delimiter);
-			std::string takeBlock(size_t pos, size_t *end);
+			std::string takeBlock(std::string &config, size_t pos, size_t *end, bool loc);
+			
 			std::string getPath() const;
 			std::string getRawText() const;
 			inline std::string &trim( std::string &line, const std::string &trimmer);
+			void		resetConfig(Config &cfg);
 			
 			void parseServerBlock(Config &cfg, const size_t &pos);
+			void parseLocationBlock(std::string &line, ws::Location &loc);
 			void checkBrackets();
 			
 			
@@ -47,6 +87,7 @@ namespace ws {
 
 			public:
 				parseException(const char *str): _err(str) {};
+				parseException(const std::string &str): _err(str.c_str()) {};
 				~parseException() throw() {};
 
 				virtual const char* what() const throw()
@@ -61,4 +102,5 @@ namespace ws {
 			std::string			_rawFile;
 			std::vector<Config>	_cfg;
 	};
+
 }

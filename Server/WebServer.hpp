@@ -2,8 +2,7 @@
 // Created by Dmitry Novikov on 09.08.2022.
 //
 
-#ifndef WEBSERV_WEBSERVER_HPP
-#define WEBSERV_WEBSERVER_HPP
+#pragma once
 
 # include <iostream>
 # include <list>
@@ -11,11 +10,11 @@
 # include <unistd.h>
 
 # include "Service.hpp"
-//# include "Client.hpp"
 # include "Acceptor.hpp"
 # include "Handler.hpp"
 # include "Responder.hpp"
 # include "../Config/ConfigStruct.hpp"
+
 
 namespace ws
 {
@@ -40,5 +39,3 @@ namespace ws
 	};
 
 } // ws
-
-#endif //WEBSERV_WEBSERVER_HPP
