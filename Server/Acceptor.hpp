@@ -2,15 +2,13 @@
 // Created by Dmitry Novikov on 05.09.2022.
 //
 
-#ifndef WEBSERV_ACCEPTOR_HPP
-#define WEBSERV_ACCEPTOR_HPP
+#pragma once
 
-# include <list>
+#include <list>
 
-# include "Service.hpp"
-# include "Client.hpp"
-# include "WebServer.hpp"
-
+#include "Service.hpp"
+#include "Client.hpp"
+#include "WebServer.hpp"
 
 namespace ws
 {
@@ -29,5 +27,3 @@ namespace ws
 
 	};
 } // ws
-
-#endif //WEBSERV_ACCEPTOR_HPP

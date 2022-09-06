@@ -2,10 +2,9 @@
 // Created by Dmitry Novikov on 05.09.2022.
 //
 
-#ifndef WEBSERV_CLIENT_HPP
-#define WEBSERV_CLIENT_HPP
+#pragma once
 
-# include <iostream>
+#include <iostream>
 
 namespace ws
 {
@@ -41,5 +40,3 @@ namespace ws
 	};
 
 } // ws
-
-#endif //WEBSERV_CLIENT_HPP

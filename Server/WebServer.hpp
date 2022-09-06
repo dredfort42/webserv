@@ -4,17 +4,16 @@
 
 #pragma once
 
-# include <iostream>
-# include <list>
-# include <sys/select.h>
-# include <unistd.h>
+#include <iostream>
+#include <list>
+#include <sys/select.h>
+#include <unistd.h>
 
-# include "Service.hpp"
-# include "Acceptor.hpp"
-# include "Handler.hpp"
-# include "Responder.hpp"
-# include "../Config/ConfigStruct.hpp"
-
+#include "Service.hpp"
+#include "Acceptor.hpp"
+#include "Handler.hpp"
+#include "Responder.hpp"
+#include "../Config/ConfigStruct.hpp"
 
 namespace ws
 {
