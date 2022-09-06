@@ -7,7 +7,7 @@
 ws::Client::Client(int clientSocket, int maxBodySize)
 {
 	_clientSocket = clientSocket;
-	_bufferSize = 64;
+	_bufferSize = 128;
 	_maxBodySize = maxBodySize;
 	_bytesReceived = 0;
 	_bytesSent = 0;

@@ -8,7 +8,7 @@ ws::Responder::Responder(ws::Client client)
 {
 	//// TMP /////////////////////////////////////////////////////////
 	std::string message;
-	message.append("Hello client");
+	message.append("Hello client\0");
 
 	std::string response;
 	response.append("HTTP/1.1 200 OK\n");
@@ -25,14 +25,14 @@ ws::Responder::Responder(ws::Client client)
 	std::cout << "___________________" << std::endl;
 	//// END /////////////////////////////////////////////////////////
 
-//	std::string responsePart;
+	int bytesToSend = client.getBufferSize();
+	if (client.getResponse().length() + 1 < client.getBytesSent() + bytesToSend)
+		bytesToSend = client.getResponse().length() - client.getBytesSent();
 
 	client.setBytesSent(
 			send(client.getClientSocket(),
 				 client.getResponse().c_str() + client.getBytesSent(),
-				 client.getResponse().length() - client.getBytesSent(),
-//					client.getResponse().c_str() + client.getBytesSent(),
-//					client.getBufferSize(),
+				 bytesToSend,
 				 0
 			)
 	);
