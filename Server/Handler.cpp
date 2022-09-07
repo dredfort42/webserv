@@ -13,9 +13,11 @@ ws::Handler::Handler(Client &client)
 			recv(client.getClientSocket(), buffer, client.getBufferSize(), 0)
 	);
 	if (client.getBytesReceived() > 0)
+	{
 		client.setRequest(buffer);
+	}
 	//// TMP /////////////////////////////////////////////////////////
-	else
-		std::cout << client.getRequest() << std::endl;
+	//else
+	//	std::cout << client.getRequest() <<  std::endl;
 	//// END /////////////////////////////////////////////////////////
 }

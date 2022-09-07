@@ -20,9 +20,9 @@ ws::Responder::Responder(ws::Client client)
 
 	client.setResponse(response);
 
-	std::cout << "___________________" << std::endl;
-	std::cout << client.getResponse() << std::endl;
-	std::cout << "___________________" << std::endl;
+//	std::cout << "___________________" << std::endl;
+//	std::cout << client.getResponse() << std::endl;
+//	std::cout << "___________________" << std::endl;
 	//// END /////////////////////////////////////////////////////////
 
 	int bytesToSend = client.getBufferSize();

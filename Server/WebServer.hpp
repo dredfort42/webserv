@@ -13,7 +13,6 @@
 #include "Acceptor.hpp"
 #include "Handler.hpp"
 #include "Responder.hpp"
-#include "../Config/ConfigStruct.hpp"
 
 namespace ws
 {

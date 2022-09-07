@@ -55,6 +55,9 @@ void ws::WebServer::startWebServer()
 					ws::Handler request(*it);
 					if (it->getBytesReceived() <= 0)
 					{
+						//std::cout << (*it).getRequest();
+						ws::HTTPparser req((*it).getRequest());
+						std::cout << req.getRequest();
 						removeFromMasterFdSet(clientSocket);
 						it = _clientsPool.erase(it);
 						continue;
@@ -64,13 +67,13 @@ void ws::WebServer::startWebServer()
 				if (FD_ISSET(clientSocket, &_writeFdSet))
 				{
 					FD_CLR(clientSocket, &_writeFdSet);
-					ws::Responder response(*it);
-					if (it->getResponse().length() - it->getBytesSent() <= 0)
-					{
-						removeFromMasterFdSet(clientSocket);
-						it = _clientsPool.erase(it);
-						continue;
-					}
+				//	ws::Responder response(*it);
+				//	if (it->getResponse().length() - it->getBytesSent() <= 0)
+				//	{
+				//		removeFromMasterFdSet(clientSocket);
+				//		it = _clientsPool.erase(it);
+				//		continue;
+				//	}
 				}
 			}
 		}

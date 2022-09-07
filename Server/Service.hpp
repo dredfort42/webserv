@@ -10,7 +10,7 @@
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include "../Config/Parser.hpp"
-
+#include "../HTTP/HTTPparser.hpp"
 # define WS_BACKLOG 64
 
 namespace ws
