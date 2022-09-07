@@ -19,6 +19,15 @@ namespace ws {
 
 			HTTPparser& operator=(const HTTPparser &other);
 
+			//Fill functions
+			
+			void		fillHost(std::string& line);
+			void		fillConnection(std::string& line);
+			void		fillAccept(std::string& line);
+			void		fillAcceptEnc(std::string& line);
+			void		fillAcceptLang(std::string& line);
+			void		fillUsr(std::string& line);
+
 			//Processing Request
 			std::string&	getRaw();
 			HTTPreq&		getRequest();
@@ -29,6 +38,7 @@ namespace ws {
 
 			//Utils
 
+			void					prepareLine(std::string &line, const char *err);
 			std::string				Split(std::string &line, std::string delimiter);
 			inline std::string&		trim( std::string &line, const std::string &trimmer);
 

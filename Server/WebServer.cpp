@@ -57,7 +57,13 @@ void ws::WebServer::startWebServer()
 					{
 						//std::cout << (*it).getRequest();
 						ws::HTTPparser req((*it).getRequest());
-						std::cout << req.getRequest();
+						try {
+							std::cout << req.getRequest();
+						}
+						catch (const std::exception &e) {
+							std::cerr << e.what();
+							removeFromMasterFdSet(clientSocket);
+						}
 						removeFromMasterFdSet(clientSocket);
 						it = _clientsPool.erase(it);
 						continue;

@@ -8,9 +8,17 @@ std::ostream&	operator<<(std::ostream &o, ws::HTTPreq const &req) {
 		o << "\033[0m" << std::endl;
 		o << "----------------------------------------" << std::endl;
 
-		o << std::setw(20) << req.method << " | METHOD" << std::endl;
-		o << std::setw(20) << req.path << " | PATH" << std::endl;
-		o << std::setw(20) << "HTTP/1.1" << " | ver.HTTP" << std::endl;
+		o << "PROTOCOL    | " << "HTTP/1.1" << std::endl;
+		o << "METHOD      | " << req.method << std::endl;
+		o << "PATH        | " << req.path << std::endl;
+		o << "HOST        | " << req.host << std::endl;
+		o << "PORT        | " << req.port << std::endl;
+		o << "CONNECTION  | " << req.connect << std::endl;
+		o << "ACCEPT      | " << req.accept << std::endl;
+		o << "ACCEPT-Lang | " << req.acceptLang << std::endl;
+		o << "ACCEPT-Enc  | " << req.acceptEnc << std::endl;
+		o << "User_Agent  | " << req.User_Agent << std::endl;
+		
 
 		return o;
 }
