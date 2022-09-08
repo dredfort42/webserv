@@ -13,7 +13,7 @@ namespace ws
 		response = "";
 		bytesSent = 0;
 		startActionTime = std::clock();
-		lastActionTime = std::clock();
+		lastActionTime = startActionTime;
 		isReadyToClose = false;
 	}
 } // ws

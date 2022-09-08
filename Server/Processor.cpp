@@ -36,7 +36,6 @@ namespace ws
 		//// END /////////////////////////////////////////////////////////
 
 		// Process complete
-		connection.request.clear();
 		FD_SET(connection.socket, &_masterWriteSet);
 
 		std::cout << "\033[33m[PROCESSOR]\033[0m Socket: ";

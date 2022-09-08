@@ -29,8 +29,18 @@ namespace ws
 		{
 			std::cout << connection.response << std::endl;
 
-			connection.response.clear();
-			connection.isReadyToClose = true;
+			if (connection.HTTPreq.connect == KEEP_ALIVE)
+			{
+				FD_CLR(connection.socket, &_masterWriteSet);
+				FD_SET(connection.socket, &_masterReadSet);
+				connection.request.clear();
+				connection.response.clear();
+				connection.bytesSent = 0;
+				connection.startActionTime = std::clock();
+				connection.lastActionTime = connection.startActionTime;
+				connection.isReadyToClose = false;
+			} else
+				connection.isReadyToClose = true;
 		}
 	}
 
