@@ -8,14 +8,14 @@ body {
   }
 
   a {
-    color: #F2FA5A;
+    color: #4D77FF;
     -webkit-transition: 0.5s;
     -o-transition: 0.5s;
     transition: 0.5s;
   }
 
   a:hover, a:active, a:focus {
-    color: #F2FA5A;
+    color: #4D77FF;
     outline: none;
     text-decoration: none;
   }
@@ -36,12 +36,120 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    /* border: 3px solid #F2FA5A; */
+  }
+
+  .center {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }
 
   .hero {
     margin: 0 0 2rem 0;
-    width: 75%;
+    width: 90%;
     text-align: center;
-    border: 3px solid #F2FA5A;
+    /* border: 3px solid #F2FA5A; */
     padding: 10px;
+  }
+
+  /* .galleryPic {
+    width: 100px;
+    height: auto;
+    margin: 10px;
+  }
+  
+  .galleryPic:hover {
+    border: 10px solid #F2FA5A;
+    width: 110px;
+  }
+  
+  .galleryDiv {
+    position: relative;	
+    display: block;	
+    margin-left: 10%;
+    margin-right: 10%;
+    border: 2px solid #F2FA5A;
+  } */
+  
+  .bigPic {
+    position: relative;
+    display: block;
+    width: auto;
+    height: 70%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* .bigPic:hover {
+    width: auto;
+    height: 80%;
+  } */
+
+  .heading {
+    margin: 6rem 2rem 4rem 2rem;
+  }
+
+  .tile-layout {
+    /* justify-content: center; */
+    align-items: center;
+    text-align: center;
+    margin-top: 2rem;
+    display: grid;
+    width: 80%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    gap: 1rem;
+    /* safari workaround */
+    grid-gap: 1rem;
+    /* grid-template-rows: 250px 250px; */
+    grid-auto-rows: width;
+  }
+  @media (min-width: 768px) {
+    .tile-layout {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 992px) {
+    .tile-layout {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (min-width: 1450px) {
+    .tile-layout {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  button {
+    background-color: #F2FA5A;
+    border: none;
+    color: 333333;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 1rem;
+  }
+
+  button:hover, button:active, button:focus {
+    color: #fff;
+    background-color: #4D77FF;
+  }
+
+  .red:hover, .red:active, .red:focus {
+    background-color: #ff4d5f;
+  }
+
+  .picture {
+    width: 90%;
+    height: auto;
+    margin: auto;
+  }
+
+  .picture:hover {
+    /* border: 0.1rem solid #F2FA5A; */
+    width: 100%;
   }
