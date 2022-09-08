@@ -113,4 +113,9 @@ namespace ws
 		return _isServiceRunning;
 	}
 
+	Config& Service::getConfig()
+	{
+		return _serviceConfig;
+	}
+
 } // ws

@@ -28,7 +28,7 @@ namespace ws
 					FD_SET(socket, &_masterReadSet);
 					if (socket >= _maxFd)
 						_maxFd = socket + 1;
-					_connectionPool.push_front(Connection(socket));
+					_connectionPool.push_front(Connection(socket, it->getConfig()));
 
 					std::cout << "\033[32m[OPEN]\033[0m Socket: ";
 					std::cout << socket << std::endl;

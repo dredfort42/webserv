@@ -13,6 +13,7 @@ namespace ws
 	struct Connection
 	{
 		Connection(int socket);
+		Connection(int socket, Config &config);
 
 		int 			socket;
 		std::string 	request;
@@ -22,6 +23,7 @@ namespace ws
 		std::clock_t 	lastActionTime;
 		bool 			isReadyToClose;
 		HTTPreq			HTTPreq;
+		Config			config;
 	};
 
 } // ws

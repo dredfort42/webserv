@@ -16,4 +16,16 @@ namespace ws
 		lastActionTime = startActionTime;
 		isReadyToClose = false;
 	}
+	
+	Connection::Connection(int socket, ws::Config &config)
+	{
+		this->socket = socket;
+		this->config = config;
+		request = "";
+		response = "";
+		bytesSent = 0;
+		startActionTime = std::clock();
+		lastActionTime = startActionTime;
+		isReadyToClose = false;
+	}
 } // ws

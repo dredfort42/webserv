@@ -19,6 +19,9 @@ namespace ws
 		{
 			std::cout << ex.what();
 		}
+		std::cout << "CONFIG <<<\n";
+		std::cout << connection.config;
+		std::cout << "<<<<<<<<<<\n";
 
 		//// TMP /////////////////////////////////////////////////////////
 		std::string message;

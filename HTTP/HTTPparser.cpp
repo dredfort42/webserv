@@ -30,7 +30,7 @@ void	ws::HTTPparser::checkStatusLine(std::string& line) {
 	// According to standart Request must be formated like :
 	// Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
 	std::string method = Split(line, " ");
-	if (method.empty() || (method != "GET" && method != "DELETE" && method != "POST"))
+	if (method != "GET" && method != "DELETE" && method != "POST")
 		throw parseHTTPexception("Invalid Method in Request");
 	if (method == "GET")
 		this->_req.method = GET;

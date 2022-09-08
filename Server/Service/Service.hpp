@@ -41,6 +41,7 @@ namespace ws
 
 		int 	getListeningSocket();
 		bool 	getRunningStatus();
+		Config&	getConfig();
 
 	};
 
