@@ -1,21 +1,37 @@
 //
-// Created by Dmitry Novikov on 05.09.2022.
+// Created by Dmitry Novikov on 08.09.2022.
 //
 
-#include "Handler.hpp"
+#include "Server.hpp"
 
-ws::Handler::Handler(Client &client)
+namespace ws
 {
-	char buffer[client.getBufferSize() + 1];
 
-	memset(&buffer, 0, sizeof(buffer));
-	client.setBytesReceived(
-			recv(client.getClientSocket(), buffer, client.getBufferSize(), 0)
-	);
-	if (client.getBytesReceived() > 0)
-		client.setRequest(buffer);
-	//// TMP /////////////////////////////////////////////////////////
-	else
-		std::cout << client.getRequest() << std::endl;
-	//// END /////////////////////////////////////////////////////////
-}
+	void Server::handler(Connection &connection)
+	{
+		connection.lastActionTime = std::clock();
+		size_t bufferSize = connection.bufferSize;
+		char buffer[bufferSize + 1];
+		memset(&buffer, 0, sizeof(buffer));
+		size_t received = recv(connection.socket, buffer, bufferSize, 0);
+		connection.request.append(buffer);
+
+		// Read complete
+		if (received < bufferSize) // BAD CONDITION
+		{
+			FD_CLR(connection.socket, &_masterReadSet);
+
+			std::cout << "\033[34m[HANDLER]\033[0m Socket: ";
+			std::cout << connection.socket;
+			std::cout << " >>> TIME: ";
+			std::cout << std::clock() - connection.lastActionTime << std::endl;
+
+			std::cout << "\033[35m";
+			std::cout << connection.request;
+			std::cout << "\033[0m" << std::endl;
+
+			processor(connection);
+		}
+	}
+
+} // ws

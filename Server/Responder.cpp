@@ -1,39 +1,41 @@
 //
-// Created by Dmitry Novikov on 05.09.2022.
+// Created by Dmitry Novikov on 08.09.2022.
 //
 
-#include "Responder.hpp"
+#include "Server.hpp"
 
-ws::Responder::Responder(ws::Client client)
+namespace ws
 {
-	//// TMP /////////////////////////////////////////////////////////
-	std::string message;
-	message.append("Hello client\0");
 
-	std::string response;
-	response.append("HTTP/1.1 200 OK\n");
-	response.append("Content-Type: text/plain\n");
-	response.append("Content-Length: ");
-	response.append(std::to_string(message.length()));
-	response.append("\n\n");
-	response.append(message);
+	void Server::responder(Connection &connection)
+	{
+		connection.lastActionTime = std::clock();
+		std::cout << connection.response << std::endl;
 
-	client.setResponse(response);
+//		size_t responseLength = connection.response.length();
+//		size_t bytesToSend;
+//
+//		if (responseLength < connection.bytesSent + connection.bufferSize)
+//			bytesToSend = responseLength - connection.bytesSent;
+//		else
+//			bytesToSend = connection.bufferSize;
 
-	std::cout << "___________________" << std::endl;
-	std::cout << client.getResponse() << std::endl;
-	std::cout << "___________________" << std::endl;
-	//// END /////////////////////////////////////////////////////////
+		connection.bytesSent = send(
+				connection.socket,
+//				connection.response.c_str() +
+//				connection.bytesSent,
+//				bytesToSend,
+				connection.response.c_str(),
+				connection.response.length(),
+				0
+		);
 
-	int bytesToSend = client.getBufferSize();
-	if (client.getResponse().length() + 1 < client.getBytesSent() + bytesToSend)
-		bytesToSend = client.getResponse().length() - client.getBytesSent();
+		// Sent complete
+//		if (responseLength <= connection.bytesSent)
+//		{
+			connection.response.clear();
+			connection.isReadyToClose = true;
+//		}
+	}
 
-	client.setBytesSent(
-			send(client.getClientSocket(),
-				 client.getResponse().c_str() + client.getBytesSent(),
-				 bytesToSend,
-				 0
-			)
-	);
-}
+} // ws

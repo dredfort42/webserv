@@ -1,45 +1,43 @@
 //
-// Created by Dmitry Novikov on 05.09.2022.
+// Created by Dmitry Novikov on 07.09.2022.
 //
 
-#include "Acceptor.hpp"
+#include "Server.hpp"
 
-ws::Acceptor::Acceptor(std::list<Service> &servicesPool,
-					   std::list<Client> &clientsPool,
-					   int &maxFdInMasterSet,
-					   fd_set &masterFdSet)
+namespace ws
 {
-	for (std::list<Service>::iterator it = servicesPool.begin();
-		 it != servicesPool.end();
-		 it++)
-	{
-		if (FD_ISSET(it->getServiceListeningSocket(), &masterFdSet))
-		{
-			int clientSocket = openConnection(it->getServiceListeningSocket());
-			if (clientSocket != -1)
-			{
-				fcntl(clientSocket, F_SETFL, O_NONBLOCK);
-				FD_SET(clientSocket, &masterFdSet);
-				if (clientSocket >= maxFdInMasterSet)
-					maxFdInMasterSet = clientSocket + 1;
-				clientsPool.push_front(Client(clientSocket, it->getMaxBodySize()));
 
-				std::cout << "Listening socket: " << it->getServiceListeningSocket();
-				std::cout << " | New connection socket: " << clientSocket << std::endl;
+	void Server::acceptor(fd_set &readSet, int &fdCount)
+	{
+		for (servIt it = _servicePool.begin();
+			 it != _servicePool.end() && fdCount;
+			 it++)
+		{
+			int listeningSocket = it->getListeningSocket();
+			if (FD_ISSET(listeningSocket, &readSet))
+			{
+//				std::cout << "\033[1;32m>>> \033[0m";
+//				std::cout << "ACCEPTOR" << std::endl;
+
+				FD_CLR(listeningSocket, &readSet);
+				fdCount--;
+
+				struct sockaddr address;
+				socklen_t addressLen = sizeof(address);
+				int socket = accept(listeningSocket, &address, &addressLen);
+				if (socket > -1)
+				{
+					fcntl(socket, F_SETFL, O_NONBLOCK);
+					FD_SET(socket, &_masterReadSet);
+					if (socket >= _maxFd)
+						_maxFd = socket + 1;
+					_connectionPool.push_front(Connection(socket));
+
+					std::cout << "\033[32m[OPEN]\033[0m Socket: ";
+					std::cout << socket << std::endl;
+				}
 			}
 		}
 	}
-}
 
-int ws::Acceptor::openConnection(int listeningSocket)
-{
-	struct sockaddr		address;
-	socklen_t 			addressLen;
-	int 				clientSocket;
-
-	addressLen = sizeof(address);
-	clientSocket = accept(listeningSocket, &address, &addressLen);
-	if (clientSocket == -1)
-		return -1;
-	return clientSocket;
-}
+} // ws

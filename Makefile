@@ -1,12 +1,27 @@
 NAME		= 	webserv
 
-HDRS		=	Config/Parser.hpp		Config/ConfigStruct.hpp\
-				Server/Acceptor.hpp		Server/Handler.hpp			Server/Responder.hpp\
-                Server/Client.hpp		Server/Service.hpp   		Server/WebServer.hpp
-SRCS 		=	Config/Parser.cpp		Config/ConfigStruct.cpp\
-				Server/Acceptor.cpp		Server/Handler.cpp			Server/Responder.cpp\
-                Server/Client.cpp		Server/Service.cpp			Server/WebServer.cpp\
-				main.cpp
+HDRS		=	Config/Parser.hpp\
+				Config/ConfigStruct.hpp\
+				Server/Service/Service.hpp\
+				Server/Connection/Connection.hpp\
+				Server/Server.hpp\
+#				Server/Acceptor.hpp					Server/Handler.hpp			Server/Responder.hpp\
+#                Server/Client.hpp					Server/Service.hpp   		Server/WebServer.hpp
+
+SRCS 		=	Config/Parser.cpp\
+				Config/ConfigStruct.cpp\
+				main.cpp\
+				Server/Service/Service.cpp\
+				Server/Connection/Connection.cpp\
+				Server/Server.cpp\
+				Server/Acceptor.cpp\
+				Server/Handler.cpp\
+				Server/Processor.cpp\
+				Server/Responder.cpp\
+
+#				Server/Acceptor.cpp		Server/Handler.cpp			Server/Responder.cpp\
+#                Server/Client.cpp		Server/Service.cpp			Server/WebServer.cpp\
+
 
 OBJS		=	$(patsubst %.cpp, %.o,$(SRCS))
 
