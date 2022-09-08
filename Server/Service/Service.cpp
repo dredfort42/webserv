@@ -21,6 +21,8 @@ namespace ws
 			fcntl(_listeningSocket, F_SETFL, O_NONBLOCK);
 			makeSocketReusable();
 		}
+		else
+			printServiceConfig();
 
 	}
 
@@ -36,6 +38,8 @@ namespace ws
 		);
 		if (check(stepStatus, "Make socket reusable"))
 			prepareNetworkConnection();
+		else
+			printServiceConfig();
 	}
 
 	void Service::prepareNetworkConnection()
@@ -52,13 +56,15 @@ namespace ws
 		);
 		if (check(stepStatus, "Prepare network connection"))
 			establishNetworkConnection();
+		else
+			printServiceConfig();
 	}
 
 	void Service::establishNetworkConnection()
 	{
 		int stepStatus = listen(_listeningSocket, WS_BACKLOG);
-		if (check(stepStatus, "Start listening socket"))
-			printServiceConfig();
+		check(stepStatus, "Start listening socket");
+		printServiceConfig();
 	}
 
 	bool Service::check(int stepStatus, std::string stepName)
@@ -100,6 +106,11 @@ namespace ws
 	int Service::getListeningSocket()
 	{
 		return _listeningSocket;
+	}
+
+	bool Service::getRunningStatus()
+	{
+		return _isServiceRunning;
 	}
 
 } // ws

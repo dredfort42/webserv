@@ -9,32 +9,30 @@ namespace ws
 
 	void Server::responder(Connection &connection)
 	{
-		connection.lastActionTime = std::clock();
-		std::cout << connection.response << std::endl;
+		size_t responseLength = connection.response.length();
+		size_t bytesToSend;
 
-//		size_t responseLength = connection.response.length();
-//		size_t bytesToSend;
-//
-//		if (responseLength < connection.bytesSent + connection.bufferSize)
-//			bytesToSend = responseLength - connection.bytesSent;
-//		else
-//			bytesToSend = connection.bufferSize;
+		if (responseLength < connection.bytesSent + WS_BUFFER_SIZE)
+			bytesToSend = responseLength - connection.bytesSent;
+		else
+			bytesToSend = WS_BUFFER_SIZE;
 
-		connection.bytesSent = send(
+		connection.bytesSent += send(
 				connection.socket,
-//				connection.response.c_str() +
-//				connection.bytesSent,
-//				bytesToSend,
-				connection.response.c_str(),
-				connection.response.length(),
+				connection.response.c_str() + int(connection.bytesSent),
+				bytesToSend,
 				0
 		);
 
 		// Sent complete
-//		if (responseLength <= connection.bytesSent)
-//		{
+		if (responseLength <= connection.bytesSent)
+		{
+			connection.lastActionTime = std::clock();
+			std::cout << connection.response << std::endl;
+
+			connection.response.clear();
 			connection.isReadyToClose = true;
-//		}
+		}
 	}
 
 } // ws

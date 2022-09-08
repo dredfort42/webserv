@@ -16,9 +16,6 @@ namespace ws
 			int listeningSocket = it->getListeningSocket();
 			if (FD_ISSET(listeningSocket, &readSet))
 			{
-//				std::cout << "\033[1;32m>>> \033[0m";
-//				std::cout << "ACCEPTOR" << std::endl;
-
 				FD_CLR(listeningSocket, &readSet);
 				fdCount--;
 

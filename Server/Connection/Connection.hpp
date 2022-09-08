@@ -17,7 +17,6 @@ namespace ws
 		int 			socket;
 		std::string 	request;
 		std::string 	response;
-		size_t			bufferSize;
 		size_t			bytesSent;
 		std::clock_t 	lastActionTime;
 		bool 			isReadyToClose;

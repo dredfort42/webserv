@@ -9,9 +9,9 @@ namespace ws
 	Connection::Connection(int socket)
 	{
 		this->socket = socket;
-		bufferSize = 1024;
 		request = "";
 		response = "";
+		bytesSent = 0;
 		lastActionTime = std::clock();
 		isReadyToClose = false;
 	}

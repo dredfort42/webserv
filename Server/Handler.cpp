@@ -10,21 +10,21 @@ namespace ws
 	void Server::handler(Connection &connection)
 	{
 		connection.lastActionTime = std::clock();
-		size_t bufferSize = connection.bufferSize;
-		char buffer[bufferSize + 1];
+		char buffer[WS_BUFFER_SIZE + 1];
 		memset(&buffer, 0, sizeof(buffer));
-		size_t received = recv(connection.socket, buffer, bufferSize, 0);
+		size_t received = recv(connection.socket, buffer, WS_BUFFER_SIZE, 0);
 		connection.request.append(buffer);
 
 		// Read complete
-		if (received < bufferSize) // BAD CONDITION
+		if (received < WS_BUFFER_SIZE) // BAD CONDITION
 		{
 			FD_CLR(connection.socket, &_masterReadSet);
 
 			std::cout << "\033[34m[HANDLER]\033[0m Socket: ";
 			std::cout << connection.socket;
-			std::cout << " >>> TIME: ";
-			std::cout << std::clock() - connection.lastActionTime << std::endl;
+			std::cout << " \033[1;34;42m TIME: ";
+			std::cout << std::clock() - connection.lastActionTime;
+			std::cout << " \033[0m" << std::endl;
 
 			std::cout << "\033[35m";
 			std::cout << connection.request;

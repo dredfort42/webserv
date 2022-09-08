@@ -6,7 +6,7 @@
 
 namespace ws
 {
-	Server::Server(std::vector <Config> config)
+	Server::Server(std::vector<Config> config)
 	{
 		_maxFd = 0;
 		FD_ZERO(&_masterReadSet);
@@ -14,10 +14,15 @@ namespace ws
 		_servicePool.clear();
 		for (confIt it = config.begin(); it != config.end(); it++)
 		{
-			_servicePool.push_front(Service(*it));
-			FD_SET(_servicePool.front().getListeningSocket(), &_masterReadSet);
-			if (_servicePool.front().getListeningSocket() >= _maxFd)
-				_maxFd = _servicePool.front().getListeningSocket() + 1;
+			Service service = Service(*it);
+			if (service.getRunningStatus())
+			{
+				_servicePool.push_front(service);
+				FD_SET(_servicePool.front().getListeningSocket(),
+					   &_masterReadSet);
+				if (_servicePool.front().getListeningSocket() >= _maxFd)
+					_maxFd = _servicePool.front().getListeningSocket() + 1;
+			}
 		}
 	}
 
@@ -27,7 +32,7 @@ namespace ws
 		timeout.tv_sec = 10;
 		timeout.tv_usec = 0;
 
-		while (_maxFd)
+		while (!_servicePool.empty())
 		{
 
 			fd_set readSet;
@@ -35,7 +40,8 @@ namespace ws
 			FD_COPY(&_masterReadSet, &readSet);
 			FD_COPY(&_masterWriteSet, &writeSet);
 
-			int fdCount = select(_maxFd, &readSet, &writeSet, NULL, &timeout);
+			int fdCount = select(_maxFd, &readSet, &writeSet, NULL,
+								 &timeout);
 			if (fdCount)
 			{
 				acceptor(readSet, fdCount);
@@ -43,23 +49,18 @@ namespace ws
 					 it != _connectionPool.end() && fdCount;
 					 it++)
 				{
-
-					std::cout << "TIME: ";
-					std::cout << std::clock() - it->lastActionTime << std::endl;
-
 					if (it->isReadyToClose
-						|| std::clock() - it->lastActionTime > 5000)
+						|| std::clock() - it->lastActionTime > WS_CONNECTION_TIMEOUT)
 					{
-						std::cout << "\033[31m[X]\033[0m Socket: ";
+						std::cout << "\033[31m[CLOSE]\033[0m Socket: ";
 						std::cout << it->socket;
-						std::cout << " >>> TIME: ";
-						std::cout << std::clock() - it->lastActionTime <<
-								  std::endl;
+						std::cout << " \033[1;34;42m TIME: ";
+						std::cout << std::clock() - it->lastActionTime;
+						std::cout << " \033[0m" << std::endl;
 
 						FD_CLR(it->socket, &_masterWriteSet);
 						close(it->socket);
 						it = _connectionPool.erase(it);
-						std::cout << "\033[31m[CLOSE]\033[0m" << std::endl;
 						continue;
 					}
 
@@ -80,10 +81,9 @@ namespace ws
 					}
 				}
 			} else
-				std::cout << "\033[33m[IDLE]\033[0m" << std::endl;
+				std::cout << "\033[36m[IDLE]\033[0m" << std::endl;
 
-
-//			usleep(100);
+			usleep(100);
 		}
 	}
 

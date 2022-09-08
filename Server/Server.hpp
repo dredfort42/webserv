@@ -34,14 +34,10 @@ namespace ws
 //
 
 
-		void acceptor(fd_set &readSet, int &fdCount);
+		void 	acceptor(fd_set &readSet, int &fdCount);
 		void	handler(Connection &connection);
 		void	processor(Connection &connection);
 		void	responder(Connection &connection);
-
-
-//		int 	openConnection(int listeningSocket);
-//
 
 	public:
 		Server(std::vector<Config> config);

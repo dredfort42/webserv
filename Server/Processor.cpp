@@ -27,12 +27,14 @@ namespace ws
 		//// END /////////////////////////////////////////////////////////
 
 		// Process complete
+		connection.request.clear();
 		FD_SET(connection.socket, &_masterWriteSet);
 
 		std::cout << "\033[33m[PROCESSOR]\033[0m Socket: ";
 		std::cout << connection.socket;
-		std::cout << " >>> TIME: ";
-		std::cout << std::clock() - connection.lastActionTime << std::endl;
+		std::cout << " \033[1;34;42m TIME: ";
+		std::cout << std::clock() - connection.lastActionTime;
+		std::cout << " \033[0m" << std::endl;
 	}
 
 } // ws
