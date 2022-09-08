@@ -388,7 +388,7 @@ std::string ws::Parser::takeBlock(std::string &config, size_t pos, size_t *end, 
 
 void	ws::Parser::parseLocationBlock(std::string &line, Location &loc) {
 	loc.path = trim(line, "{ \t}");
-	std::cout << loc.raw << "\n";
+//	std::cout << loc.raw << "\n";
 	while (loc.raw.empty() == false) {
 		line = Split(loc.raw, "\n");
 		checkLine(line, loc);
