@@ -9,9 +9,6 @@ namespace ws
 
 	void Server::processor(Connection &connection)
 	{
-	
-
-		connection.lastActionTime = std::clock();
 		try {
 			ws::HTTPparser req(connection.request);
 			
@@ -45,7 +42,7 @@ namespace ws
 		std::cout << "\033[33m[PROCESSOR]\033[0m Socket: ";
 		std::cout << connection.socket;
 		std::cout << " \033[1;34;42m TIME: ";
-		std::cout << std::clock() - connection.lastActionTime;
+		std::cout << std::clock() - connection.startActionTime;
 		std::cout << " \033[0m" << std::endl;
 	}
 

@@ -27,7 +27,6 @@ namespace ws
 		// Sent complete
 		if (responseLength <= connection.bytesSent)
 		{
-			connection.lastActionTime = std::clock();
 			std::cout << connection.response << std::endl;
 
 			connection.response.clear();

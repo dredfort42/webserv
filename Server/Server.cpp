@@ -29,7 +29,7 @@ namespace ws
 	void Server::run()
 	{
 		struct timeval timeout;
-		timeout.tv_sec = 10;
+		timeout.tv_sec = 1;
 		timeout.tv_usec = 0;
 		fd_set readSet;
 		fd_set writeSet;
@@ -49,25 +49,11 @@ namespace ws
 					 it != _connectionPool.end() && fdCount;
 					 it++)
 				{
-					if (it->isReadyToClose
-						|| std::clock() - it->lastActionTime > WS_CONNECTION_TIMEOUT)
-					{
-						std::cout << "\033[31m[CLOSE]\033[0m Socket: ";
-						std::cout << it->socket;
-						std::cout << " \033[1;34;42m TIME: ";
-						std::cout << std::clock() - it->lastActionTime;
-						std::cout << " \033[0m" << std::endl;
-
-						FD_CLR(it->socket, &_masterWriteSet);
-						close(it->socket);
-						it = _connectionPool.erase(it);
-						continue;
-					}
-
 					if (FD_ISSET(it->socket, &readSet))
 					{
 						FD_CLR(it->socket, &readSet);
 						fdCount--;
+						it->lastActionTime = std::clock();
 						handler(*it);
 						continue;
 					}
@@ -76,14 +62,14 @@ namespace ws
 					{
 						FD_CLR(it->socket, &writeSet);
 						fdCount--;
+						it->lastActionTime = std::clock();
 						responder(*it);
 						continue;
 					}
 				}
 			} else
 				std::cout << "\033[36m[IDLE]\033[0m" << std::endl;
-
-			usleep(100);
+			terminator();
 		}
 	}
 

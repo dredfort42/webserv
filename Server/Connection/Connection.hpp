@@ -18,6 +18,7 @@ namespace ws
 		std::string 	request;
 		std::string 	response;
 		size_t			bytesSent;
+		std::clock_t 	startActionTime;
 		std::clock_t 	lastActionTime;
 		bool 			isReadyToClose;
 		HTTPreq			HTTPreq;

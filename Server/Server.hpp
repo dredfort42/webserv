@@ -32,13 +32,11 @@ namespace ws
 
 		Server();
 
-//
-
-
 		void 	acceptor(fd_set &readSet, int &fdCount);
 		void	handler(Connection &connection);
 		void	processor(Connection &connection);
 		void	responder(Connection &connection);
+		void 	terminator();
 
 	public:
 		Server(std::vector<Config> config);
