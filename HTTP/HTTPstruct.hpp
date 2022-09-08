@@ -2,12 +2,17 @@
 #include <iostream>
 
 namespace ws {
+ 	enum STATUS{
+			KEEP_ALIVE,
+			CLOSE,
+			EMPTY
+	};
 	struct HTTPreq {
 		std::string method;
 		std::string path;
 		std::string host;	
 		std::string port;
-		std::string connect;
+		STATUS		connect;
 		std::string accept; //Создать генерацию mime типов для респонда?
 		std::string acceptEnc;
 		std::string acceptLang;

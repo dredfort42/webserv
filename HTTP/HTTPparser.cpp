@@ -84,10 +84,13 @@ void	ws::HTTPparser::fillHost(std::string& line)
 };
 
 void	ws::HTTPparser::fillConnection(std::string &line) {
-	if (this->_req.connect.empty() == false)
+	if (this->_req.connect != EMPTY)
 		throw parseHTTPexception("Double connection init!\n");
 	prepareLine(line, "Connection field is empty!\n");
-	this->_req.connect = line;
+	if (line.find("keep-alive") != std::string::npos)
+		this->_req.connect = KEEP_ALIVE;
+	else
+		this->_req.connect = CLOSE;
 };
 
 void	ws::HTTPparser::fillAccept(std::string &line) {
