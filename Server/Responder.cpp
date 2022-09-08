@@ -33,7 +33,6 @@ namespace ws
 		// Sent complete
 //		if (responseLength <= connection.bytesSent)
 //		{
-			connection.response.clear();
 			connection.isReadyToClose = true;
 //		}
 	}

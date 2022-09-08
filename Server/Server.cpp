@@ -83,7 +83,7 @@ namespace ws
 				std::cout << "\033[33m[IDLE]\033[0m" << std::endl;
 
 
-			usleep(100);
+//			usleep(100);
 		}
 	}
 
