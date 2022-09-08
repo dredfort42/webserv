@@ -20,6 +20,7 @@ namespace ws
 		size_t			bytesSent;
 		std::clock_t 	lastActionTime;
 		bool 			isReadyToClose;
+		HTTPreq			HTTPreq;
 	};
 
 } // ws

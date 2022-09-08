@@ -9,17 +9,19 @@ namespace ws
 
 	void Server::processor(Connection &connection)
 	{
+	
+
+		connection.lastActionTime = std::clock();
 		try {
 			ws::HTTPparser req(connection.request);
+			
 			std::cout << req.getRequest();
+			connection.HTTPreq = req.getRequest();
 		}
 		catch (const std::exception& ex)
 		{
 			std::cout << ex.what();
 		}
-
-
-		connection.lastActionTime = std::clock();
 
 		//// TMP /////////////////////////////////////////////////////////
 		std::string message;

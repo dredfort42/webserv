@@ -18,7 +18,6 @@ std::ostream&	operator<<(std::ostream &o, ws::HTTPreq const &req) {
 		o << "ACCEPT-Lang | " << req.acceptLang << std::endl;
 		o << "ACCEPT-Enc  | " << req.acceptEnc << std::endl;
 		o << "User_Agent  | " << req.User_Agent << std::endl;
-		
-
+		o << "----------------------------------------" << std::endl;
 		return o;
 }

@@ -31,7 +31,11 @@ namespace ws
 			std::cout << connection.response << std::endl;
 
 			connection.response.clear();
-			connection.isReadyToClose = true;
+			if (connection.HTTPreq.connect != "keep-alive")
+			{
+				connection.isReadyToClose = true;
+				FD_SET(connection.socket, &_masterReadSet);
+			}
 		}
 	}
 

@@ -31,16 +31,16 @@ namespace ws
 		struct timeval timeout;
 		timeout.tv_sec = 10;
 		timeout.tv_usec = 0;
+		fd_set readSet;
+		fd_set writeSet;
+		int fdCount; 
 
 		while (!_servicePool.empty())
 		{
-
-			fd_set readSet;
-			fd_set writeSet;
 			FD_COPY(&_masterReadSet, &readSet);
 			FD_COPY(&_masterWriteSet, &writeSet);
 
-			int fdCount = select(_maxFd, &readSet, &writeSet, NULL,
+			fdCount = select(_maxFd, &readSet, &writeSet, NULL,
 								 &timeout);
 			if (fdCount)
 			{
