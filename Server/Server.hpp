@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 #include "../Config/ConfigStruct.hpp"
+#include "../HTTP/HTTPparser.hpp"
 #include "Service/Service.hpp"
 #include "Connection/Connection.hpp"
 
