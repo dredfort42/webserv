@@ -12,9 +12,6 @@ namespace ws
 			 it != _connectionPool.end();
 			 it++)
 		{
-
-			std::cout <<  std::clock() - it->startActionTime << std::endl;
-
 			if (it->isReadyToClose
 				|| std::clock() - it->lastActionTime > WS_CONNECTION_TIMEOUT)
 			{
