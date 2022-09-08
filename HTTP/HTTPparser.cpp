@@ -2,7 +2,7 @@
 
 // Canonical form
 ws::HTTPparser::HTTPparser() {};
-ws::HTTPparser::HTTPparser(const std::string &request): _raw(request), processed(false) {};
+ws::HTTPparser::HTTPparser(const std::string &request): _raw(request),  processed(false) {};
 ws::HTTPparser::HTTPparser(const HTTPparser &other): _raw(other._raw), _req(other._req), processed(other.processed){};
 ws::HTTPparser::~HTTPparser() {};
 
@@ -29,9 +29,15 @@ ws::HTTPreq&		ws::HTTPparser::getRequest(){
 void	ws::HTTPparser::checkStatusLine(std::string& line) {
 	// According to standart Request must be formated like :
 	// Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
-	this->_req.method = Split(line, " ");
-	if (this->_req.method.empty() || (this->_req.method != "GET" && this->_req.method != "DELETE" && this->_req.method != "POST"))
+	std::string method = Split(line, " ");
+	if (method.empty() || (method != "GET" && method != "DELETE" && method != "POST"))
 		throw parseHTTPexception("Invalid Method in Request");
+	if (method == "GET")
+		this->_req.method = GET;
+	else if (method == "POST")
+		this->_req.method = POST;
+	else
+		this->_req.method = DELETE;
 	this->_req.path = Split(line, " "); 
 	if (this->_req.path.empty())
 		throw parseHTTPexception("Empty location path in Request");
