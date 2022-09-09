@@ -19,10 +19,10 @@ namespace ws
 		{
 			std::cout << ex.what();
 		}
-		std::cout << "CONFIG <<<\n";
-		std::cout << connection.config;
-		std::cout << "<<<<<<<<<<\n";
 
+		ws::HTTPResponse response;
+
+		response.load(connection.HTTPreq, connection.config);
 		//// TMP /////////////////////////////////////////////////////////
 		std::string message;
 		message.append("Response to socket: ");
