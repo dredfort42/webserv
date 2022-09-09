@@ -36,8 +36,7 @@ namespace ws
 		void	handler(Connection &connection);
 		void	processor(Connection &connection);
 		void	responder(Connection &connection);
-		void 	terminator(Connection &connection);
-		void	activityCheck();
+		void 	terminator();
 
 	public:
 		Server(std::vector<Config> config);

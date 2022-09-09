@@ -15,7 +15,7 @@
 
 #define WS_BACKLOG 64
 #define WS_BUFFER_SIZE 1024
-#define WS_CONNECTION_TIMEOUT 9000
+#define WS_CONNECTION_TIMEOUT 10 // time interval in seconds
 
 namespace ws
 {
@@ -41,7 +41,7 @@ namespace ws
 
 		int 	getListeningSocket();
 		bool 	getRunningStatus();
-		Config&	getConfig();
+		Config	&getConfig();
 
 	};
 

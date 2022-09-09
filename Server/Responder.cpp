@@ -9,6 +9,7 @@ namespace ws
 
 	void Server::responder(Connection &connection)
 	{
+		time(&connection.startTime);
 		size_t responseLength = connection.response.length();
 		size_t bytesToSend;
 
@@ -36,10 +37,8 @@ namespace ws
 				connection.request.clear();
 				connection.response.clear();
 				connection.bytesSent = 0;
-				connection.startActionTime = std::clock();
-				connection.lastActionTime = connection.startActionTime;
 			} else
-				terminator(connection);
+				connection._isReadyToClose = true;
 		}
 	}
 

@@ -44,6 +44,7 @@ namespace ws
 								 &timeout);
 			if (fdCount)
 			{
+				std::cout << "\033[36m[SERVER IS RUNNING]\033[0m" << std::endl;
 				acceptor(readSet, fdCount);
 				for (connIt it = _connectionPool.begin();
 					 it != _connectionPool.end() && fdCount;
@@ -54,7 +55,6 @@ namespace ws
 						FD_CLR(it->socket, &readSet);
 						fdCount--;
 						handler(*it);
-						it->lastActionTime = std::clock();
 						continue;
 					}
 
@@ -63,13 +63,12 @@ namespace ws
 						FD_CLR(it->socket, &writeSet);
 						fdCount--;
 						responder(*it);
-						it->lastActionTime = std::clock();
 						continue;
 					}
 				}
 			} else
-				std::cout << "\033[36m[IDLE]\033[0m" << std::endl;
-			activityCheck();
+				std::cout << "\033[36m[SERVER IS IDLE]\033[0m" << std::endl;
+			terminator();
 		}
 	}
 } // ws

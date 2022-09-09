@@ -6,25 +6,16 @@
 
 namespace ws
 {
-	Connection::Connection(int socket)
-	{
-		this->socket = socket;
-		request = "";
-		response = "";
-		bytesSent = 0;
-		startActionTime = std::clock();
-		lastActionTime = startActionTime;
-	}
-	
+
 	Connection::Connection(int socket, ws::Config &config)
 	{
+		_isReadyToClose = false;
 		this->socket = socket;
 		this->config = config;
 		request = "";
 		response = "";
 		bytesSent = 0;
-		startActionTime = std::clock();
-		lastActionTime = startActionTime;
-		isReadyToClose = false;
+		time(&startTime);
 	}
+
 } // ws

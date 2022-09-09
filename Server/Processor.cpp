@@ -42,10 +42,7 @@ namespace ws
 		FD_SET(connection.socket, &_masterWriteSet);
 
 		std::cout << "\033[33m[PROCESSOR]\033[0m Socket: ";
-		std::cout << connection.socket;
-		std::cout << " \033[1;34;42m TIME: ";
-		std::cout << std::clock() - connection.startActionTime;
-		std::cout << " \033[0m" << std::endl;
+		std::cout << connection.socket << std::endl;
 	}
 
 } // ws

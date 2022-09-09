@@ -12,15 +12,14 @@ namespace ws
 
 	struct Connection
 	{
-		Connection(int socket);
 		Connection(int socket, Config &config);
 
+		bool			_isReadyToClose;
 		int 			socket;
 		std::string 	request;
 		std::string 	response;
 		size_t			bytesSent;
-		std::clock_t 	startActionTime;
-		std::clock_t 	lastActionTime;
+		std::time_t 	startTime;
 		HTTPreq			HTTPreq;
 		Config			config;
 	};
