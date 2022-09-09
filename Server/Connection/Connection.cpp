@@ -14,7 +14,6 @@ namespace ws
 		bytesSent = 0;
 		startActionTime = std::clock();
 		lastActionTime = startActionTime;
-		isReadyToClose = false;
 	}
 	
 	Connection::Connection(int socket, ws::Config &config)

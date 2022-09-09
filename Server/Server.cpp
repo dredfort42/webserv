@@ -53,8 +53,8 @@ namespace ws
 					{
 						FD_CLR(it->socket, &readSet);
 						fdCount--;
-						it->lastActionTime = std::clock();
 						handler(*it);
+						it->lastActionTime = std::clock();
 						continue;
 					}
 
@@ -62,15 +62,14 @@ namespace ws
 					{
 						FD_CLR(it->socket, &writeSet);
 						fdCount--;
-						it->lastActionTime = std::clock();
 						responder(*it);
+						it->lastActionTime = std::clock();
 						continue;
 					}
 				}
 			} else
 				std::cout << "\033[36m[IDLE]\033[0m" << std::endl;
-			terminator();
+			activityCheck();
 		}
 	}
-
 } // ws

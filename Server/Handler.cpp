@@ -29,7 +29,8 @@ namespace ws
 			std::cout << connection.request;
 			std::cout << "\033[0m" << std::endl;
 
-			processor(connection);
+			if (!connection.request.empty())
+				processor(connection);
 		}
 	}
 

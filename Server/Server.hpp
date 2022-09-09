@@ -36,12 +36,13 @@ namespace ws
 		void	handler(Connection &connection);
 		void	processor(Connection &connection);
 		void	responder(Connection &connection);
-		void 	terminator();
+		void 	terminator(Connection &connection);
+		void	activityCheck();
 
 	public:
 		Server(std::vector<Config> config);
 
-		void run();
+		void 	run();
 	};
 
 } // ws

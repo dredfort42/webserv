@@ -38,9 +38,8 @@ namespace ws
 				connection.bytesSent = 0;
 				connection.startActionTime = std::clock();
 				connection.lastActionTime = connection.startActionTime;
-				connection.isReadyToClose = false;
 			} else
-				connection.isReadyToClose = true;
+				terminator(connection);
 		}
 	}
 
