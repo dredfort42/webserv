@@ -22,19 +22,21 @@ namespace ws
 
 		ws::HTTPResponse response;
 
-		response.load(connection.HTTPreq, connection.config);
+		std::string resp = response.load(connection.HTTPreq, connection.config);
+		connection.response = resp;
+		
 		//// TMP /////////////////////////////////////////////////////////
-		std::string message;
-		message.append("Response to socket: ");
-		message.append(std::to_string(connection.socket));
-		message.append("\nHello client\0");
+	//	std::string message;
+	//	message.append("Response to socket: ");
+	//	message.append(std::to_string(connection.socket));
+	//	message.append("\nHello client\0");
 
-		connection.response.append("HTTP/1.1 200 OK\n");
-		connection.response.append("Content-Type: text/plain\n");
-		connection.response.append("Content-Length: ");
-		connection.response.append(std::to_string(message.length()));
-		connection.response.append("\n\n");
-		connection.response.append(message);
+	//	connection.response.append("HTTP/1.1 200 OK\n");
+	//	connection.response.append("Content-Type: text/plain\n");
+	//	connection.response.append("Content-Length: ");
+	//	connection.response.append(std::to_string(message.length()));
+	//	connection.response.append("\n\n");
+	//	connection.response.append(message);
 
 		//// END /////////////////////////////////////////////////////////
 

@@ -26,6 +26,7 @@ std::ostream&	operator<<(std::ostream &o, ws::Config const &cnf) {
 			std::cout << "\033[0m" << std::endl;
 			for (std::vector<ws::Location>::const_iterator it = cnf.Locations.begin(); it != cnf.Locations.end(); it++)
 			{
+				o << std::setw(20) <<it->path << " | path\n";
 				o << std::setw(20) <<it->autoindex << " | autoindex\n";
 				o << std::setw(20) <<it->root << " | root\n";
 				o << std::setw(20) <<it->method << " | method\n";

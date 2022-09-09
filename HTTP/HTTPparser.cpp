@@ -85,7 +85,8 @@ void	ws::HTTPparser::fillHost(std::string& line)
 	else
 	{
 		this->_req.host = Split(line, ":");
-		this->_req.port += line;
+		line.pop_back();
+		this->_req.port = line;
 	}
 };
 
@@ -158,5 +159,6 @@ std::string	ws::HTTPparser::Split(std::string &line, std::string delimiter)
 
     token = line.substr(0, pos);
     line.erase(0, pos + delimiter.length());
+	line.append("\0");
 	return (trim(token, " \t"));
 };
