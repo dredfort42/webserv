@@ -52,4 +52,7 @@ fclean 		: 	clean
 
 re 			: 	fclean all
 
-.PHONY 		: 	all clean fclean re
+php			:
+				@php -S 127.0.0.1:8000 -t ./www/server3
+
+.PHONY 		: 	all clean fclean re php
