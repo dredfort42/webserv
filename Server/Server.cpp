@@ -29,7 +29,7 @@ namespace ws
 	void Server::run()
 	{
 		struct timeval timeout;
-		timeout.tv_sec = 1;
+		timeout.tv_sec = 10;
 		timeout.tv_usec = 0;
 		fd_set readSet;
 		fd_set writeSet;
