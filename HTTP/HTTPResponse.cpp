@@ -1,12 +1,10 @@
 #include "HTTPResponse.hpp"
 #include "../Server/CGI/CGI.hpp"
+#include "../Server/File/File.hpp"
 #include <string>
 
 ws::HTTPResponse::HTTPResponse() {};
 ws::HTTPResponse::~HTTPResponse() {};
-
-
-
 
 ws::Location*	ws::HTTPResponse::findLocation(std::string &path, std::vector<ws::Location> &Locs)
 {
@@ -29,12 +27,17 @@ std::string	ws::HTTPResponse::load(HTTPreq &req, Config &cnf) {
 		response = notFoundHeader();
 		return response;
 	}
-	else if (loc && loc->path == "/cgi-bin/")
+		else if (loc && loc->path == "/cgi-bin/")
 	{
 		//Your Code Дима)))
 //		std::string 	tmpPath = "www/server3/";
 //		std::string  	tmpFileName = "index.php";
 		CGI file(req.path);
+
+		// get mime type
+		MimeType mime = ws::File::getFileType(req.path);
+		std::cout << mime << std::endl;
+
 		response = file.getResponse();
 	}
 	std::string message;
