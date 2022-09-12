@@ -5,6 +5,8 @@ HDRS		=	Config/Parser.hpp\
 				HTTP/HTTPparser.hpp\
 				HTTP/HTTPstruct.hpp\
 				HTTP/HTTPResponse.hpp\
+				Server/File/File.hpp\
+				Server/CGI/CGI.hpp\
 				Server/Service/Service.hpp\
 				Server/Connection/Connection.hpp\
 				Server/Server.hpp\
@@ -17,6 +19,8 @@ SRCS 		=	Config/Parser.cpp\
 				HTTP/HTTPstruct.cpp\
 				HTTP/HTTPResponse.cpp\
 				main.cpp\
+				Server/File/File.cpp\
+                Server/CGI/CGI.cpp\
 				Server/Service/Service.cpp\
 				Server/Connection/Connection.cpp\
 				Server/Server.cpp\

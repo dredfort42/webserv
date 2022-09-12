@@ -1,4 +1,5 @@
 #include "HTTPResponse.hpp"
+#include "../Server/CGI/CGI.hpp"
 #include <string>
 
 ws::HTTPResponse::HTTPResponse() {};
@@ -28,10 +29,13 @@ std::string	ws::HTTPResponse::load(HTTPreq &req, Config &cnf) {
 		response = notFoundHeader();
 		return response;
 	}
-	else if (loc->path == "/cgi-bin/")
+	else if (loc && loc->path == "/cgi-bin/")
 	{
 		//Your Code Дима)))
-		//response = processCGI();
+//		std::string 	tmpPath = "www/server3/";
+//		std::string  	tmpFileName = "index.php";
+		CGI file(req.path);
+		response = file.getResponse();
 	}
 	std::string message;
 	message.append("\nHello client\0");
