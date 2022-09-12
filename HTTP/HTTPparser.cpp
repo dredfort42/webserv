@@ -29,15 +29,9 @@ ws::HTTPreq&		ws::HTTPparser::getRequest(){
 void	ws::HTTPparser::checkStatusLine(std::string& line) {
 	// According to standart Request must be formated like :
 	// Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
-	std::string method = Split(line, " ");
-	if (method.empty() || (method != "GET" && method != "DELETE" && method != "POST"))
+	this->_req.method = Split(line, " ");
+	if (this->_req.method.empty())
 		throw parseHTTPexception("Invalid Method in Request");
-	if (method == "GET")
-		this->_req.method = GET;
-	else if (method == "POST")
-		this->_req.method = POST;
-	else
-		this->_req.method = DELETE;
 	this->_req.path = Split(line, " "); 
 	if (this->_req.path.empty())
 		throw parseHTTPexception("Empty location path in Request");

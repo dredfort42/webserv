@@ -22,11 +22,15 @@ namespace ws {
 			~HTTPResponse();
 		
 			std::string	load(HTTPreq &req, Config &cnf);
-			std::string	comparePaths(HTTPreq &req, Config &cnf);
+			//std::string	comparePaths(HTTPreq &req, Config &cnf);
 			Location*	findLocation(std::string &path, std::vector<Location> &Locations);
 
-			std::string	makeMessage(Location *loc, Config& cnf, HTTPreq& req);
-			std::string	notFoundHeader();
+			//std::string	makeMessage(Location *loc, Config& cnf, HTTPreq& req);
+			std::string	notFound();
+			std::string badRequest();
+			std::string addHeader(std::string& msg, std::string& file);
+			
+			std::string	responseFromRoot(HTTPreq &req, Config &cnf);
 
 			inline std::string& trim( std::string &line, const std::string &trimmer);
 			

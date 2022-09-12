@@ -6,12 +6,19 @@
 
 #include <string>
 #include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
 
 namespace ws
 {
 	enum MimeType
 	{
 		PHP,
+		HTML,
+		TXT,
+		CSS,
+		JPEG,
+		PNG,
 	};
 
 	enum FileOperation
@@ -30,7 +37,7 @@ namespace ws
 
 //		File();
 		File(std::string path, FileOperation operation);
-
+		std::string readAll();
 		static MimeType getFileType(std::string path);
 	};
 

@@ -3,30 +3,49 @@
 //
 
 #include "File.hpp"
-
+#include <iostream>
 namespace ws
 {
 	File::File(std::string path, FileOperation operation)
 	{
+//		path = "/" + path;
+//		path = std::getenv("PWD") + path;
+		std::cout << path << " | PATH\n";
 		switch (operation)
 		{
 			case OPEN_FILE:
-				_fd = open(path.c_str(), O_RDONLY | O_NONBLOCK);
+				this->_fd = open(path.c_str(), O_RDONLY | O_NONBLOCK); break;
 			case CREATE_FILE:
-				_fd = open(path.c_str(), O_CREAT | O_RDWR | O_TRUNC);
+				this->_fd = open(path.c_str(), O_CREAT | O_RDWR | O_TRUNC); break;
 			default:
-				_fd = 0;
+				this->_fd = 0; break;
 		}
-
-		if (_fd > 0)
+		std::cout << this->_fd << " FD\n";
+		if (this->_fd > 0)
 		{
-			_path = path;
+			this->_path = path;
 //			_fileName = fileName;
-			_fileType = getFileType(path);
+			this->_fileType = getFileType(path);
 		}
 
 	}
-
+	
+	std::string	File::readAll() 
+	{
+		std::string msg;
+		char buf[1024];
+		size_t p = 1;
+		if (this->_fd <= 0)
+		{
+			close(this->_fd);
+			return msg;
+		}
+		while ((p = read(this->_fd, buf, 1024)) > 0)
+			msg += buf;
+		std::cout << msg << "\n READED FILE\n";
+		close(this->_fd);
+		return msg;
+	}
 	MimeType File::getFileType(std::string fileName)
 	{
 		(void)fileName;

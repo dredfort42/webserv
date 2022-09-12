@@ -11,7 +11,7 @@ namespace ws {
 			EMPTY
 	};
 	struct HTTPreq {
-		STATUS		method;
+		std::string	method;
 		std::string path;
 		std::string host;	
 		std::string port;
