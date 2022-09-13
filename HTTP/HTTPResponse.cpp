@@ -1,6 +1,5 @@
 #include "HTTPResponse.hpp"
 #include "../Server/CGI/CGI.hpp"
-#include "../Server/File/File.hpp"
 #include <string>
 
 ws::HTTPResponse::HTTPResponse() {};
@@ -35,8 +34,8 @@ std::string	ws::HTTPResponse::load(HTTPreq &req, Config &cnf) {
 		CGI file(req.path);
 
 		// get mime type
-		MimeType mime = ws::File::getFileType(req.path);
-		std::cout << mime << std::endl;
+	//	MimeType mime = ws::File::getFileType(req.path);
+	//	std::cout << mime << std::endl;
 
 		response = file.getResponse();
 	}
@@ -89,14 +88,25 @@ std::string	ws::HTTPResponse::badRequest() {
 	return (response);
 }
 
-std::string ws::HTTPResponse::addHeader(std::string& msg, std::string& file)
+std::string ws::HTTPResponse::addHeader(std::string& msg, ws::HTTPreq& req)
 {
-	std::string head;
+	std::string head, extension, accept;
+
+	extension = ws::File::getFileType(req.path);
 
 	head.append("HTTP/1.1 200 OK\n");
-	head.append("Content-Type: text/");
-	file.erase(0, file.rfind(".") + 1);
-	head.append(file + "\n");
+	head.append("Content-Type: ");
+	while (req.accept.empty() == false)
+	{
+		accept = Split(req.accept, ",");
+		if (accept.find(extension) != std::string::npos)
+			break;
+	}
+	head.append(accept + "\n");
+//	if (extension == "png")
+//	{
+//		head.append("Content-Encoding: gzip\n");
+//	}
 	head.append("Content-Length: ");
 	head.append(std::to_string(msg.size()));
 	head.append("\n\n");
@@ -116,11 +126,35 @@ std::string	ws::HTTPResponse::responseFromRoot(HTTPreq &req, Config &cnf)
 			return notFound();
 		else
 		{
-			std::string msg = myFd.readAll();
+			std::vector<uint8_t> vect = myFd.readFileVoid();
+			//std::string msg = myFd.readFile();
+			std::cout << vect.size() << " VECTOR SIZE\n";
+
+			
+			std::string msg(vect.begin(),vect.end());
+			std::cout << msg.size() << " SIZE\n";
+			
 			if (msg.empty())
 				return notFound();
-			return addHeader(msg, req.path);
+			return addHeader(msg, req);
 		}
 	}
 }
 
+std::string	ws::HTTPResponse::Split(std::string &line, std::string delimiter)
+{
+	size_t pos = 0;
+	std::string token;
+	pos = line.find(delimiter);
+	if (pos == std::string::npos)
+	{
+		token = line;
+		line.erase();
+		return (this->trim(token, " \t"));
+	}
+
+    token = line.substr(0, pos);
+    line.erase(0, pos + delimiter.length());
+	line.append("\0");
+	return (trim(token, " \t"));
+};

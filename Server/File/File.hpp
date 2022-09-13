@@ -4,41 +4,39 @@
 
 #pragma once
 
-#include <string>
+#include <iostream>
 #include <fcntl.h>
 #include <unistd.h>
-#include <stdio.h>
+
+#include "../Service/Service.hpp"
 
 namespace ws
 {
-	enum MimeType
-	{
-		PHP,
-		HTML,
-		TXT,
-		CSS,
-		JPEG,
-		PNG,
-	};
 
 	enum FileOperation
 	{
 		OPEN_FILE,
 		CREATE_FILE,
-		ADD_DATA
+		READ_FILE,
+		WRITE_FILE,
+		CLOSE_FILE
 	};
 
 	struct File
 	{
-		int 		_fd;
-		std::string _path;
-//		std::string _fileName;
-		MimeType	_fileType;
+		int 			_fd;
+		FileOperation	_fileOperation;
+		std::string		_path;
+		std::string		_fileType;
 
-//		File();
-		File(std::string path, FileOperation operation);
-		std::string readAll();
-		static MimeType getFileType(std::string path);
+		File(const std::string &path, const FileOperation &operation);
+
+		static std::string 	getFileType(std::string &path);
+		int					&getFileFd();
+		std::string			readFile();
+		std::vector<uint8_t>				readFileVoid();
+		void 				addToFile(const std::string &data);
+		void				closeFile();
 	};
 
 }

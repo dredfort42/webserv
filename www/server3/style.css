@@ -137,3 +137,10 @@ button:hover, button:active, button:focus,
   width: 0px;
   overflow: hidden;
 }
+
+.logo-picture {
+  height: 5rem;
+  width: auto;
+  margin-top: 3rem;
+  margin-right: 1.5rem;
+}

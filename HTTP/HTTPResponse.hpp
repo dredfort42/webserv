@@ -2,7 +2,7 @@
 #include <iostream>
 #include "HTTPparser.hpp" 
 #include "../Config/Parser.hpp"
-
+#include "../Server/File/File.hpp"
 namespace ws {
 	enum status_code {
 		OK = 200,
@@ -28,11 +28,14 @@ namespace ws {
 			//std::string	makeMessage(Location *loc, Config& cnf, HTTPreq& req);
 			std::string	notFound();
 			std::string badRequest();
-			std::string addHeader(std::string& msg, std::string& file);
+			std::string addHeader(std::string& msg, ws::HTTPreq& req);
+			std::string	Split(std::string &line, std::string delimiter);
 			
 			std::string	responseFromRoot(HTTPreq &req, Config &cnf);
 
 			inline std::string& trim( std::string &line, const std::string &trimmer);
-			
+		private:
+		//	void	*res;
+		//	size_t	size;
 	};
 }

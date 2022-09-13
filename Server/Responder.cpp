@@ -10,6 +10,7 @@ namespace ws
 	void Server::responder(Connection &connection)
 	{
 		time(&connection.startTime);
+
 		size_t responseLength = connection.response.length();
 		size_t bytesToSend;
 
@@ -20,7 +21,7 @@ namespace ws
 
 		connection.bytesSent += send(
 				connection.socket,
-				connection.response.c_str() + int(connection.bytesSent),
+				&connection.response[0] + int(connection.bytesSent),
 				bytesToSend,
 				0
 		);
@@ -28,7 +29,7 @@ namespace ws
 		// Sent complete
 		if (responseLength <= connection.bytesSent)
 		{
-			std::cout << connection.response << std::endl;
+		//	std::cout << connection.response << std::endl;
 
 			if (connection.HTTPreq.connect == KEEP_ALIVE)
 			{

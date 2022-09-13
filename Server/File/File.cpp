@@ -3,52 +3,120 @@
 //
 
 #include "File.hpp"
-#include <iostream>
+
 namespace ws
 {
-	File::File(std::string path, FileOperation operation)
+	File::File(const std::string &path, const FileOperation &operation)
 	{
-//		path = "/" + path;
-//		path = std::getenv("PWD") + path;
-		std::cout << path << " | PATH\n";
 		switch (operation)
 		{
 			case OPEN_FILE:
-				this->_fd = open(path.c_str(), O_RDONLY | O_NONBLOCK); break;
+				_fd = open(path.c_str(), O_RDONLY | O_NONBLOCK);
+				_fileOperation = OPEN_FILE;
+				break;
 			case CREATE_FILE:
-				this->_fd = open(path.c_str(), O_CREAT | O_RDWR | O_TRUNC); break;
+				_fd = open(path.c_str(), O_CREAT | O_RDWR | O_TRUNC);
+				_fileOperation = CREATE_FILE;
+				break;
 			default:
-				this->_fd = 0; break;
+				_fd = 0;
 		}
-		std::cout << this->_fd << " FD\n";
-		if (this->_fd > 0)
+
+		if (_fd > 0)
 		{
-			this->_path = path;
-//			_fileName = fileName;
-			this->_fileType = getFileType(path);
+			_path = path;
+			_fileType = getFileType(const_cast<std::string &>(path));
 		}
 
 	}
-	
-	std::string	File::readAll() 
+
+	std::string File::getFileType(std::string &path)
 	{
-		std::string msg;
-		char buf[1024];
-		size_t p = 1;
-		if (this->_fd <= 0)
-		{
-			close(this->_fd);
-			return msg;
-		}
-		while ((p = read(this->_fd, buf, 1024)) > 0)
-			msg += buf;
-		std::cout << msg << "\n READED FILE\n";
-		close(this->_fd);
-		return msg;
+		std::string fileType;
+		fileType.clear();
+		std::string::iterator lastDot;
+
+		for (std::string::iterator it = path.end();
+		it != path.begin() && *it != '.' && *it != '/';
+		it--)
+			lastDot = it;
+		if ( *lastDot-- && *lastDot != '/' && lastDot != path.begin())
+			fileType = std::string(lastDot + 1, path.end());
+		return fileType;
+
+//		return fileName.substr(fileName.find_last_of('.'));
 	}
-	MimeType File::getFileType(std::string fileName)
+
+	void File::closeFile()
 	{
-		(void)fileName;
-		return PHP;
+		if (_fd > -1)
+			close(_fd);
+		_fileOperation = CLOSE_FILE;
+	}
+
+	void File::addToFile(const std::string &data)
+	{
+		if (_fileOperation != WRITE_FILE)
+		{
+			closeFile();
+			_fd = open(_path.c_str(), O_RDWR | O_APPEND);
+			if (_fd > -1)
+				_fileOperation = WRITE_FILE;
+		}
+		if (_fileOperation == WRITE_FILE && !data.empty())
+			write(_fd, data.c_str(), data.length());
+	}
+
+	std::string File::readFile()
+	{
+		std::string fileData;
+		char buffer[WS_BUFFER_SIZE + 1];
+		int bytesWasRead, fullBytes;
+
+		_fileOperation = READ_FILE;
+		fileData.clear();
+		memset(&buffer, 0, sizeof(buffer));
+		bytesWasRead = 0;
+		lseek(_fd, 0, SEEK_SET);
+		fullBytes = 0;
+		while ((bytesWasRead = read(_fd, buffer, WS_BUFFER_SIZE)) > 0)
+		{
+			buffer[bytesWasRead] = '\0';
+			fileData += buffer;
+			std::cout <<"----------------\n" << buffer << "\n" << "------------\n";
+			std::cout << bytesWasRead << "\n";
+			fullBytes += bytesWasRead;
+		}
+		std::cout << fullBytes << "\n";
+		std::cout << fileData.capacity() << "\n";
+		closeFile();
+		return fileData;
+	}
+
+	std::vector<uint8_t> File::readFileVoid()
+	{
+		std::vector<uint8_t> fileData;
+		uint8_t buffer[WS_BUFFER_SIZE];
+		int bytesWasRead, fullBytes, i;
+
+		_fileOperation = READ_FILE;
+		memset(&buffer, 0, sizeof(buffer));
+		bytesWasRead = 0;
+		lseek(_fd, 0, SEEK_SET);
+		fullBytes = 0;
+		while ((bytesWasRead = read(_fd, buffer, WS_BUFFER_SIZE)) > 0)
+		{
+			i = 0;
+			while (i < bytesWasRead)
+				fileData.push_back(buffer[i++]);
+			fullBytes += bytesWasRead;
+		}
+	//	closeFile();
+		return fileData;
+	}
+
+	int &File::getFileFd()
+	{
+		return _fd;
 	}
 } // ws
