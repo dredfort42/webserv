@@ -16,6 +16,7 @@ namespace ws
 		response = "";
 		bytesSent = 0;
 		time(&startTime);
+		
 	}
 
 } // ws

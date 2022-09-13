@@ -26,21 +26,21 @@ ws::HTTPreq&		ws::HTTPparser::getRequest(){
 };
 // Processing Request
 
+//void	ws::HTTPparser::parseVars() {
+	
+//};
+
 void	ws::HTTPparser::checkStatusLine(std::string& line) {
 	// According to standart Request must be formated like :
 	// Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
-	std::string method = Split(line, " ");
-	if (method.empty() || (method != "GET" && method != "DELETE" && method != "POST"))
+	this->_req.method = Split(line, " ");
+	if (this->_req.method.empty())
 		throw parseHTTPexception("Invalid Method in Request");
-	if (method == "GET")
-		this->_req.method = GET;
-	else if (method == "POST")
-		this->_req.method = POST;
-	else
-		this->_req.method = DELETE;
 	this->_req.path = Split(line, " "); 
 	if (this->_req.path.empty())
 		throw parseHTTPexception("Empty location path in Request");
+//	if (this->_req.path.find(".php?") != std::string::npos)
+//		parseVars();
 	if (line.find("HTTP/1.1") == std::string::npos)
 		throw parseHTTPexception("Wrong ver. of HTTP protocol in Request");
 };
@@ -85,7 +85,8 @@ void	ws::HTTPparser::fillHost(std::string& line)
 	else
 	{
 		this->_req.host = Split(line, ":");
-		this->_req.port += line;
+		line.pop_back();
+		this->_req.port = line;
 	}
 };
 
@@ -158,5 +159,6 @@ std::string	ws::HTTPparser::Split(std::string &line, std::string delimiter)
 
     token = line.substr(0, pos);
     line.erase(0, pos + delimiter.length());
+	line.append("\0");
 	return (trim(token, " \t"));
 };

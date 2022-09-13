@@ -45,3 +45,8 @@ body {
     border: 3px solid #4D77FF;
     padding: 10px;
   }
+  .picture {
+    height: 5rem;
+    width: auto;
+    margin: 1rem;
+  }

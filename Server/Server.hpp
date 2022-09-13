@@ -11,6 +11,7 @@
 
 #include "../Config/ConfigStruct.hpp"
 #include "../HTTP/HTTPparser.hpp"
+#include "../HTTP/HTTPResponse.hpp"
 #include "Service/Service.hpp"
 #include "Connection/Connection.hpp"
 
