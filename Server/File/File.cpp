@@ -67,56 +67,28 @@ namespace ws
 			write(_fd, data.c_str(), data.length());
 	}
 
-	std::string File::readFile()
-	{
-		std::string fileData;
-		char buffer[WS_BUFFER_SIZE + 1];
-		int bytesWasRead, fullBytes;
-
-		_fileOperation = READ_FILE;
-		fileData.clear();
-		memset(&buffer, 0, sizeof(buffer));
-		bytesWasRead = 0;
-		lseek(_fd, 0, SEEK_SET);
-		fullBytes = 0;
-		while ((bytesWasRead = read(_fd, buffer, WS_BUFFER_SIZE)) > 0)
-		{
-			buffer[bytesWasRead] = '\0';
-			fileData += buffer;
-			std::cout <<"----------------\n" << buffer << "\n" << "------------\n";
-			std::cout << bytesWasRead << "\n";
-			fullBytes += bytesWasRead;
-		}
-		std::cout << fullBytes << "\n";
-		std::cout << fileData.capacity() << "\n";
-		closeFile();
-		return fileData;
-	}
-
-	std::vector<uint8_t> File::readFileVoid()
+	std::vector<uint8_t> File::readFile()
 	{
 		std::vector<uint8_t> fileData;
 		uint8_t buffer[WS_BUFFER_SIZE];
-		int bytesWasRead, fullBytes, i;
+		int bytesWasRead, i;
 
 		_fileOperation = READ_FILE;
 		memset(&buffer, 0, sizeof(buffer));
 		bytesWasRead = 0;
 		lseek(_fd, 0, SEEK_SET);
-		fullBytes = 0;
 		while ((bytesWasRead = read(_fd, buffer, WS_BUFFER_SIZE)) > 0)
 		{
 			i = 0;
 			while (i < bytesWasRead)
 				fileData.push_back(buffer[i++]);
-			fullBytes += bytesWasRead;
 		}
 	//	closeFile();
 		return fileData;
 	}
 
-	int &File::getFileFd()
-	{
-		return _fd;
-	}
+//	int &File::getFileFd()
+//	{
+//		return _fd;
+//	}
 } // ws

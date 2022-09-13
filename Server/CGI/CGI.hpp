@@ -14,6 +14,7 @@ namespace ws
 	{
 	private:
 		std::string _response;
+		std::string _executableFile;
 
 		CGI();
 

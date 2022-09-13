@@ -32,9 +32,9 @@ namespace ws
 		File(const std::string &path, const FileOperation &operation);
 
 		static std::string 	getFileType(std::string &path);
-		int					&getFileFd();
-		std::string			readFile();
-		std::vector<uint8_t>				readFileVoid();
+//		int					&getFileFd();
+//		std::string			readFile();
+		std::vector<uint8_t>				readFile();
 		void 				addToFile(const std::string &data);
 		void				closeFile();
 	};

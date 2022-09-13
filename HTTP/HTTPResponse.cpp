@@ -127,13 +127,13 @@ std::string	ws::HTTPResponse::responseFromRoot(HTTPreq &req, Config &cnf)
 			return notFound();
 		else
 		{
-			std::vector<uint8_t> vect = myFd.readFileVoid();
+			std::vector<uint8_t> vect = myFd.readFile();
 			//std::string msg = myFd.readFile();
-			std::cout << vect.size() << " VECTOR SIZE\n";
+//			std::cout << vect.size() << " VECTOR SIZE\n";
 
 			
 			std::string msg(vect.begin(),vect.end());
-			std::cout << msg.size() << " SIZE\n";
+//			std::cout << msg.size() << " SIZE\n";
 			
 			if (msg.empty())
 				return notFound();
