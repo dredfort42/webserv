@@ -21,24 +21,32 @@ std::string	ws::HTTPResponse::load(HTTPreq &req, Config &cnf) {
 	std::string response;
 	
 	ws::Location *loc = findLocation(req.path, cnf.Locations);
-	if (!loc && req.path.rfind("/") != 0)
-	{
-		response = notFound();
-		return response;
-	}
-	else if (req.path.find(".php") != std::string::npos)
+//	if (!loc && req.path.rfind("/") != 0)
+//	{
+//		response = notFound();
+//		return response;
+//	}
+
+//	else
+		if (req.path.find(".php") != std::string::npos)
+
 	{
 		//Your Code Дима)))
 		//		std::string 	tmpPath = "www/server3/";
 		//		std::string  	tmpFileName = "index.php";
-		std::cout << "PHP\n";
+
+//		std::cout << loc->path << " PHP\n";
+//		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+//		std::cout << req.path << std::endl;
+
 		CGI file(req.path);
 
 		// get mime type
 	//	MimeType mime = ws::File::getFileType(req.path);
 	//	std::cout << mime << std::endl;
-
 		response = file.getResponse();
+
+		return addHeader(response, req);
 	}
 	else
 	{
