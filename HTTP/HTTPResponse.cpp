@@ -26,12 +26,12 @@ std::string	ws::HTTPResponse::load(HTTPreq &req, Config &cnf) {
 		response = notFound();
 		return response;
 	}
-	else if (loc && loc->path == ".php")
+	else if (req.path.find(".php") != std::string::npos)
 	{
 		//Your Code Дима)))
 		//		std::string 	tmpPath = "www/server3/";
 		//		std::string  	tmpFileName = "index.php";
-		std::cout << loc->path << " PHP\n";
+		std::cout << "PHP\n";
 		CGI file(req.path);
 
 		// get mime type

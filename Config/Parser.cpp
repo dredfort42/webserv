@@ -228,7 +228,7 @@ bool	ws::Parser::fillMethods(std::string &line, T &cnf) {
 template <class T>
 bool	ws::Parser::fillError(std::string &line, T &cnf) {
 	prepareLine(line, errFillError);
-	cnf.errorPage = line;
+	cnf.errorPage[Split(line, " ")] = line;
 	return true;
 }
 

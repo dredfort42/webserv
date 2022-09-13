@@ -2,23 +2,75 @@
 <html>
 	<head>
 	<meta charset="utf-8">
-	<title>Webserv - Ecole 42 project | HTTP server</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Simple server landing" />
+		<title>Webserv - Ecole 42 project | HTTP server</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="Simple server landing" />
 
-	<!-- Font -->
-	<link href="https://fonts.googleapis.com/css?family=Inconsolata:400,700" rel="stylesheet">
+		<!-- Font -->
+		<link href="https://fonts.googleapis.com/css?family=Inconsolata:400,700" rel="stylesheet">
 
-	<!-- Theme style  -->
-	<link rel="stylesheet" href="style.css">
+		<!-- Theme style  -->
+		<link rel="stylesheet" href="style.css">
+
+		<!-- Cookies  -->
+		<script type="text/javascript">
+			var setIcebreakerText = function (type) {
+				if (type === "Cat") {
+						document.getElementById("icebreaker").innerHTML = "Cats rule the wurrrrrld.";
+					}
+					else if (type === "Dog") {
+						document.getElementById("icebreaker").innerHTML = "Dogs are the best!";
+					}
+					else if (type === "T-Rex") {
+						document.getElementById("icebreaker").innerHTML = "Will you scratch my back, please?";
+					}
+					else {
+						document.getElementById("icebreaker").innerHTML = "What kind of person are you?";
+					}
+			}
+
+			var setAnimal = function (type) {
+				const minutes = 1
+				var date = new Date();
+				date.setTime(date.getTime() + (minutes * 60 * 1000));
+				document.cookie = "animal=" + type + "; expires=" + date.toGMTString() + ";";
+				document.getElementById("header").innerHTML = "Hi from the " + type;
+				setIcebreakerText(type);
+			}
+
+			var getCookie = function (key) {
+				var name = key + "=";
+				var animalType = document.cookie.split(';');
+				var c = animalType[0];
+				if (c.indexOf(name) == 0) {
+					return c.substring(name.length, c.length);
+				}
+				return "";
+			}
+
+			window.onload = function () {
+				var type = getCookie("animal");
+
+				if (type === "") {
+					document.getElementById("header").innerHTML = "Hi! I am the server";
+				}
+				else {
+					document.getElementById("header").innerHTML = "Hi from the " + type;
+				}
+				setIcebreakerText(type);
+			}
+
+		</script>
 
 	</head>
 	<body>
         <div class="container">
             <div class="hero">
-                <h1>Hi! I am the server</h1>
-                <h2>Static page from folder www/server1</a></h2>
-				<img class="picture" alt="Ghost Emoji" src="GhostEmoji.png">
+                <h1 id="header"></h1>
+                <h2 id="icebreaker"></h2>
+				<img class="picture" onclick="setAnimal('Cat')" alt="Cat" src="cat-emoji.png">
+				<img class="picture" onclick="setAnimal('Dog')" alt="Dog" src="dog-emoji.png">
+				<img class="picture" onclick="setAnimal('T-Rex')" alt="Dino" src="t-rex-emoji.png">
             </div>
 		</div>
 	</body>
