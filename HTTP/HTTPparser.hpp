@@ -35,6 +35,7 @@ namespace ws {
 			void			checkStatusLine(std::string &line);
 			void			checkHeaderLine(std::string &line);
 			void			parseRaw();
+		//	void			parseVars();
 
 			//Utils
 

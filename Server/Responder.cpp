@@ -29,7 +29,7 @@ namespace ws
 		// Sent complete
 		if (responseLength <= connection.bytesSent)
 		{
-		//	std::cout << connection.response << std::endl;
+			std::cout << connection.response << std::endl;
 
 			if (connection.HTTPreq.connect == KEEP_ALIVE)
 			{

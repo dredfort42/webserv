@@ -26,6 +26,10 @@ ws::HTTPreq&		ws::HTTPparser::getRequest(){
 };
 // Processing Request
 
+//void	ws::HTTPparser::parseVars() {
+	
+//};
+
 void	ws::HTTPparser::checkStatusLine(std::string& line) {
 	// According to standart Request must be formated like :
 	// Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
@@ -35,6 +39,8 @@ void	ws::HTTPparser::checkStatusLine(std::string& line) {
 	this->_req.path = Split(line, " "); 
 	if (this->_req.path.empty())
 		throw parseHTTPexception("Empty location path in Request");
+//	if (this->_req.path.find(".php?") != std::string::npos)
+//		parseVars();
 	if (line.find("HTTP/1.1") == std::string::npos)
 		throw parseHTTPexception("Wrong ver. of HTTP protocol in Request");
 };

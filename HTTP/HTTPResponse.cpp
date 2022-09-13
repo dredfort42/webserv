@@ -9,7 +9,7 @@ ws::Location*	ws::HTTPResponse::findLocation(std::string &path, std::vector<ws::
 {
 	std::vector<ws::Location>::iterator it = Locs.begin();
 	for (; it != Locs.end(); it++) {
-		if (path.find(it->path) == 0)
+		if (path.find(it->path) != std::string::npos)
 			break;
 	}
 	if (it == Locs.end())
@@ -26,11 +26,12 @@ std::string	ws::HTTPResponse::load(HTTPreq &req, Config &cnf) {
 		response = notFound();
 		return response;
 	}
-	else if (loc && loc->path == "/cgi-bin/")
+	else if (loc && loc->path == ".php")
 	{
 		//Your Code Дима)))
 		//		std::string 	tmpPath = "www/server3/";
 		//		std::string  	tmpFileName = "index.php";
+		std::cout << loc->path << " PHP\n";
 		CGI file(req.path);
 
 		// get mime type

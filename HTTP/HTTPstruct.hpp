@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-
+#include <map>
 namespace ws {
  	enum STATUS{
 			KEEP_ALIVE,
@@ -20,6 +20,7 @@ namespace ws {
 		std::string acceptEnc;
 		std::string acceptLang;
 		std::string User_Agent;
+	//	std::map<std::string, std::string> variables;
 
 		HTTPreq() {
 			method = EMPTY;
