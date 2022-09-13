@@ -1,3 +1,6 @@
 #c/c++
-# *.o
+*.o
 .vscode/
+.DS_*
+webserv
+.idea/
