@@ -38,6 +38,7 @@ namespace ws
 //		std::string			readFile();
 		std::vector<uint8_t>				readFile();
 		void 				addToFile(const std::string &data);
+		int 				removeFile();
 		void				closeFile();
 	};
 

@@ -15,6 +15,8 @@ namespace ws
 		std::string tmpFilePath = "/Users/dnovikov/Desktop/webserv/Server/CGI"
 								  "/tmp/";
 		tmpFilePath.append(std::to_string(clientSocket));
+		tmpFilePath.append("_CGI_");
+		tmpFilePath.append(std::to_string(clock()));
 
 		_tmpFile = File(tmpFilePath, CREATE_FILE);
 		std::cout << "\033[1;32m >>> TMP FILE CREATED >>> \033[0m" << std::endl;
@@ -88,7 +90,7 @@ namespace ws
 			return 502;
 
 		std::vector<uint8_t> tmpData = _tmpFile.readFile();
-		if (remove(_tmpFile._path.c_str()))
+		if (_tmpFile.removeFile())
 			return 500;
 		std::cout << "\033[1;32m >>> TMP FILE DELETED >>> \033[0m" << std::endl;
 		_response = std::string(tmpData.begin(), tmpData.end());

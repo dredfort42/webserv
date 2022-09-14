@@ -121,12 +121,17 @@ namespace ws
 			while (i < bytesWasRead)
 				fileData.push_back(buffer[i++]);
 		}
-	//	closeFile();
+		closeFile();
 		return fileData;
 	}
 
 	int &File::getFileFd()
 	{
 		return _fd;
+	}
+
+	int File::removeFile()
+	{
+		return remove(_path.c_str());
 	}
 } // ws
