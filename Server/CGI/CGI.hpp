@@ -13,16 +13,23 @@ namespace ws
 	class CGI
 	{
 	private:
-		std::string _response;
+		File 		_tmpFile;
+//		std::string _path;
+		std::string _absolutePath;
+		std::string _requestArguments;
 		std::string _executableFile;
+		std::string _response;
 
 		CGI();
 
 	public:
-		CGI(std::string path);
+		CGI(std::string &path, int &clientSocket);
 
+		int 		executor();
 		std::string getResponse();
-
+		std::string	split(std::string &line, std::string delimiter);
+		inline std::string &trim( std::string &line, const std::string
+		&trimmer);
 	};
 
 } // ws
