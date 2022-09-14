@@ -16,7 +16,11 @@ std::ostream&	operator<<(std::ostream &o, ws::Config const &cnf) {
 		o << std::setw(20) <<cnf.index << " | index\n";
 		o << std::setw(20) <<cnf.uploadPath << " | uploadPath\n";
 		o << std::setw(20) <<cnf.bodySize << " | bodySize\n";
-	//	o << std::setw(20) <<  cnf.errorPage << " | errorPage\n";
+		for (std::map<std::string, std::string>::const_iterator it1 = cnf.errorPage.begin(); it1 != cnf.errorPage.end(); it1++)
+		{
+			o << std::setw(20) << it1->first << " | " << it1->second << " | errorPage\n";
+		}
+		
 
 		if (cnf.Locations.empty() == false) 
 		{
@@ -33,7 +37,10 @@ std::ostream&	operator<<(std::ostream &o, ws::Config const &cnf) {
 				o << std::setw(20) <<it->index << " | index\n";
 				o << std::setw(20) <<it->uploadPath << " | uploadPath\n";
 				o << std::setw(20) <<it->binPath << " | binPath\n";
-		//		o << std::setw(20) <<it->errorPage << " | errorPage\n";
+				for (std::map<std::string, std::string>::const_iterator it1 = cnf.errorPage.begin(); it1 != cnf.errorPage.end(); it1++)
+				{
+					o << std::setw(20) << it1->first << " | " << it1->second << " | errorPage\n";
+				}
 				o << std::setw(20) <<it->redirect << " | redirect\n";
 				o << std::setw(20) <<it->raw << " | raw location\n";
 				o << "----------------------------------------" << std::endl;

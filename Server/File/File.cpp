@@ -7,6 +7,7 @@
 namespace ws
 {
 
+
 	File::File()
 	{
 		_fd = -1;
@@ -15,8 +16,36 @@ namespace ws
 		_fileType.clear();
 	}
 
+
 	File::File(const std::string &path, const FileOperation &operation)
 	{
+		switch (operation)
+		{
+			case OPEN_FILE:
+				_fd = open(path.c_str(), O_RDONLY | O_NONBLOCK);
+				_fileOperation = OPEN_FILE;
+				break;
+			case CREATE_FILE:
+				_fd = open(path.c_str(), O_CREAT | O_RDWR | O_TRUNC);
+				_fileOperation = CREATE_FILE;
+				break;
+			default:
+				_fd = 0;
+		}
+
+		if (_fd > 0)
+		{
+			_path = path;
+			_fileType = getFileType(const_cast<std::string &>(path));
+		}
+
+	}
+
+	void		File::setPath(std::string &path, const FileOperation &operation)
+	{
+		if (_fd > 0)
+			closeFile();
+
 		switch (operation)
 		{
 			case OPEN_FILE:
@@ -96,8 +125,8 @@ namespace ws
 		return fileData;
 	}
 
-//	int &File::getFileFd()
-//	{
-//		return _fd;
-//	}
+	int &File::getFileFd()
+	{
+		return _fd;
+	}
 } // ws
