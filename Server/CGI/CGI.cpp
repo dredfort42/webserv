@@ -18,7 +18,7 @@ namespace ws
 
 		_tmpFile = File(tmpFilePath, CREATE_FILE);
 		std::cout << "\033[1;32m >>> TMP FILE CREATED >>> \033[0m" << std::endl;
-		_path = path;
+//		_path = path;
 		_absolutePath = "/Users/dnovikov/Desktop/webserv/www/server3";
 		_absolutePath.append(path);
 		_requestArguments.clear();
@@ -39,14 +39,15 @@ namespace ws
 //		std::cout << _executableFile << std::endl;
 
 //		_response = "TESTTESTTEST";
-		execute();
+		executor();
 	}
 
-	int CGI::execute()
+	int CGI::executor()
 	{
+		std::string aPath = split(_absolutePath, "?");
 		char *argv[] = {const_cast<char *>(_executableFile.c_str()),
+						const_cast<char *>(aPath.c_str()),
 						const_cast<char *>(_absolutePath.c_str()),
-						const_cast<char *>(_requestArguments.c_str()),
 						NULL};
 
 		std::cout << "\033[1;32m >>> " << argv[0] << " >>> \033[0m"
@@ -69,7 +70,8 @@ namespace ws
 			if (dup2(_tmpFile._fd, STDOUT_FILENO) == -1)
 				return 500;
 			close(pipeFd[PIPE_OUT]);
-			execve(argv[0], argv, NULL);
+			if (execve(argv[0], argv, NULL) == -1)
+				return 404;
 			exit(1);
 		} else if (pid > 0)
 		{
@@ -98,4 +100,29 @@ namespace ws
 		return _response.substr(_response.find("<html>"));;
 	}
 
+	std::string	CGI::split(std::string &line, std::string delimiter)
+	{
+		size_t pos = 0;
+		std::string token;
+		pos = line.find(delimiter);
+		if (pos == std::string::npos)
+		{
+			token = line;
+			line.erase();
+			return (this->trim(token, " \t"));
+		}
+
+		token = line.substr(0, pos);
+		line.erase(0, pos + delimiter.length());
+		line.append("\0");
+		return (trim(token, " \t"));
+	};
+
+	inline std::string &CGI::trim( std::string &line, const std::string
+	&trimmer)
+	{
+		line.erase(line.find_last_not_of(trimmer)+1);         //suffixing spaces
+		line.erase(0, line.find_first_not_of(trimmer));       //prefixing spaces
+		return line;
+	};
 } // ws

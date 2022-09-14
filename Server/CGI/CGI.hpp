@@ -14,7 +14,7 @@ namespace ws
 	{
 	private:
 		File 		_tmpFile;
-		std::string _path;
+//		std::string _path;
 		std::string _absolutePath;
 		std::string _requestArguments;
 		std::string _executableFile;
@@ -25,9 +25,11 @@ namespace ws
 	public:
 		CGI(std::string &path, int &clientSocket);
 
-		int 		execute();
+		int 		executor();
 		std::string getResponse();
-
+		std::string	split(std::string &line, std::string delimiter);
+		inline std::string &trim( std::string &line, const std::string
+		&trimmer);
 	};
 
 } // ws
