@@ -31,7 +31,6 @@ namespace ws
 
 		File();
 		File(const std::string &path, const FileOperation &operation);
-		File();
 
 		void				setPath(std::string &path,const FileOperation &op);
 		static std::string 	getFileType(std::string &path);

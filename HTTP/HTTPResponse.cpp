@@ -20,7 +20,7 @@ ws::Location*	ws::HTTPResponse::findLocation(std::string &path, std::vector<ws::
 std::string	ws::HTTPResponse::load(HTTPreq &req, Connection &connection) {
 	std::string response;
 	
-	ws::Location *loc = findLocation(req.path, cnf.Locations);
+	ws::Location *loc = findLocation(req.path, connection.config.Locations);
 
 	if (req.path.find(".php") != std::string::npos)
 	{
@@ -43,7 +43,7 @@ std::string	ws::HTTPResponse::load(HTTPreq &req, Connection &connection) {
 	}
 	else
 	{
-		response = responseFromRoot(req, cnf, loc);
+		response = responseFromRoot(req, connection.config, loc);
     return response;
 	
 	}
