@@ -29,6 +29,7 @@ namespace ws
 		std::string		_path;
 		std::string		_fileType;
 
+		File();
 		File(const std::string &path, const FileOperation &operation);
 
 		static std::string 	getFileType(std::string &path);

@@ -22,7 +22,7 @@ namespace ws
 
 		ws::HTTPResponse response;
 
-		std::string resp = response.load(connection.HTTPreq, connection.config);
+		std::string resp = response.load(connection.HTTPreq, connection);
 		connection.response = resp;
 		
 		//// TMP /////////////////////////////////////////////////////////

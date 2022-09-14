@@ -6,6 +6,15 @@
 
 namespace ws
 {
+
+	File::File()
+	{
+		_fd = -1;
+		_fileOperation = CLOSE_FILE;
+		_path.clear();
+		_fileType.clear();
+	}
+
 	File::File(const std::string &path, const FileOperation &operation)
 	{
 		switch (operation)

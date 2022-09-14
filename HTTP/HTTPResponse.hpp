@@ -3,6 +3,7 @@
 #include "HTTPparser.hpp" 
 #include "../Config/Parser.hpp"
 #include "../Server/File/File.hpp"
+#include "../Server/Connection/Connection.hpp"
 namespace ws {
 	enum status_code {
 		OK = 200,
@@ -21,7 +22,7 @@ namespace ws {
 			HTTPResponse();
 			~HTTPResponse();
 		
-			std::string	load(HTTPreq &req, Config &cnf);
+			std::string	load(HTTPreq &req, Connection &connection);
 			//std::string	comparePaths(HTTPreq &req, Config &cnf);
 			Location*	findLocation(std::string &path, std::vector<Location> &Locations);
 

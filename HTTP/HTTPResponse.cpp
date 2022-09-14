@@ -17,10 +17,10 @@ ws::Location*	ws::HTTPResponse::findLocation(std::string &path, std::vector<ws::
 	return (&(*it));
 };
 
-std::string	ws::HTTPResponse::load(HTTPreq &req, Config &cnf) {
+std::string	ws::HTTPResponse::load(HTTPreq &req, Connection &connection) {
 	std::string response;
 	
-	ws::Location *loc = findLocation(req.path, cnf.Locations);
+	ws::Location *loc = findLocation(req.path, connection.config.Locations);
 //	if (!loc && req.path.rfind("/") != 0)
 //	{
 //		response = notFound();
@@ -39,19 +39,19 @@ std::string	ws::HTTPResponse::load(HTTPreq &req, Config &cnf) {
 //		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 //		std::cout << req.path << std::endl;
 
-		CGI file(req.path);
+		CGI cgi(req.path, connection.socket);
 
 		// get mime type
 	//	MimeType mime = ws::File::getFileType(req.path);
 	//	std::cout << mime << std::endl;
-		response = file.getResponse();
+		response = cgi.getResponse();
 
 		return addHeader(response, req);
 	}
 	else
 	{
 		if (!loc)
-			response = responseFromRoot(req, cnf);
+			response = responseFromRoot(req, connection.config);
 	//	else
 	//		response = bodyFromLoc(req, loc, cnf);
 		return response;
