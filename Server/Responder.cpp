@@ -21,15 +21,16 @@ namespace ws
 
 		connection.bytesSent += send(
 				connection.socket,
-				&connection.response[0] + int(connection.bytesSent),
+				connection.response.data() + int(connection.bytesSent),
 				bytesToSend,
 				0
 		);
 
+		//	std::cout << connection.response << std::endl;
 		// Sent complete
 		if (responseLength <= connection.bytesSent)
 		{
-//			std::cout << connection.response << std::endl;
+		//	std::cout << connection.response << std::endl;
 
 			if (connection.HTTPreq.connect == KEEP_ALIVE)
 			{

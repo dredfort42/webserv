@@ -12,7 +12,7 @@ namespace ws
 
 	CGI::CGI(std::string &path, int &clientSocket)
 	{
-		std::string tmpFilePath = "/Users/dnovikov/Desktop/webserv/Server/CGI"
+		std::string tmpFilePath = "/Users/wizzz/21school/ft_webserv/Server/CGI"
 								  "/tmp/";
 		tmpFilePath.append(std::to_string(clientSocket));
 		tmpFilePath.append("_CGI_");
@@ -21,7 +21,7 @@ namespace ws
 		_tmpFile = File(tmpFilePath, CREATE_FILE);
 		std::cout << "\033[1;32m >>> TMP FILE CREATED >>> \033[0m" << std::endl;
 //		_path = path;
-		_absolutePath = "/Users/dnovikov/Desktop/webserv/www/server3";
+		_absolutePath = "/Users/wizzz/21school/ft_webserv/www/server3";
 		_absolutePath.append(path);
 		_requestArguments.clear();
 		_response.clear();
@@ -99,7 +99,8 @@ namespace ws
 
 	std::string CGI::getResponse()
 	{
-		return _response.substr(_response.find("<html>"));;
+		std::string tmp = _response.substr(_response.find("<html>")); 
+		return tmp;
 	}
 
 	std::string	CGI::split(std::string &line, std::string delimiter)
