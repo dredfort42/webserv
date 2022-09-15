@@ -27,7 +27,7 @@ namespace ws
 		_response.clear();
 
 		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-		executor();
+		_code = executor();
 	}
 
 	int CGI::executor()
@@ -113,5 +113,10 @@ namespace ws
 		line.erase(line.find_last_not_of(trimmer)+1);         //suffixing spaces
 		line.erase(0, line.find_first_not_of(trimmer));       //prefixing spaces
 		return line;
+	}
+
+	std::string CGI::getCode()
+	{
+		return std::to_string(_code);
 	};
 } // ws
