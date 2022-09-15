@@ -1,61 +1,99 @@
-<!DOCTYPE html>
-<html lang="en" >
-<head>
-  <meta charset="UTF-8">
-  <title>CodePen - Space 404</title>
-  <link href="https://fonts.googleapis.com/css?family=Righteous&display=swap" rel="stylesheet"><link rel="stylesheet" href="./style404.css">
+<!DOCTYPE HTML>
+<html>
+	<head>
+        <meta charset="utf-8">
+        <title>404 | HTTP server</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Simple server landing" />
 
-</head>
-<body>
-<!-- partial:index.partial.html -->
-<div class="moon"></div>
-<div class="moon__crater moon__crater1"></div>
-<div class="moon__crater moon__crater2"></div>
-<div class="moon__crater moon__crater3"></div>
+        <!-- Font -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
 
-<div class="star star1"></div>
-<div class="star star2"></div>
-<div class="star star3"></div>
-<div class="star star4"></div>
-<div class="star star5"></div>
+        <!-- Theme style  -->
+        <style>
+            html, body {
+                font-family: 'Roboto Mono', monospace;
+                font-size: 16px;
+            }
 
-<div class="error">
-  <div class="error__title">404</div>
-  <div class="error__subtitle">Hmmm...</div>
-  <div class="error__description">It looks like one of the  developers fell asleep</div>
-  <button class="error__button error__button--active">LOGIN</button>
-  <button class="error__button">CONTACT</button>
-</div>
+            body {
+                background-color: #fff;
+            }
 
-<div class="astronaut">
-  <div class="astronaut__backpack"></div>
-  <div class="astronaut__body"></div>
-  <div class="astronaut__body__chest"></div>
-  <div class="astronaut__arm-left1"></div>
-  <div class="astronaut__arm-left2"></div>
-  <div class="astronaut__arm-right1"></div>
-  <div class="astronaut__arm-right2"></div>
-  <div class="astronaut__arm-thumb-left"></div>
-  <div class="astronaut__arm-thumb-right"></div>
-  <div class="astronaut__leg-left"></div>
-  <div class="astronaut__leg-right"></div>
-  <div class="astronaut__foot-left"></div>
-  <div class="astronaut__foot-right"></div>
-  <div class="astronaut__wrist-left"></div>
-  <div class="astronaut__wrist-right"></div>
-  
-  <div class="astronaut__cord">
-    <canvas id="cord" height="500px" width="500px"></canvas>
-  </div>
-  
-  <div class="astronaut__head">
-    <canvas id="visor" width="60px" height="60px"></canvas>
-    <div class="astronaut__head-visor-flare1"></div>
-    <div class="astronaut__head-visor-flare2"></div>
-  </div>
-</div>
-<!-- partial -->
-  <script  src="./script404.js"></script>
+            h2 {
+                color: #111;
+                font-size: 24px;
+                letter-spacing: .2px;
+                margin: 0;
+            }
 
-</body>
+            a {
+                color: #4D77FF;
+                -webkit-transition: 0.5s;
+                -o-transition: 0.5s;
+                transition: 0.5s;
+            }
+
+            a:hover, a:active, a:focus {
+                color: #4D77FF;
+                outline: none;
+                text-decoration: none;
+            }
+
+            .container {
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .box {
+                text-align: center;
+            }
+
+            .box h2 {
+                align-items: center;
+                gap: 2px;
+            }
+
+            @keyframes cursor-blink {
+                0% {
+                    visibility: hidden;
+                }
+
+                100% {
+                    visibility: visible;
+                }
+            }
+
+            .box h2::after {
+                content: "";
+                width: 12px;
+                height: 25px;
+                background: #4D77FF;
+                display: inline-block;
+                transform: translateY(10%);
+                animation: cursor-blink 1s steps(2) infinite;
+            }
+
+            .hero {
+                margin: 0 0 2rem 0;
+                width: 75%;
+                text-align: center;
+                /* border: 3px solid #4D77FF; */
+                padding: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="hero">
+                <span class="box">
+                    <h2>404, page not found.</h2>
+                </span>
+                <a href="/index.html"><h3>Take me home!</h3></a>
+            </div>
+        </div>
+    </body>
 </html>
+  

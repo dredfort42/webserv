@@ -17,45 +17,43 @@ ws::Location*	ws::HTTPResponse::findLocation(std::string &path, std::vector<ws::
 	return (&(*it));
 };
 
-std::string	ws::HTTPResponse::load(HTTPreq &req, Connection &connection) {
+std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection, ws::Location *loc) {
 	std::string response;
-	
-	ws::Location *loc = findLocation(req.path, connection.config.Locations);
-
-	if (req.path.find(".php") != std::string::npos)
+	if (req.path.find(".php") != std::string::npos)	
 	{
-		//Your Code Дима)))
-		//		std::string 	tmpPath = "www/server3/";
-		//		std::string  	tmpFileName = "index.php";
-
-//		std::cout << loc->path << " PHP\n";
-//		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-//		std::cout << req.path << std::endl;
-
 		CGI cgi(req.path, connection.socket);
-
-		// get mime type
-	//	MimeType mime = ws::File::getFileType(req.path);
-	//	std::cout << mime << std::endl;
 		response = cgi.getResponse();
-
 		return addHeader(response, req, "200");
 	}
 	else
 	{
 		response = responseFromRoot(req, connection.config, loc);
-    return response;
-	
+   		return response;
 	}
-	std::string message;
-	message.append("\nHello client\0");
-	response.append("HTTP/1.1 200 OK\n");
-	response.append("Content-Type: text/plain\n");
-	response.append("Content-Length: ");
-	response.append(std::to_string(message.length()));
-	response.append("\n\n");
-	response.append(message);
-//	response = comparePaths(req, cnf);
+}
+
+//std::string ws::HTTPResponse::DELETE(ws::HTTPreq &req, ws::Connection &connection, ws::Location *loc) {
+		
+//}
+
+std::string	ws::HTTPResponse::load(HTTPreq &req, Connection &connection) {
+	std::string response;
+	
+	ws::Location *loc = findLocation(req.path, connection.config.Locations);
+
+	if (loc && loc->method.find(req.method) == std::string::npos)
+		return errorPage("400", connection.config, loc, req);
+	else if (connection.config.method.find(req.method) == std::string::npos)
+		return errorPage("400", connection.config, loc, req);
+
+	if (req.method == "GET")
+		return GET(req, connection, loc);
+//	else if (req.method == "POST)
+//		return POST(req, connection.config, loc);
+//	else if (req.method == "DELETE")
+//		return DELETE(req, connection, loc);
+
+
 	return response;
 };
 
@@ -140,7 +138,7 @@ std::string	ws::HTTPResponse::responseFromRoot(HTTPreq &req, Config &cnf, Locati
 		return errorPage("400", cnf, loc, req);
 	else
 	{
-		if (req.path == "/")
+		if (((loc && loc->autoindex) || (cnf.autoindex)) && *(req.path.rbegin()) == '/')
 			req.path += cnf.index;
 		ws::File myFd(cnf.root + req.path, OPEN_FILE);	
 		if (myFd._fd < 0)

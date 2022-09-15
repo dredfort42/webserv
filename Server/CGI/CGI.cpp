@@ -12,8 +12,7 @@ namespace ws
 
 	CGI::CGI(std::string &path, int &clientSocket)
 	{
-		std::string tmpFilePath = "/Users/dnovikov/Desktop/webserv/Server/CGI"
-								  "/tmp/";
+		std::string tmpFilePath = std::string(std::getenv("PWD")) + "/Server/CGI/tmp";
 		tmpFilePath.append(std::to_string(clientSocket));
 		tmpFilePath.append("_CGI_");
 		tmpFilePath.append(std::to_string(clock()));
@@ -21,7 +20,7 @@ namespace ws
 		_tmpFile = File(tmpFilePath, CREATE_FILE);
 		std::cout << "\033[1;32m >>> TMP FILE CREATED >>> \033[0m" << std::endl;
 
-		_commandLine = "/Users/dnovikov/Desktop/webserv/www/server3";
+		_commandLine = std::string(std::getenv("PWD")) + "/www/server3";
 		_commandLine.append(path);
 		_executableFile = "/usr/local/bin/php-cgi";
 		_response.clear();

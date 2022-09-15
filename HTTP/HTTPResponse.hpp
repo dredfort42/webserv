@@ -33,6 +33,9 @@ namespace ws {
 			std::string addHeader(std::string& msg, ws::HTTPreq& req, const std::string& code);
 			std::string	Split(std::string &line, std::string delimiter);
 			
+			std::string GET(HTTPreq &req, Connection &connect, Location *loc);
+			std::string POST(HTTPreq &req, Connection &connect, Location *loc);
+			std::string DELETE(HTTPreq &req, Connection &connect, Location *loc);
 			std::string	responseFromRoot(HTTPreq &req, Config &cnf, Location *loc);
 
 			inline std::string& trim( std::string &line, const std::string &trimmer);
