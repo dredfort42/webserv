@@ -11,7 +11,7 @@
                     $image = $_GET['picture'];
                     if (file_exists($image)) {
                         echo "<img class='bigPic' src='".$image."'>";
-                        echo "<form method='post'>";
+                        echo "<form method='delete'>";
                         echo "<button type='submit' name='deletebutton' class='red'>DELETE</button>";
                         echo "</form>";
                     } else {

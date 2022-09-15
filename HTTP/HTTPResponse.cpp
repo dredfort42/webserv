@@ -32,9 +32,28 @@ std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection, 
 	}
 }
 
-//std::string ws::HTTPResponse::DELETE(ws::HTTPreq &req, ws::Connection &connection, ws::Location *loc) {
-		
-//}
+std::string ws::HTTPResponse::DELETE(ws::HTTPreq &req, ws::Connection &connection, ws::Location *loc) {
+	std::string response, path;
+	if (loc)
+		path = loc->root + loc->uploadPath;
+	else
+	{
+		if (connection.config.uploadPath.empty())
+		{
+			std::cout << "UPLOAD PATH NOT DEFINED";
+			return errorPage("500", connection.config, loc, req);
+		}
+		path = connection.config.root + connection.config.uploadPath;
+	}
+	ws::File myFd(path, READ_FILE);
+	if (myFd._fd < 0)
+		return addHeader(response, req, "204");
+	std::vector<uint8_t> tmp = myFd.readFile();
+	response = std::string(tmp.begin(), tmp.end()); 
+	myFd.removeFile();
+	return addHeader(response, req, "200");
+
+}
 
 std::string	ws::HTTPResponse::load(HTTPreq &req, Connection &connection) {
 	std::string response;
@@ -53,8 +72,8 @@ std::string	ws::HTTPResponse::load(HTTPreq &req, Connection &connection) {
 		return GET(req, connection, loc);
 //	else if (req.method == "POST)
 //		return POST(req, connection.config, loc);
-//	else if (req.method == "DELETE")
-//		return DELETE(req, connection, loc);
+	else if (req.method == "DELETE")
+		return DELETE(req, connection, loc);
 
 
 	return response;
