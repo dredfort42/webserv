@@ -6,7 +6,7 @@
 
 #include <iostream>
 #include "../File/File.hpp"
-
+#include "../../Config/ConfigStruct.hpp"
 namespace ws
 {
 
@@ -22,7 +22,7 @@ namespace ws
 		CGI();
 
 	public:
-		CGI(std::string &path, int &clientSocket);
+		CGI(std::string &path, int &clientSocket, Location *loc);
 
 		int 		executor();
 		std::string getResponse();

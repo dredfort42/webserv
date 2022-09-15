@@ -10,9 +10,8 @@
 namespace ws
 {
 
-	CGI::CGI(std::string &path, int &clientSocket)
+	CGI::CGI(std::string &path, int &clientSocket, Location *loc)
 	{
-
 		std::string tmpFilePath = std::getenv("PWD");
 		tmpFilePath.append("/Server/CGI/tmp/");
 		tmpFilePath.append(std::to_string(clientSocket));
@@ -22,9 +21,10 @@ namespace ws
 		_tmpFile = File(tmpFilePath, CREATE_FILE);
 		std::cout << "\033[1;32m >>> TMP FILE CREATED >>> \033[0m" << std::endl;
 
-		_commandLine = std::string(std::getenv("PWD")) + "/www/server3";
+		_commandLine = std::string(std::getenv("PWD")) + "/" + loc->root;
 		_commandLine.append(path);
-		_executableFile = "/usr/local/bin/php-cgi";
+		std::cout << _commandLine << "\n";
+		_executableFile = loc->binPath;
 		_response.clear();
 
 		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
@@ -87,7 +87,8 @@ namespace ws
 
 	std::string CGI::getResponse()
 	{
-		return _response.substr(_response.find("<html>"));;
+		return _response.substr(_response.find("<html>"));
+		//return _response;
 	}
 
 	std::string	CGI::split(std::string &line, std::string delimiter)

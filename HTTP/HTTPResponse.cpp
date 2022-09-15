@@ -19,10 +19,13 @@ ws::Location*	ws::HTTPResponse::findLocation(std::string &path, std::vector<ws::
 
 std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection, ws::Location *loc) {
 	std::string response;
-	if (req.path.find(".php") != std::string::npos)	
+	if (req.path.find(".php") != std::string::npos || loc->path == ".py")	
 	{
-		CGI cgi(req.path, connection.socket);
+		CGI cgi(req.path, connection.socket, loc);
+		std::cout << "HIIII\n";
 		response = cgi.getResponse();
+		std::cout << "HIIII\n";
+		std::cout << "RESPONSE\n" << response;
 		return addHeader(response, req, "200");
 	}
 	else
@@ -40,6 +43,9 @@ std::string	ws::HTTPResponse::load(HTTPreq &req, Connection &connection) {
 	std::string response;
 	
 	ws::Location *loc = findLocation(req.path, connection.config.Locations);
+
+	if (loc)
+		std::cout << *loc;
 
 	if (loc && loc->method.find(req.method) == std::string::npos)
 		return errorPage("400", connection.config, loc, req);

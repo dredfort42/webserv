@@ -354,6 +354,7 @@ void	ws::Parser::parseServerBlock(Config &cfg, const size_t &pos){
 	if (cfg.bodySize == 0)
 		cfg.bodySize = 1024;
 	std::cout << cfg;
+
 //	std::cout << cfg.ip << " IP | " << cfg.port << " PORT\n";
 //	std::cout << cfg.serverName << " server_name\n";
 //	std::cout << cfg.bodySize << " body size\n";

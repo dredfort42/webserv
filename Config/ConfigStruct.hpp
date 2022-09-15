@@ -37,3 +37,4 @@ namespace ws {
 }
 
 std::ostream&	operator<<(std::ostream &o, ws::Config const &cnf);
+std::ostream&	operator<<(std::ostream &o, ws::Location const &loc);

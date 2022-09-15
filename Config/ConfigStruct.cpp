@@ -1,6 +1,26 @@
 #include "ConfigStruct.hpp"
 #include <iomanip>
 
+std::ostream&	operator<<(std::ostream &o, ws::Location const &loc)
+{
+
+				o << std::setw(20) <<loc.path << " | path\n";
+				o << std::setw(20) <<loc.autoindex << " | autoindex\n";
+				o << std::setw(20) <<loc.root << " | root\n";
+				o << std::setw(20) <<loc.method << " | method\n";
+				o << std::setw(20) <<loc.index << " | index\n";
+				o << std::setw(20) <<loc.uploadPath << " | uploadPath\n";
+				o << std::setw(20) <<loc.binPath << " | binPath\n";
+				for (std::map<std::string, std::string>::const_iterator it1 = loc.errorPage.begin(); it1 != loc.errorPage.end(); it1++)
+				{
+					o << std::setw(20) << it1->first << " | " << it1->second << " | errorPage\n";
+				}
+				o << std::setw(20) <<loc.redirect << " | redirect\n";
+				o << std::setw(20) <<loc.raw << " | raw location\n";
+				o << "----------------------------------------" << std::endl;
+				return o;
+}
+
 std::ostream&	operator<<(std::ostream &o, ws::Config const &cnf) {
 		o << "----------------------------------------" << std::endl;
 		std::cout << "\033[1;32m";
@@ -29,22 +49,7 @@ std::ostream&	operator<<(std::ostream &o, ws::Config const &cnf) {
 			std::cout << "LOCATIONS";
 			std::cout << "\033[0m" << std::endl;
 			for (std::vector<ws::Location>::const_iterator it = cnf.Locations.begin(); it != cnf.Locations.end(); it++)
-			{
-				o << std::setw(20) <<it->path << " | path\n";
-				o << std::setw(20) <<it->autoindex << " | autoindex\n";
-				o << std::setw(20) <<it->root << " | root\n";
-				o << std::setw(20) <<it->method << " | method\n";
-				o << std::setw(20) <<it->index << " | index\n";
-				o << std::setw(20) <<it->uploadPath << " | uploadPath\n";
-				o << std::setw(20) <<it->binPath << " | binPath\n";
-				for (std::map<std::string, std::string>::const_iterator it1 = cnf.errorPage.begin(); it1 != cnf.errorPage.end(); it1++)
-				{
-					o << std::setw(20) << it1->first << " | " << it1->second << " | errorPage\n";
-				}
-				o << std::setw(20) <<it->redirect << " | redirect\n";
-				o << std::setw(20) <<it->raw << " | raw location\n";
-				o << "----------------------------------------" << std::endl;
-			}
+				std::cout << *it;
 		}
 		return o;
 	} 
