@@ -12,8 +12,8 @@ namespace ws
 
 	CGI::CGI(std::string &path, int &clientSocket)
 	{
-		std::string tmpFilePath = "/Users/dnovikov/Desktop/webserv/Server/CGI"
-								  "/tmp/";
+		std::string tmpFilePath = std::getenv("PWD");
+		tmpFilePath.append("/Server/CGI/tmp/");
 		tmpFilePath.append(std::to_string(clientSocket));
 		tmpFilePath.append("_CGI_");
 		tmpFilePath.append(std::to_string(clock()));
