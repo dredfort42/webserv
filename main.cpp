@@ -7,11 +7,6 @@
 #include "Server/Server.hpp"
 #include <signal.h>
 
-//void signal_callback_handler(int signum){
-//
-//	std::cout << "Caught signal SIGPIPE " <<signum << "\n";
-//}
-
 int main(int argc, char **argv)
 {
 	if (argc != 2)
