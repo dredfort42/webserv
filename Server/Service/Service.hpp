@@ -32,6 +32,7 @@ namespace ws
 		bool check(int stepStatus, std::string stepName);
 		void startListeningSocket();
 		void makeSocketReusable();
+		void makeSocketSilent();
 		void prepareNetworkConnection();
 		void establishNetworkConnection();
 		void printServiceConfig();
