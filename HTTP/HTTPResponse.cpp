@@ -19,13 +19,10 @@ ws::Location*	ws::HTTPResponse::findLocation(std::string &path, std::vector<ws::
 
 std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection, ws::Location *loc) {
 	std::string response;
-	if (req.path.find(".php") != std::string::npos || loc->path == ".py")	
+	if (req.path.find(".php") != std::string::npos || req.path.find(".py") != std::string::npos)	
 	{
 		CGI cgi(req.path, connection.socket, loc);
-		std::cout << "HIIII\n";
 		response = cgi.getResponse();
-		std::cout << "HIIII\n";
-		std::cout << "RESPONSE\n" << response;
 		return addHeader(response, req, "200");
 	}
 	else

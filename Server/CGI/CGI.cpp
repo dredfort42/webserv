@@ -87,8 +87,10 @@ namespace ws
 
 	std::string CGI::getResponse()
 	{
-		return _response.substr(_response.find("<html>"));
-		//return _response;
+		const size_t pos = _response.find("<html>");
+		if (pos != std::string::npos)
+			return _response.substr(_response.find("<html>"));
+		return _response;
 	}
 
 	std::string	CGI::split(std::string &line, std::string delimiter)

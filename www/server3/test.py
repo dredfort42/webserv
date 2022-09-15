@@ -1,1 +1,1 @@
-print("Content-Type: text/plain\n\nHello, world!")
+print("Hello, world!\n")
