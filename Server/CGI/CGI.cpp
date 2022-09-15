@@ -12,7 +12,9 @@ namespace ws
 
 	CGI::CGI(std::string &path, int &clientSocket)
 	{
-		std::string tmpFilePath = std::string(std::getenv("PWD")) + "/Server/CGI/tmp";
+
+		std::string tmpFilePath = std::getenv("PWD");
+		tmpFilePath.append("/Server/CGI/tmp/");
 		tmpFilePath.append(std::to_string(clientSocket));
 		tmpFilePath.append("_CGI_");
 		tmpFilePath.append(std::to_string(clock()));
@@ -26,7 +28,7 @@ namespace ws
 		_response.clear();
 
 		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-		executor();
+		_code = executor();
 	}
 
 	int CGI::executor()
@@ -112,5 +114,10 @@ namespace ws
 		line.erase(line.find_last_not_of(trimmer)+1);         //suffixing spaces
 		line.erase(0, line.find_first_not_of(trimmer));       //prefixing spaces
 		return line;
+	}
+
+	std::string CGI::getCode()
+	{
+		return std::to_string(_code);
 	};
 } // ws

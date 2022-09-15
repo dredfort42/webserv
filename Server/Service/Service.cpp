@@ -37,6 +37,22 @@ namespace ws
 				sizeof(optionLen)
 		);
 		if (check(stepStatus, "Make socket reusable"))
+			makeSocketSilent();
+		else
+			printServiceConfig();
+	}
+
+	void Service::makeSocketSilent()
+	{
+		int optionLen = 1;
+		int stepStatus = setsockopt(
+				_listeningSocket,
+				SOL_SOCKET,
+				SO_NOSIGPIPE,
+				&optionLen,
+				sizeof(optionLen)
+		);
+		if (check(stepStatus, "Make socket silent"))
 			prepareNetworkConnection();
 		else
 			printServiceConfig();

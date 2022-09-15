@@ -17,6 +17,7 @@ namespace ws
 		std::string _commandLine;
 		std::string _executableFile;
 		std::string _response;
+		int 		_code;
 
 		CGI();
 
@@ -25,6 +26,7 @@ namespace ws
 
 		int 		executor();
 		std::string getResponse();
+		std::string	getCode();
 		std::string	split(std::string &line, std::string delimiter);
 		inline std::string &trim( std::string &line, const std::string
 		&trimmer);
