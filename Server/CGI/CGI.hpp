@@ -14,9 +14,7 @@ namespace ws
 	{
 	private:
 		File 		_tmpFile;
-//		std::string _path;
-		std::string _absolutePath;
-		std::string _requestArguments;
+		std::string _commandLine;
 		std::string _executableFile;
 		std::string _response;
 

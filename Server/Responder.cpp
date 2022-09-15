@@ -21,17 +21,16 @@ namespace ws
 
 		connection.bytesSent += send(
 				connection.socket,
-				connection.response.data() + int(connection.bytesSent),
+				connection.response.c_str() + size_t(connection.bytesSent),
 				bytesToSend,
 				0
 		);
-
-		//	std::cout << connection.response << std::endl;
+		
 		// Sent complete
 		if (responseLength <= connection.bytesSent)
 		{
 		//	std::cout << connection.response << std::endl;
-
+		
 			if (connection.HTTPreq.connect == KEEP_ALIVE)
 			{
 				FD_CLR(connection.socket, &_masterWriteSet);

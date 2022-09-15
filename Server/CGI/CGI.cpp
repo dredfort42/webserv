@@ -12,7 +12,7 @@ namespace ws
 
 	CGI::CGI(std::string &path, int &clientSocket)
 	{
-		std::string tmpFilePath = "/Users/wizzz/21school/ft_webserv/Server/CGI"
+		std::string tmpFilePath = "/Users/dnovikov/Desktop/webserv/Server/CGI"
 								  "/tmp/";
 		tmpFilePath.append(std::to_string(clientSocket));
 		tmpFilePath.append("_CGI_");
@@ -20,36 +20,23 @@ namespace ws
 
 		_tmpFile = File(tmpFilePath, CREATE_FILE);
 		std::cout << "\033[1;32m >>> TMP FILE CREATED >>> \033[0m" << std::endl;
-//		_path = path;
-		_absolutePath = "/Users/wizzz/21school/ft_webserv/www/server3";
-		_absolutePath.append(path);
-		_requestArguments.clear();
+
+		_commandLine = "/Users/dnovikov/Desktop/webserv/www/server3";
+		_commandLine.append(path);
+		_executableFile = "/usr/local/bin/php-cgi";
 		_response.clear();
 
-		//// TMP ////////////////////////////////
-//		File file = File(path, OPEN_FILE);
-//		if (file._fileType == ".php")
-		_executableFile = "/usr/local/bin/php-cgi";
-//		else if (file._fileType == ".py")
-//			_executableFile = "/Library/Frameworks/Python.framework/Versions/3"
-//							 ".10/bin/python3";
-		//// END ////////////////////////////////
-
-
 		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-//		std::cout << _absolutePath << std::endl;
-//		std::cout << _executableFile << std::endl;
-
-//		_response = "TESTTESTTEST";
 		executor();
 	}
 
 	int CGI::executor()
 	{
-		std::string aPath = split(_absolutePath, "?");
+		std::string pathToFileToExecute = split(_commandLine, "?");
+		std::string arguments = _commandLine;
 		char *argv[] = {const_cast<char *>(_executableFile.c_str()),
-						const_cast<char *>(aPath.c_str()),
-						const_cast<char *>(_absolutePath.c_str()),
+						const_cast<char *>(pathToFileToExecute.c_str()),
+						const_cast<char *>(arguments.c_str()),
 						NULL};
 
 		std::cout << "\033[1;32m >>> " << argv[0] << " >>> \033[0m"
@@ -99,8 +86,7 @@ namespace ws
 
 	std::string CGI::getResponse()
 	{
-		std::string tmp = _response.substr(_response.find("<html>")); 
-		return tmp;
+		return _response.substr(_response.find("<html>"));;
 	}
 
 	std::string	CGI::split(std::string &line, std::string delimiter)

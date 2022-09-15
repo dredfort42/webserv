@@ -7,7 +7,6 @@
 namespace ws
 {
 
-
 	File::File()
 	{
 		_fd = -1;
@@ -15,7 +14,6 @@ namespace ws
 		_path.clear();
 		_fileType.clear();
 	}
-
 
 	File::File(const std::string &path, const FileOperation &operation)
 	{
@@ -32,7 +30,6 @@ namespace ws
 			default:
 				_fd = 0;
 		}
-
 		if (_fd > 0)
 		{
 			_path = path;
@@ -59,13 +56,11 @@ namespace ws
 			default:
 				_fd = 0;
 		}
-
 		if (_fd > 0)
 		{
 			_path = path;
 			_fileType = getFileType(const_cast<std::string &>(path));
 		}
-
 	}
 
 	std::string File::getFileType(std::string &path)
@@ -109,29 +104,22 @@ namespace ws
 	{
 		std::vector<uint8_t> fileData;
 		uint8_t buffer[WS_BUFFER_SIZE];
-		int bytesWasRead, i;
+		int bytesWasRead;
 
 		_fileOperation = READ_FILE;
 		memset(&buffer, 0, sizeof(buffer));
 		bytesWasRead = 0;
 		lseek(_fd, 0, SEEK_SET);
 		while ((bytesWasRead = read(_fd, buffer, WS_BUFFER_SIZE)) > 0)
-		{
-			i = 0;
-			while (i < bytesWasRead)
-				fileData.push_back(buffer[i++]);
-		}
+			for (int i = 0; i < bytesWasRead; i++)
+				fileData.push_back(buffer[i]);
 		closeFile();
 		return fileData;
 	}
 
-	int &File::getFileFd()
-	{
-		return _fd;
-	}
-
 	int File::removeFile()
 	{
+		std::cout << "\033[1;33m >>> FILE DELETED >>> \033[0m" << std::endl;
 		return remove(_path.c_str());
 	}
 } // ws
