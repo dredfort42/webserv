@@ -58,6 +58,7 @@ void  ws::Parser::readFile() {
 		this->_rawFile += "\n";
 	}
 	this->_fd.close();
+	std::cout << this->_rawFile << std::endl;
 };
 
 
@@ -395,5 +396,3 @@ void	ws::Parser::parseLocationBlock(std::string &line, Location &loc) {
 		checkLine(line, loc);
 	}
 }
-
-

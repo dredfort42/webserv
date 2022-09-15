@@ -19,7 +19,8 @@ ws::Location*	ws::HTTPResponse::findLocation(std::string &path, std::vector<ws::
 
 std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection, ws::Location *loc) {
 	std::string response;
-	if (req.path.find(".php") != std::string::npos || req.path.find(".py") != std::string::npos)	
+	if (loc && (req.path.find(".php") != std::string::npos || req.path.find(".py")
+	!= std::string::npos))
 	{
 		CGI cgi(req.path, connection.socket, loc);
 		response = cgi.getResponse();
