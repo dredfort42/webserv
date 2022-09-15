@@ -21,9 +21,11 @@ namespace ws
 		_tmpFile = File(tmpFilePath, CREATE_FILE);
 		std::cout << "\033[1;32m >>> TMP FILE CREATED >>> \033[0m" << std::endl;
 
-		_commandLine = std::string(std::getenv("PWD")) + "/" + loc->root;
+		_commandLine = std::string(std::getenv("PWD"));
+		_commandLine.append("/");
+		_commandLine.append(loc->root);
 		_commandLine.append(path);
-		std::cout << _commandLine << "\n";
+//		std::cout << _commandLine << std::endl;
 		_executableFile = loc->binPath;
 		_response.clear();
 
