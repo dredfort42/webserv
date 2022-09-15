@@ -35,6 +35,7 @@ std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection, 
 
 std::string ws::HTTPResponse::DELETE(ws::HTTPreq &req, ws::Connection &connection, ws::Location *loc) {
 	std::string response, path;
+	path += std::getenv("PWD");
 	if (loc)
 		path = loc->root + loc->uploadPath;
 	else
@@ -46,11 +47,13 @@ std::string ws::HTTPResponse::DELETE(ws::HTTPreq &req, ws::Connection &connectio
 		}
 		path = connection.config.root + connection.config.uploadPath;
 	}
-	ws::File myFd(path, READ_FILE);
+	path += std::string(req.path.substr(req.path.rfind("/") + 1));
+	std::cout << path;
+	ws::File myFd(path, OPEN_FILE);
 	if (myFd._fd < 0)
 		return addHeader(response, req, "204");
-	std::vector<uint8_t> tmp = myFd.readFile();
-	response = std::string(tmp.begin(), tmp.end()); 
+//	std::vector<uint8_t> tmp = myFd.readFile();
+//	response = std::string(tmp.begin(), tmp.end()); 
 	myFd.removeFile();
 	return addHeader(response, req, "200");
 
@@ -91,9 +94,9 @@ std::string ws::HTTPResponse::errorPage(const std::string &err, ws::Config &cnf,
 	std::vector<uint8_t> response;
 	std::string path;
 	ws::File myFd;
-	if (loc && loc->errorPage.at(err).empty() == false)
+	if (loc && loc->errorPage[err].empty() == false)
 		path = loc->errorPage.at(err);
-	else if (cnf.errorPage.at(err).empty() == false)
+	else if (cnf.errorPage[err].empty() == false)
 		path = cnf.errorPage.at(err);
 	else
 		return notFound();
