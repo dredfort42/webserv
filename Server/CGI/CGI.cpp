@@ -89,7 +89,7 @@ namespace ws
 	{
 		const size_t pos = _response.find("<html>");
 		if (pos != std::string::npos)
-			return _response.substr(_response.find("<html>"));
+			return _response.substr(pos);
 		return _response;
 	}
 
