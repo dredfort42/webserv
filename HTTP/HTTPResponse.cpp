@@ -5,6 +5,8 @@
 ws::HTTPResponse::HTTPResponse() {};
 ws::HTTPResponse::~HTTPResponse() {};
 
+
+// MAIN FUNCS
 ws::Location*	ws::HTTPResponse::findLocation(std::string &path, std::vector<ws::Location> &Locs)
 {
 	std::vector<ws::Location>::iterator it = Locs.begin();
@@ -24,11 +26,14 @@ std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection, 
 	{
 		CGI cgi(req.path, connection.socket, loc);
 		response = cgi.getResponse();
+		std::string code = cgi.getCode();
+		if (code != "200")
+			return errorPage(code, connection.setConfig, loc, req);
 		return addHeader(response, req, "200");
 	}
 	else
 	{
-		response = responseFromRoot(req, connection.config, loc);
+		response = responseFromRoot(req, connection.setConfig, loc);
    		return response;
 	}
 }
@@ -59,13 +64,15 @@ std::string ws::HTTPResponse::DELETE(ws::HTTPreq &req, ws::Connection &connectio
 		path = loc->root + loc->uploadPath;
 	else
 	{
-		if (connection.config.uploadPath.empty())
+		if (connection.setConfig.uploadPath.empty())
 		{
 			std::cout << "UPLOAD PATH NOT DEFINED";
-			return errorPage("500", connection.config, loc, req);
+			return errorPage("500", connection.setConfig, loc, req);
 		}
-		path = connection.config.root + connection.config.uploadPath;
+		path = connection.setConfig.root + connection.setConfig.uploadPath;
 	}
+	if (req.path.find(path) == std::string::npos)
+		return addHeader(response, req, "204");
 	path += std::string(req.path.substr(req.path.rfind("/") + 1));
 	std::cout << path;
 	ws::File myFd(path, OPEN_FILE);
@@ -74,22 +81,22 @@ std::string ws::HTTPResponse::DELETE(ws::HTTPreq &req, ws::Connection &connectio
 //	std::vector<uint8_t> tmp = myFd.readFile();
 //	response = std::string(tmp.begin(), tmp.end()); 
 	myFd.removeFile();
-	return addHeader(response, req, "200");
+	return addHeader(response, req, "202");
 
 }
 
 std::string	ws::HTTPResponse::load(HTTPreq &req, Connection &connection) {
 	std::string response;
 	
-	ws::Location *loc = findLocation(req.path, connection.config.Locations);
+	ws::Location *loc = findLocation(req.path, connection.setConfig.Locations);
 
 	if (loc)
 		std::cout << *loc;
 
 	if (loc && loc->method.find(req.method) == std::string::npos)
-		return errorPage("400", connection.config, loc, req);
-	else if (connection.config.method.find(req.method) == std::string::npos)
-		return errorPage("400", connection.config, loc, req);
+		return errorPage("405", connection.setConfig, loc, req);
+	else if (connection.setConfig.method.find(req.method) == std::string::npos)
+		return errorPage("405", connection.setConfig, loc, req);
 
 	if (req.method == "GET")
 		return GET(req, connection, loc);
@@ -102,23 +109,18 @@ std::string	ws::HTTPResponse::load(HTTPreq &req, Connection &connection) {
 	return response;
 };
 
-inline std::string& ws::HTTPResponse::trim( std::string &line, const std::string &trimmer)
-{
-	line.erase(line.find_last_not_of(trimmer)+1);         //suffixing spaces
-    line.erase(0, line.find_first_not_of(trimmer));       //prefixing spaces
-	return line;
-};
-
-std::string ws::HTTPResponse::errorPage(const std::string &err, ws::Config &cnf, ws::Location *loc, ws::HTTPreq &req) {
+// ERRORS BLOCK
+std::string ws::HTTPResponse::errorPage(const std::string &err, ws::resultConfig &cnf, ws::Location *loc, ws::HTTPreq &req) {
 	std::vector<uint8_t> response;
 	std::string path;
 	ws::File myFd;
+	std::cout<< "ERR " << err << "\n";
 	if (loc && loc->errorPage[err].empty() == false)
-		path = loc->errorPage.at(err);
+		path = loc->errorPage[err];
 	else if (cnf.errorPage[err].empty() == false)
-		path = cnf.errorPage.at(err);
+		path = cnf.errorPage[err];
 	else
-		return notFound();
+		return errorTemplate(std::stoi(err));
 	std::cout << path << " ERROR PATH\n";
 	myFd.setPath(path, OPEN_FILE);
 	if (myFd._fd < 0)
@@ -128,6 +130,18 @@ std::string ws::HTTPResponse::errorPage(const std::string &err, ws::Config &cnf,
 	return addHeader(msg, req, err);
 }
 
+std::string ws::HTTPResponse::errorTemplate(int err)
+{
+	switch (err)
+	{
+		case 404: return notFound();
+		case 400: return badRequest();
+		case 405: return notAllowed();
+		case 500: return internalError();
+		case 502: return badGateway();
+		default:	return notFound();
+	}
+}
 std::string	ws::HTTPResponse::notFound() {
 	std::string response, msg;
 	response.append("HTTP/1.1 404 Not Found\r\n");
@@ -143,13 +157,47 @@ std::string	ws::HTTPResponse::badRequest() {
 	std::string response, msg;
 	response.append("HTTP/1.1 400 Bad request\r\n");
 	response.append("Content-Type: text/plain\n");
-	response.append("Content-Length: 13\n");
+	response.append("Content-Length: 13\n\n");
 //	response.append("Content-Length: ");
 	response.append("Bad request!\n"); // Добавить чтение их html 
 
 	return (response);
 }
 
+std::string	ws::HTTPResponse::internalError() {
+	std::string response, msg;
+	response.append("HTTP/1.1 500 Internal Server Error\r\n");
+	response.append("Content-Type: text/plain\n");
+	response.append("Content-Length: 22\n\n");
+//	response.append("Content-Length: ");
+	response.append("Internal Server Error!\n"); // Добавить чтение их html 
+
+	return (response);
+}
+
+std::string	ws::HTTPResponse::badGateway() {
+	std::string response, msg;
+	response.append("HTTP/1.1 502 Bad Gateway\r\n");
+	response.append("Content-Type: text/plain\n");
+	response.append("Content-Length: 13\n\n");
+//	response.append("Content-Length: ");
+	response.append("Bad Gateway!\n"); // Добавить чтение их html 
+
+	return (response);
+}
+
+std::string	ws::HTTPResponse::notAllowed() {
+	std::string response, msg;
+	response.append("HTTP/1.1 405\r\n");
+	response.append("Content-Type: text/plain\n");
+	response.append("Content-Length: 20\n\n");
+//	response.append("Content-Length: ");
+	response.append("Method Not Allowed!\n"); // Добавить чтение их html 
+
+	return (response);
+}
+
+//RESPONSE UTILS
 std::string ws::HTTPResponse::addHeader(std::string& msg, ws::HTTPreq& req, const std::string& code)
 {
 	std::string head, extension, accept;
@@ -167,20 +215,17 @@ std::string ws::HTTPResponse::addHeader(std::string& msg, ws::HTTPreq& req, cons
 			break;
 	}
 	head.append(accept + "\n");
-//	if (extension == "png")
-//	{
-//		head.append("Content-Encoding: gzip\n");
-//	}
 	head.append("Content-Length: ");
 	head.append(std::to_string(msg.size()));
 	head.append("\n\n");
 	head.append(msg);
 	return head;
 }
-std::string	ws::HTTPResponse::responseFromRoot(HTTPreq &req, Config &cnf, Location *loc)
+
+std::string	ws::HTTPResponse::responseFromRoot(HTTPreq &req, resultConfig &cnf, Location *loc)
 {
 	if (cnf.method.find(req.method) == std::string::npos)
-		return errorPage("400", cnf, loc, req);
+		return errorPage("405", cnf, loc, req);
 	else
 	{
 		if (((loc && loc->autoindex) || (cnf.autoindex)) && *(req.path.rbegin()) == '/')
@@ -200,6 +245,7 @@ std::string	ws::HTTPResponse::responseFromRoot(HTTPreq &req, Config &cnf, Locati
 	}
 }
 
+//UTILS BLOCK
 std::string	ws::HTTPResponse::Split(std::string &line, std::string delimiter)
 {
 	size_t pos = 0;
@@ -216,4 +262,11 @@ std::string	ws::HTTPResponse::Split(std::string &line, std::string delimiter)
     line.erase(0, pos + delimiter.length());
 	line.append("\0");
 	return (trim(token, " \t"));
-}
+};
+
+inline std::string& ws::HTTPResponse::trim( std::string &line, const std::string &trimmer)
+{
+	line.erase(line.find_last_not_of(trimmer)+1);         //suffixing spaces
+    line.erase(0, line.find_first_not_of(trimmer));       //prefixing spaces
+	return line;
+};
