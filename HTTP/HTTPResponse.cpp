@@ -38,6 +38,25 @@ std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection, 
 	}
 }
 
+std::string ws::HTTPResponse::POST(ws::HTTPreq &req, ws::Connection &connection,
+								   ws::Location *loc)
+{
+	std::string response, path;
+	path += std::getenv("PWD");
+	if (loc)
+		path = loc->root + loc->uploadPath;
+	else
+	{
+		if (connection.config.uploadPath.empty())
+		{
+			std::cout << "UPLOAD PATH NOT DEFINED";
+			return errorPage("500", connection.config, loc, req);
+		}
+		path = connection.config.root + connection.config.uploadPath;
+	}
+	return std::string();
+};
+
 std::string ws::HTTPResponse::DELETE(ws::HTTPreq &req, ws::Connection &connection, ws::Location *loc) {
 	std::string response, path;
 	path += std::getenv("PWD");

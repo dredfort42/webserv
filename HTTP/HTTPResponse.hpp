@@ -43,6 +43,7 @@ namespace ws {
 			std::string DELETE(HTTPreq &req, Connection &connect, Location *loc);
 			std::string	responseFromRoot(HTTPreq &req, resultConfig &cnf, Location *loc);
 
+
 			inline std::string& trim( std::string &line, const std::string &trimmer);
 		private:
 		//	void	*res;

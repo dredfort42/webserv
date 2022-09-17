@@ -5,7 +5,6 @@
 
 #include "Config/Parser.hpp"
 #include "Server/Server.hpp"
-#include <signal.h>
 
 int main(int argc, char **argv)
 {
@@ -14,7 +13,6 @@ int main(int argc, char **argv)
 		std::cerr << argv[0] << ": Wrong number of args!" << std::endl;
 		return (EXIT_FAILURE);
 	}
-//	signal(SIGPIPE, signal_callback_handler);
 	ws::Parser parseConf(argv[1]);
 	try
 	{
