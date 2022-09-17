@@ -58,45 +58,68 @@ void  ws::Parser::readFile() {
 		this->_rawFile += "\n";
 	}
 	this->_fd.close();
-	std::cout << this->_rawFile << std::endl;
+//	std::cout << this->_rawFile << std::endl;
 };
 
+void	ws::Parser::checkConfigs(Config cfg, siteConf setup)
+{
+	if (_cfg.size() > 0)
+	{
+		for (std::vector<Config>::iterator it = _cfg.begin(); it != _cfg.end(); it++)
+		{
+			//std::cout << it->ip << " = " << cfg.ip <<"\n";
+			//std::cout << it->port << " = " << cfg.port <<"\n";
+			if (it->ip == cfg.ip && it->port == cfg.port)
+			{
+				it->setup[setup.serverName] = setup;
+				return;
+			}
+		}
+	}
+	cfg.setup[setup.serverName] = setup;
+	this->_cfg.push_back(cfg);
+}
 
 void	ws::Parser::parseFile() {
-	Config cfg;
+	Config 		cfg;
+	siteConf	setup;
 
 	checkBrackets();//проверка валидности скобочек
 
 	size_t pos = this->_rawFile.find("SERVER");
 
 	while (pos != std::string::npos) {
-		resetConfig(cfg);
-		parseServerBlock(cfg, pos);
+		resetConfig(cfg, setup);
+		parseServerBlock(cfg, setup, pos);
 		if (cfg.port.empty())
 			cfg.port = "8080";
 		if (cfg.ip.empty())
 			cfg.ip = "0.0.0.0";
 		pos = this->_rawFile.find("SERVER");
-		this->_cfg.push_back(cfg);
+		checkConfigs(cfg, setup);
 	}
-	
+	for (std::vector<Config>::iterator it = _cfg.begin() ; it != _cfg.end(); it++)
+	{
+		std::cout << *it;
+	}
 }
 
 //Utils
 
-void	ws::Parser::resetConfig(Config &cfg) {
+void	ws::Parser::resetConfig(Config &cfg, siteConf &setup) {
 
 		cfg.ip.clear();
 		cfg.port.clear();
-		cfg.bodySize = 0;
-		cfg.serverName.clear();
-		cfg.autoindex = false;
-		cfg.root.clear();
-		cfg.method.clear();
-		cfg.index.clear();
-		cfg.uploadPath.clear();
-		cfg.errorPage.clear();
-		cfg.Locations.clear();
+		cfg.setup.clear();
+		setup.bodySize = 0;
+		setup.serverName.clear();
+		setup.autoindex = false;
+		setup.root.clear();
+		setup.method.clear();
+		setup.index.clear();
+		setup.uploadPath.clear();
+		setup.errorPage.clear();
+		setup.Locations.clear();
 }
 
 int		ws::Parser::stoi(std::string line)
@@ -185,14 +208,14 @@ bool	ws::Parser::fillListen(std::string &line, Config &cnf)
 	return true;
 }
 
-bool	ws::Parser::fillBodySize(std::string &line, Config &cnf)
+bool	ws::Parser::fillBodySize(std::string &line, siteConf &cnf)
 {
 	prepareLine(line, errFillBodySize);
 	cnf.bodySize = stoi(line);
 	return true;
 }
 
-bool	ws::Parser::fillName(std::string &line, Config &cnf)
+bool	ws::Parser::fillName(std::string &line, siteConf &cnf)
 {
 	prepareLine(line, errFillName);
 	cnf.serverName = line;
@@ -261,7 +284,7 @@ bool	ws::Parser::fillRedirect(std::string &line, T &cnf) {
 	return true;
 }
 
-void	ws::Parser::fillLocation(std::string &line, std::string &buf, Config &cnf) {
+void	ws::Parser::fillLocation(std::string &line, std::string &buf, siteConf &cnf) {
 	ws::Location loc;
 	size_t end = 0;
 	//std::string path;
@@ -273,7 +296,7 @@ void	ws::Parser::fillLocation(std::string &line, std::string &buf, Config &cnf) 
 	cnf.Locations.push_back(loc);
 }
 
-bool	ws::Parser::checkLine(std::string &line, Config &cnf)
+bool	ws::Parser::checkLine(std::string &line, Config &cnf, siteConf &setup)
 {
 		if ((line[0] == '{' && line.size() <= 2) || line[0] == '}' || line[0] == '\n' || line.empty())
 			return true;
@@ -281,22 +304,22 @@ bool	ws::Parser::checkLine(std::string &line, Config &cnf)
 			throw parseException("Every parameter should end with ;\n");
 		if (cnf.ip.empty() && line.find("listen") != std::string::npos)
 			return fillListen(line, cnf);
-		if (cnf.serverName.empty() && line.find("server_name") != std::string::npos)
-			return fillName(line, cnf);
-		if (cnf.bodySize == 0 && line.find("client_max_body_size") != std::string::npos)
-			return fillBodySize(line, cnf);
+		if (setup.serverName.empty() && line.find("server_name") != std::string::npos)
+			return fillName(line, setup);
+		if (setup.bodySize == 0 && line.find("client_max_body_size") != std::string::npos)
+			return fillBodySize(line, setup);
 		if (line.find("autoindex") != std::string::npos)
-			return fillAutoInd(line, cnf);
-		if (cnf.method.empty() && line.find("methods") != std::string::npos)
-			return fillMethods(line, cnf);
-		if (cnf.root.empty() && line.find("root") != std::string::npos)
-			return fillRoot(line, cnf);
-		if (cnf.errorPage.empty() && line.find("error_page") != std::string::npos)
-			return fillError(line, cnf);
-		if (cnf.index.empty() && line.find("index") != std::string::npos)
-			return fillIndex(line, cnf);
-		if (cnf.uploadPath.empty() && line.find("upload_path") != std::string::npos)
-			return fillUploadPath(line, cnf);
+			return fillAutoInd(line, setup);
+		if (setup.method.empty() && line.find("methods") != std::string::npos)
+			return fillMethods(line, setup);
+		if (setup.root.empty() && line.find("root") != std::string::npos)
+			return fillRoot(line, setup);
+		if (line.find("error_page") != std::string::npos)
+			return fillError(line, setup);
+		if (setup.index.empty() && line.find("index") != std::string::npos)
+			return fillIndex(line, setup);
+		if (setup.uploadPath.empty() && line.find("upload_path") != std::string::npos)
+			return fillUploadPath(line, setup);
 		return true;
 }
 
@@ -312,7 +335,7 @@ bool	ws::Parser::checkLine(std::string &line, Location &cnf)
 			return fillMethods(line, cnf);
 		if (cnf.root.empty() && line.find("root") != std::string::npos)
 			return fillRoot(line, cnf);
-		if (cnf.errorPage.empty() && line.find("error_page") != std::string::npos)
+		if (line.find("error_page") != std::string::npos)
 			return fillError(line, cnf);
 		if (cnf.index.empty() && line.find("index") != std::string::npos)
 			return fillIndex(line, cnf);
@@ -325,20 +348,19 @@ bool	ws::Parser::checkLine(std::string &line, Location &cnf)
 		return true;
 }
 
-void	ws::Parser::fillStruct(std::string &buf, Config &cnf)
+void	ws::Parser::fillStruct(std::string &buf, Config &cnf, siteConf &setup)
 {
 	std::string line;
+//	std::cout  << buf;
 	while (buf.empty() == false)
 	{
 		line = Split(buf, "\n");
-		//std::cout << line << "\n";
 		if (line.find("location") != std::string::npos)
 		{
-		//	std::cout<<line<<"\n";
-			fillLocation(line, buf, cnf);
+			fillLocation(line, buf, setup);
 			continue;
 		}
-		if (checkLine(line, cnf) == false)
+		if (checkLine(line, cnf, setup) == false)
 		{
 			throw parseException("Wrong parameter");
 		}
@@ -347,14 +369,15 @@ void	ws::Parser::fillStruct(std::string &buf, Config &cnf)
 
 //Main parse block
 
-void	ws::Parser::parseServerBlock(Config &cfg, const size_t &pos){
+void	ws::Parser::parseServerBlock(Config &cfg, siteConf &setup, const size_t &pos){
 	size_t end = pos;
 	std::string buf = takeBlock(this->_rawFile, pos, &end, false);
-	fillStruct(buf, cfg);
+	fillStruct(buf, cfg, setup);
 	this->_rawFile.erase(pos, end + 1);
-	if (cfg.bodySize == 0)
-		cfg.bodySize = 1024;
-	std::cout << cfg;
+	if (setup.bodySize == 0)
+		setup.bodySize = 1024;
+//	std::cout << cfg;
+
 
 //	std::cout << cfg.ip << " IP | " << cfg.port << " PORT\n";
 //	std::cout << cfg.serverName << " server_name\n";

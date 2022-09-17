@@ -7,6 +7,25 @@
 namespace ws
 {
 
+	resultConfig Server::makeConfig(Connection &c)
+	{
+		resultConfig res;
+		std::string id = c.HTTPreq.host;
+
+		res.ip = c.config.ip;
+		res.port = c.config.port;
+		res.serverName = id;
+		res.autoindex = c.config.setup[id].autoindex;
+		res.root = c.config.setup[id].root;
+		res.method = c.config.setup[id].method;
+		res.index = c.config.setup[id].index;
+		res.uploadPath = c.config.setup[id].uploadPath;
+		res.bodySize = c.config.setup[id].bodySize;
+		res.errorPage = c.config.setup[id].errorPage;
+		res.Locations = c.config.setup[id].Locations;
+		return res;
+	}
+
 	void Server::processor(Connection &connection)
 	{
 		try {
@@ -21,7 +40,9 @@ namespace ws
 		}
 
 		ws::HTTPResponse response;
-
+		std::cout << connection.config;
+		connection.setConfig =  makeConfig(connection);
+		std::cout << connection.setConfig;
 		std::string resp = response.load(connection.HTTPreq, connection);
 		connection.response = resp;
 		

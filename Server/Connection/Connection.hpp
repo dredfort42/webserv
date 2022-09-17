@@ -22,6 +22,7 @@ namespace ws
 		std::time_t 	startTime;
 		HTTPreq			HTTPreq;
 		Config			config;
+		resultConfig	setConfig;
 	};
 
 } // ws
