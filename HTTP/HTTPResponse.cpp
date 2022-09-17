@@ -47,12 +47,12 @@ std::string ws::HTTPResponse::POST(ws::HTTPreq &req, ws::Connection &connection,
 		path = loc->root + loc->uploadPath;
 	else
 	{
-		if (connection.config.uploadPath.empty())
+		if (connection.setConfig.uploadPath.empty())
 		{
 			std::cout << "UPLOAD PATH NOT DEFINED";
-			return errorPage("500", connection.config, loc, req);
+			return errorPage("500", connection.setConfig, loc, req);
 		}
-		path = connection.config.root + connection.config.uploadPath;
+		path = connection.setConfig.root + connection.setConfig.uploadPath;
 	}
 	return std::string();
 };
