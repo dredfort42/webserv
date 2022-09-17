@@ -9,12 +9,13 @@ namespace ws
 
 	Connection::Connection(int socket, ws::Config &config)
 	{
-		_isReadyToClose = false;
+		isReadyToClose = false;
 		this->socket = socket;
 		this->config = config;
 		request = "";
 		response = "";
 		bytesSent = 0;
+		uploadFile = File();
 		time(&startTime);
 		
 	}

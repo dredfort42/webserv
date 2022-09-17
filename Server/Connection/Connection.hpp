@@ -6,6 +6,7 @@
 
 #include <ctime>
 #include "../Service/Service.hpp"
+#include "../File/File.hpp"
 
 namespace ws
 {
@@ -14,7 +15,7 @@ namespace ws
 	{
 		Connection(int socket, Config &config);
 
-		bool			_isReadyToClose;
+		bool			isReadyToClose;
 		int 			socket;
 		std::string 	request;
 		std::string 	response;
@@ -22,6 +23,7 @@ namespace ws
 		std::time_t 	startTime;
 		HTTPreq			HTTPreq;
 		Config			config;
+		File			uploadFile;
 	};
 
 } // ws

@@ -36,8 +36,10 @@ std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection, 
 std::string ws::HTTPResponse::POST(ws::HTTPreq &req, ws::Connection &connection,
 								   ws::Location *loc)
 {
-	std::string response, path;
-	path += std::getenv("PWD");
+
+
+	std::string path;
+	path = std::getenv("PWD");
 	if (loc)
 		path = loc->root + loc->uploadPath;
 	else
@@ -49,6 +51,21 @@ std::string ws::HTTPResponse::POST(ws::HTTPreq &req, ws::Connection &connection,
 		}
 		path = connection.config.root + connection.config.uploadPath;
 	}
+	path += std::string("test.txt");
+
+
+	std::cout << "POST#POST#POST#POST#POST#POST#POST#POST#POST" << std::endl;
+	std::cout << path << std::endl;
+	std::cout << connection.request << std::endl;
+
+	if (connection.uploadFile._fd == -1)
+	{
+		connection.uploadFile._fd = open(path.c_str(), O_CREAT | O_RDWR |
+		O_APPEND);
+		connection.uploadFile._fileOperation = WRITE_FILE;
+	}
+	connection.uploadFile.addToFile(connection.request);
+
 	return std::string();
 };
 
@@ -93,8 +110,8 @@ std::string	ws::HTTPResponse::load(HTTPreq &req, Connection &connection) {
 
 	if (req.method == "GET")
 		return GET(req, connection, loc);
-//	else if (req.method == "POST)
-//		return POST(req, connection.config, loc);
+	else if (req.method == "POST")
+		return POST(req, connection, loc);
 	else if (req.method == "DELETE")
 		return DELETE(req, connection, loc);
 
