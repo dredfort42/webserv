@@ -40,9 +40,7 @@ namespace ws
 		}
 
 		ws::HTTPResponse response;
-		std::cout << connection.config;
 		connection.setConfig =  makeConfig(connection);
-		std::cout << connection.setConfig;
 		std::string resp = response.load(connection.HTTPreq, connection);
 		connection.response = resp;
 		
