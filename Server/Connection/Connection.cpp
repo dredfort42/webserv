@@ -16,6 +16,9 @@ namespace ws
 		response = "";
 		bytesSent = 0;
 		uploadFile = File();
+		uploadFileName.clear();
+		uploadFileBoundary.clear();
+		isUploadStarted = false;
 		time(&startTime);
 		
 	}

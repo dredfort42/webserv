@@ -24,6 +24,9 @@ namespace ws
 		HTTPreq			HTTPreq;
 		Config			config;
 		File			uploadFile;
+		std::string 	uploadFileName;
+		std::string 	uploadFileBoundary;
+		bool			isUploadStarted;
 	};
 
 } // ws

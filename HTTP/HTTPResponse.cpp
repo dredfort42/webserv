@@ -2,13 +2,18 @@
 #include "../Server/CGI/CGI.hpp"
 #include <string>
 
-ws::HTTPResponse::HTTPResponse() {};
-ws::HTTPResponse::~HTTPResponse() {};
+ws::HTTPResponse::HTTPResponse()
+{};
 
-ws::Location*	ws::HTTPResponse::findLocation(std::string &path, std::vector<ws::Location> &Locs)
+ws::HTTPResponse::~HTTPResponse()
+{};
+
+ws::Location *ws::HTTPResponse::findLocation(std::string &path,
+											 std::vector<ws::Location> &Locs)
 {
 	std::vector<ws::Location>::iterator it = Locs.begin();
-	for (; it != Locs.end(); it++) {
+	for (; it != Locs.end(); it++)
+	{
 		if (path.find(it->path) != std::string::npos)
 			break;
 	}
@@ -17,59 +22,115 @@ ws::Location*	ws::HTTPResponse::findLocation(std::string &path, std::vector<ws::
 	return (&(*it));
 };
 
-std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection, ws::Location *loc) {
+std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection,
+								  ws::Location *loc)
+{
 	std::string response;
-	if (loc && (req.path.find(".php") != std::string::npos || req.path.find(".py")
-	!= std::string::npos))
+	if (loc &&
+		(req.path.find(".php") != std::string::npos || req.path.find(".py")
+													   != std::string::npos))
 	{
 		CGI cgi(req.path, connection.socket, loc);
 		response = cgi.getResponse();
 		return addHeader(response, req, "200");
-	}
-	else
+	} else
 	{
 		response = responseFromRoot(req, connection.config, loc);
-   		return response;
+		return response;
 	}
 }
 
 std::string ws::HTTPResponse::POST(ws::HTTPreq &req, ws::Connection &connection,
 								   ws::Location *loc)
 {
-
-
-	std::string path;
-	path = std::getenv("PWD");
-	if (loc)
-		path = loc->root + loc->uploadPath;
-	else
+	if (connection.uploadFile._path.empty())
 	{
-		if (connection.config.uploadPath.empty())
+		connection.uploadFile._path = std::getenv("PWD");
+		if (loc)
+			connection.uploadFile._path = loc->root + loc->uploadPath;
+		else
 		{
-			std::cout << "UPLOAD PATH NOT DEFINED";
-			return errorPage("500", connection.config, loc, req);
+			if (connection.config.uploadPath.empty())
+			{
+				std::cout << "UPLOAD PATH NOT DEFINED";
+				return errorPage("500", connection.config, loc, req);
+			}
+			connection.uploadFile._path =
+					connection.config.root + connection.config.uploadPath;
 		}
-		path = connection.config.root + connection.config.uploadPath;
 	}
-	path += std::string("test.txt");
 
-
-	std::cout << "POST#POST#POST#POST#POST#POST#POST#POST#POST" << std::endl;
-	std::cout << path << std::endl;
-	std::cout << connection.request << std::endl;
-
-	if (connection.uploadFile._fd == -1)
+	std::string tmp = connection.request;
+	if (!connection.isUploadStarted)
 	{
-		connection.uploadFile._fd = open(path.c_str(), O_CREAT | O_RDWR |
-		O_APPEND);
-		connection.uploadFile._fileOperation = WRITE_FILE;
+		if (connection.uploadFileBoundary.empty())
+		{
+			size_t startPosition = tmp.find("boundary=");
+
+			if (startPosition < tmp.length())
+			{
+				tmp = tmp.substr(startPosition + 9);
+				std::string::iterator it;
+				for (it = tmp.begin(); *it && *it != '\n'; it++);
+				connection.uploadFileBoundary = std::string(tmp.begin(), it);
+			}
+
+			std::cout << "\033[1;31m$$$$$" << std::endl;
+			std::cout << connection.uploadFileBoundary << std::endl;
+			std::cout << "$$$$$\033[0m" << std::endl;
+		} else if (!connection.uploadFileBoundary.empty()
+				   && connection.uploadFileName.empty())
+		{
+			size_t startPosition = tmp.find("filename=\"");
+			if (startPosition < tmp.length())
+			{
+				tmp = tmp.substr(startPosition + 10);
+				std::string::iterator it;
+				for (it = tmp.begin(); *it && *it != '\"'; it++);
+				connection.uploadFileName = std::string(tmp.begin(), it);
+				connection.uploadFile._path.append(connection.uploadFileName);
+			}
+			std::cout << "\033[1;32m$$$$$" << std::endl;
+			std::cout << connection.uploadFileName << std::endl;
+			std::cout << "$$$$$\033[0m" << std::endl;
+
+			startPosition = tmp.find("\r\n\r\n");
+			if (startPosition < tmp.length())
+				tmp = tmp.substr(startPosition + 4);
+			connection.isUploadStarted = true;
+
+			std::cout << "\033[1;33m$$$$$" << std::endl;
+			std::cout << tmp << std::endl;
+			std::cout << "$$$$$\033[0m" << std::endl;
+		}
 	}
-	connection.uploadFile.addToFile(connection.request);
+
+	if (connection.isUploadStarted)
+	{
+		tmp = Split(tmp, "--" + connection.uploadFileBoundary);
+		std::cout << "POST#POST#POST#POST#POST#POST#POST#POST#POST"
+				  << std::endl;
+		std::cout << connection.uploadFile._path << std::endl;
+		std::cout << connection.request << std::endl;
+
+		if (connection.uploadFile._fd == -1)
+		{
+			connection.uploadFile._fd = open(
+					connection.uploadFile._path.c_str(),
+					O_CREAT | O_RDWR | O_APPEND
+			);
+			connection.uploadFile._fileOperation = WRITE_FILE;
+		}
+		connection.uploadFile.addToFile(tmp);
+	}
 
 	return std::string();
 };
 
-std::string ws::HTTPResponse::DELETE(ws::HTTPreq &req, ws::Connection &connection, ws::Location *loc) {
+std::string
+ws::HTTPResponse::DELETE(ws::HTTPreq &req, ws::Connection &connection,
+						 ws::Location *loc)
+{
 	std::string response, path;
 	path += std::getenv("PWD");
 	if (loc)
@@ -95,9 +156,10 @@ std::string ws::HTTPResponse::DELETE(ws::HTTPreq &req, ws::Connection &connectio
 
 }
 
-std::string	ws::HTTPResponse::load(HTTPreq &req, Connection &connection) {
+std::string ws::HTTPResponse::load(HTTPreq &req, Connection &connection)
+{
 	std::string response;
-	
+
 	ws::Location *loc = findLocation(req.path, connection.config.Locations);
 
 	if (loc)
@@ -119,14 +181,17 @@ std::string	ws::HTTPResponse::load(HTTPreq &req, Connection &connection) {
 	return response;
 };
 
-inline std::string& ws::HTTPResponse::trim( std::string &line, const std::string &trimmer)
+inline std::string &
+ws::HTTPResponse::trim(std::string &line, const std::string &trimmer)
 {
-	line.erase(line.find_last_not_of(trimmer)+1);         //suffixing spaces
-    line.erase(0, line.find_first_not_of(trimmer));       //prefixing spaces
+	line.erase(line.find_last_not_of(trimmer) + 1);         //suffixing spaces
+	line.erase(0, line.find_first_not_of(trimmer));       //prefixing spaces
 	return line;
 };
 
-std::string ws::HTTPResponse::errorPage(const std::string &err, ws::Config &cnf, ws::Location *loc, ws::HTTPreq &req) {
+std::string ws::HTTPResponse::errorPage(const std::string &err, ws::Config &cnf,
+										ws::Location *loc, ws::HTTPreq &req)
+{
 	std::vector<uint8_t> response;
 	std::string path;
 	ws::File myFd;
@@ -145,7 +210,8 @@ std::string ws::HTTPResponse::errorPage(const std::string &err, ws::Config &cnf,
 	return addHeader(msg, req, err);
 }
 
-std::string	ws::HTTPResponse::notFound() {
+std::string ws::HTTPResponse::notFound()
+{
 	std::string response, msg;
 	response.append("HTTP/1.1 404 Not Found\r\n");
 	response.append("Content-Type: text/plain\n");
@@ -156,7 +222,8 @@ std::string	ws::HTTPResponse::notFound() {
 	return (response);
 }
 
-std::string	ws::HTTPResponse::badRequest() {
+std::string ws::HTTPResponse::badRequest()
+{
 	std::string response, msg;
 	response.append("HTTP/1.1 400 Bad request\r\n");
 	response.append("Content-Type: text/plain\n");
@@ -167,7 +234,8 @@ std::string	ws::HTTPResponse::badRequest() {
 	return (response);
 }
 
-std::string ws::HTTPResponse::addHeader(std::string& msg, ws::HTTPreq& req, const std::string& code)
+std::string ws::HTTPResponse::addHeader(std::string &msg, ws::HTTPreq &req,
+										const std::string &code)
 {
 	std::string head, extension, accept;
 
@@ -194,22 +262,25 @@ std::string ws::HTTPResponse::addHeader(std::string& msg, ws::HTTPreq& req, cons
 	head.append(msg);
 	return head;
 }
-std::string	ws::HTTPResponse::responseFromRoot(HTTPreq &req, Config &cnf, Location *loc)
+
+std::string
+ws::HTTPResponse::responseFromRoot(HTTPreq &req, Config &cnf, Location *loc)
 {
 	if (cnf.method.find(req.method) == std::string::npos)
 		return errorPage("400", cnf, loc, req);
 	else
 	{
-		if (((loc && loc->autoindex) || (cnf.autoindex)) && *(req.path.rbegin()) == '/')
+		if (((loc && loc->autoindex) || (cnf.autoindex)) &&
+			*(req.path.rbegin()) == '/')
 			req.path += cnf.index;
-		ws::File myFd(cnf.root + req.path, OPEN_FILE);	
+		ws::File myFd(cnf.root + req.path, OPEN_FILE);
 		if (myFd._fd < 0)
 			return errorPage("404", cnf, loc, req);
 		else
 		{
 			std::vector<uint8_t> vect = myFd.readFile();// Мега костыль
-			std::string msg(vect.begin(),vect.end());
-			
+			std::string msg(vect.begin(), vect.end());
+
 			if (msg.empty())
 				return errorPage("404", cnf, loc, req);
 			return addHeader(msg, req, "200");
@@ -217,7 +288,7 @@ std::string	ws::HTTPResponse::responseFromRoot(HTTPreq &req, Config &cnf, Locati
 	}
 }
 
-std::string	ws::HTTPResponse::Split(std::string &line, std::string delimiter)
+std::string ws::HTTPResponse::Split(std::string &line, std::string delimiter)
 {
 	size_t pos = 0;
 	std::string token;
@@ -229,8 +300,8 @@ std::string	ws::HTTPResponse::Split(std::string &line, std::string delimiter)
 		return (this->trim(token, " \t"));
 	}
 
-    token = line.substr(0, pos);
-    line.erase(0, pos + delimiter.length());
+	token = line.substr(0, pos);
+	line.erase(0, pos + delimiter.length());
 	line.append("\0");
 	return (trim(token, " \t"));
 }
