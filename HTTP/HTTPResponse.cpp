@@ -118,7 +118,8 @@ std::string ws::HTTPResponse::POST(ws::HTTPreq &req, ws::Connection &connection,
 		{
 			connection.uploadFile._fd = open(
 					connection.uploadFile._path.c_str(),
-					O_CREAT | O_RDWR | O_APPEND
+					O_CREAT | O_RDWR | O_APPEND,
+					00755
 			);
 			connection.uploadFile._fileOperation = WRITE_FILE;
 		}
