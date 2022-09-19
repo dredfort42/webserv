@@ -142,9 +142,8 @@ std::string ws::HTTPResponse::POST(ws::HTTPreq &req, ws::Connection &connection,
 		}
 	}
 
-//	exit(0);
 	if (connection.isUploadComplete)
-		return "HTTP/1.1 201 Created/r/n";
+		return "HTTP/1.1 200 Ok/r/n";
 	else
 		return std::string();
 };

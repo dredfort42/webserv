@@ -92,7 +92,7 @@ namespace ws
 		if (_fileOperation != WRITE_FILE)
 		{
 			closeFile();
-			_fd = open(_path.c_str(), O_RDWR | O_APPEND);
+			_fd = open(_path.c_str(), O_RDWR | O_APPEND, 00755);
 			if (_fd > -1)
 				_fileOperation = WRITE_FILE;
 		}
