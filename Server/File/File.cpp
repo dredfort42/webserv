@@ -24,7 +24,7 @@ namespace ws
 				_fileOperation = OPEN_FILE;
 				break;
 			case CREATE_FILE:
-				_fd = open(path.c_str(), O_CREAT | O_RDWR | O_TRUNC);
+				_fd = open(path.c_str(), O_CREAT | O_RDWR | O_TRUNC, 00755);
 				_fileOperation = CREATE_FILE;
 				break;
 			default:
@@ -70,8 +70,8 @@ namespace ws
 		std::string::iterator lastDot;
 
 		for (std::string::iterator it = path.end();
-		it != path.begin() && *it != '.' && *it != '/';
-		it--)
+			 it != path.begin() && *it != '.' && *it != '/';
+			 it--)
 			lastDot = it;
 		if ( *lastDot-- && *lastDot != '/' && lastDot != path.begin())
 			fileType = std::string(lastDot + 1, path.end());
@@ -92,7 +92,7 @@ namespace ws
 		if (_fileOperation != WRITE_FILE)
 		{
 			closeFile();
-			_fd = open(_path.c_str(), O_RDWR | O_APPEND);
+			_fd = open(_path.c_str(), O_RDWR | O_APPEND, 00755);
 			if (_fd > -1)
 				_fileOperation = WRITE_FILE;
 		}
@@ -119,7 +119,15 @@ namespace ws
 
 	int File::removeFile()
 	{
-		std::cout << "\033[1;33m >>> FILE DELETED >>> \033[0m" << std::endl;
-		return remove(_path.c_str());
+		int result = remove(_path.c_str());
+		usleep(100);
+		if (!result)
+			std::cout << "\033[1;33m >>> FILE DELETED >>> \033[0m" << std::endl;
+		else
+			std::cout << "\033[1;31m >>> FILE DELETION ERROR >>> \033[0m" <<
+					  std::endl;
+
+		return result;
 	}
+
 } // ws
