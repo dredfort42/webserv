@@ -75,9 +75,9 @@ std::string ws::HTTPResponse::POST(ws::HTTPreq &req, ws::Connection &connection,
 				connection.uploadFileBoundary = std::string(tmp.begin(), it);
 			}
 
-			std::cout << "\033[1;31m$$$$$" << std::endl;
-			std::cout << connection.uploadFileBoundary << std::endl;
-			std::cout << "$$$$$\033[0m" << std::endl;
+//			std::cout << "\033[1;31m$$$$$" << std::endl;
+//			std::cout << connection.uploadFileBoundary << std::endl;
+//			std::cout << "$$$$$\033[0m" << std::endl;
 		} else if (!connection.uploadFileBoundary.empty()
 				   && connection.uploadFileName.empty())
 		{
@@ -90,28 +90,29 @@ std::string ws::HTTPResponse::POST(ws::HTTPreq &req, ws::Connection &connection,
 				connection.uploadFileName = std::string(tmp.begin(), it);
 				connection.uploadFile._path.append(connection.uploadFileName);
 			}
-			std::cout << "\033[1;32m$$$$$" << std::endl;
-			std::cout << connection.uploadFileName << std::endl;
-			std::cout << "$$$$$\033[0m" << std::endl;
+//			std::cout << "\033[1;32m$$$$$" << std::endl;
+//			std::cout << connection.uploadFileName << std::endl;
+//			std::cout << "$$$$$\033[0m" << std::endl;
 
 			startPosition = tmp.find("\r\n\r\n");
 			if (startPosition < tmp.length())
 				tmp = tmp.substr(startPosition + 4);
 			connection.isUploadStarted = true;
 
-			std::cout << "\033[1;33m$$$$$" << std::endl;
-			std::cout << tmp << std::endl;
-			std::cout << "$$$$$\033[0m" << std::endl;
+//			std::cout << "\033[1;33m$$$$$" << std::endl;
+//			std::cout << tmp << std::endl;
+//			std::cout << "$$$$$\033[0m" << std::endl;
 		}
 	}
 
 	if (connection.isUploadStarted)
 	{
 		tmp = Split(tmp, "--" + connection.uploadFileBoundary);
-		std::cout << "POST#POST#POST#POST#POST#POST#POST#POST#POST"
-				  << std::endl;
-		std::cout << connection.uploadFile._path << std::endl;
-		std::cout << connection.request << std::endl;
+
+//		std::cout << "POST#POST#POST#POST#POST#POST#POST#POST#POST"
+//				  << std::endl;
+//		std::cout << connection.uploadFile._path << std::endl;
+//		std::cout << connection.request << std::endl;
 
 		if (connection.uploadFile._fd == -1)
 		{
@@ -122,9 +123,30 @@ std::string ws::HTTPResponse::POST(ws::HTTPreq &req, ws::Connection &connection,
 			connection.uploadFile._fileOperation = WRITE_FILE;
 		}
 		connection.uploadFile.addToFile(tmp);
+
+		if (tmp.length() < connection.request.length())
+		{
+			connection.isUploadComplete = true;
+
+			std::cout << "\033[1;31m$$$$$" << std::endl;
+			std::cout << "EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_" << std::endl;
+			std::cout << "_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF" << std::endl;
+			std::cout << "EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_" << std::endl;
+			std::cout << "_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF" << std::endl;
+			std::cout << "EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_" << std::endl;
+			std::cout << "_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF" << std::endl;
+			std::cout << "EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_" << std::endl;
+			std::cout << "_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF" << std::endl;
+			std::cout << "EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_" << std::endl;
+			std::cout << "$$$$$\033[0m" << std::endl;
+		}
 	}
 
-	return std::string();
+//	exit(0);
+	if (connection.isUploadComplete)
+		return "HTTP/1.1 201 Created/r/n";
+	else
+		return std::string();
 };
 
 std::string

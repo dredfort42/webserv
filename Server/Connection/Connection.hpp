@@ -27,6 +27,7 @@ namespace ws
 		std::string 	uploadFileName;
 		std::string 	uploadFileBoundary;
 		bool			isUploadStarted;
+		bool 			isUploadComplete;
 	};
 
 } // ws

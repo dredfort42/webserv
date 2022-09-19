@@ -19,6 +19,7 @@ namespace ws
 		uploadFileName.clear();
 		uploadFileBoundary.clear();
 		isUploadStarted = false;
+		isUploadComplete = false;
 		time(&startTime);
 		
 	}
