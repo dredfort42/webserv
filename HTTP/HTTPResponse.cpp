@@ -30,7 +30,7 @@ std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection,
 		(req.path.find(".php") != std::string::npos || req.path.find(".py")
 													   != std::string::npos))
 	{
-		CGI cgi(req.path, connection.socket, loc);
+		CGI cgi(req.path, loc, connection);
 		response = cgi.getResponse();
 		return addHeader(response, req, "200");
 	} else
@@ -40,8 +40,39 @@ std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection,
 	}
 }
 
-std::string ws::HTTPResponse::POST(ws::HTTPreq &req, ws::Connection &connection,
+
+std::string ws::HTTPResponse::POST(ws::HTTPreq &req,
+								   ws::Connection &connection,
 								   ws::Location *loc)
+{
+	std::string tmp = connection.request;
+	if (tmp.find("application/x-www-form-urlencoded") != std::string::npos)
+		return POST_CGI(req, connection, loc);
+	else if (tmp.find("multipart/form-data") != std::string::npos)
+		return POST_DATA(req, connection, loc);
+	else
+		return errorPage("500", connection.config, loc, req);
+}
+
+std::string ws::HTTPResponse::POST_CGI(ws::HTTPreq &req,
+									   ws::Connection &connection,
+									   ws::Location *loc)
+{
+	std::string response;
+	if (loc &&
+		(req.path.find(".php") != std::string::npos || req.path.find(".py")
+													   != std::string::npos))
+	{
+		CGI cgi(req.path, loc, connection);
+		response = cgi.getResponse();
+		return addHeader(response, req, "200");
+	}
+	return errorPage("500", connection.config, loc, req);
+}
+
+std::string ws::HTTPResponse::POST_DATA(ws::HTTPreq &req,
+										ws::Connection &connection,
+										ws::Location *loc)
 {
 	if (connection.uploadFile._path.empty())
 	{
@@ -119,13 +150,14 @@ std::string ws::HTTPResponse::POST(ws::HTTPreq &req, ws::Connection &connection,
 			connection.uploadFile._fd = open(
 					connection.uploadFile._path.c_str(),
 					O_CREAT | O_RDWR | O_APPEND,
-					00755
+					0755
 			);
 			connection.uploadFile._fileOperation = WRITE_FILE;
 		}
 		connection.uploadFile.addToFile(tmp);
 
-		if (tmp.length() < connection.request.length() && connection.isUploadStarted)
+		if (tmp.length() < connection.request.length() &&
+			connection.isUploadStarted)
 		{
 			connection.isUploadComplete = true;
 
@@ -145,7 +177,7 @@ std::string ws::HTTPResponse::POST(ws::HTTPreq &req, ws::Connection &connection,
 //	if (connection.isUploadComplete)
 //		return "HTTP/1.1 200 Ok/r/n";
 //	else
-		return std::string();
+	return std::string();
 };
 
 std::string

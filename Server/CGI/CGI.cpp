@@ -10,11 +10,11 @@
 namespace ws
 {
 
-	CGI::CGI(std::string &path, int &clientSocket, Location *loc)
+	CGI::CGI(std::string &path, Location *loc, ws::Connection &connection)
 	{
 		std::string tmpFilePath = std::getenv("PWD");
 		tmpFilePath.append("/Server/CGI/tmp/");
-		tmpFilePath.append(std::to_string(clientSocket));
+		tmpFilePath.append(std::to_string(connection.socket));
 		tmpFilePath.append("_CGI_");
 		tmpFilePath.append(std::to_string(clock()));
 
@@ -29,24 +29,32 @@ namespace ws
 		_executableFile = loc->binPath;
 		_response.clear();
 
+		_pathToFileToExecute = split(_commandLine, "?");
+		_commandLineArguments = _commandLine;
+
+		std::string tmpReq = connection.request;
+		split(tmpReq, "\r\n\r\n");
+		_requestArguments = tmpReq;
+
 		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 		_code = executor();
 	}
 
 	int CGI::executor()
 	{
-		std::string pathToFileToExecute = split(_commandLine, "?");
-		std::string arguments = _commandLine;
 		char *argv[] = {const_cast<char *>(_executableFile.c_str()),
-						const_cast<char *>(pathToFileToExecute.c_str()),
-						const_cast<char *>(arguments.c_str()),
+						const_cast<char *>(_pathToFileToExecute.c_str()),
+						const_cast<char *>(_commandLineArguments.c_str()),
+						const_cast<char *>(_requestArguments.c_str()),
 						NULL};
 
-		std::cout << "\033[1;32m >>> " << argv[0] << " >>> \033[0m"
+		std::cout << "\033[1;32m >>> [0] " << argv[0] << " >>> \033[0m"
 				  << std::endl;
-		std::cout << "\033[1;32m >>> " << argv[1] << " >>> \033[0m"
+		std::cout << "\033[1;32m >>> [1] " << argv[1] << " >>> \033[0m"
 				  << std::endl;
-		std::cout << "\033[1;32m >>> " << argv[2] << " >>> \033[0m"
+		std::cout << "\033[1;32m >>> [2] " << argv[2] << " >>> \033[0m"
+				  << std::endl;
+		std::cout << "\033[1;32m >>> [3] " << argv[3] << " >>> \033[0m"
 				  << std::endl;
 
 		int pipeFd[2];

@@ -35,6 +35,10 @@ namespace ws {
 			
 			std::string GET(HTTPreq &req, Connection &connection, Location *loc);
 			std::string POST(HTTPreq &req, Connection &connection, Location *loc);
+			std::string POST_CGI(HTTPreq &req, Connection &connection,
+								 Location *loc);
+			std::string POST_DATA(HTTPreq &req, Connection &connection,
+							 Location *loc);
 			std::string DELETE(HTTPreq &req, Connection &connection, Location *loc);
 			std::string	responseFromRoot(HTTPreq &req, Config &cnf, Location *loc);
 

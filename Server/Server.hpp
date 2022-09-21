@@ -7,6 +7,7 @@
 #include <vector>
 #include <list>
 #include <sys/select.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #include "../Config/ConfigStruct.hpp"

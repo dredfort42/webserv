@@ -6,7 +6,10 @@
 
 #include <iostream>
 #include "../File/File.hpp"
+#include "../Connection/Connection.hpp"
 #include "../../Config/ConfigStruct.hpp"
+
+
 namespace ws
 {
 
@@ -16,13 +19,16 @@ namespace ws
 		File 		_tmpFile;
 		std::string _commandLine;
 		std::string _executableFile;
+		std::string _pathToFileToExecute;
+		std::string _commandLineArguments;
+		std::string _requestArguments;
 		std::string _response;
 		int 		_code;
 
 		CGI();
 
 	public:
-		CGI(std::string &path, int &clientSocket, Location *loc);
+		CGI(std::string &path, Location *loc, ws::Connection &connection);
 
 		int 		executor();
 		std::string getResponse();

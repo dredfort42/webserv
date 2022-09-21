@@ -80,19 +80,12 @@ namespace ws
 //		return fileName.substr(fileName.find_last_of('.'));
 	}
 
-	void File::closeFile()
-	{
-		if (_fd > -1)
-			close(_fd);
-		_fileOperation = CLOSE_FILE;
-	}
-
 	void File::addToFile(const std::string &data)
 	{
 		if (_fileOperation != WRITE_FILE)
 		{
 			closeFile();
-			_fd = open(_path.c_str(), O_RDWR | O_APPEND, 00755);
+			_fd = open(_path.c_str(), O_RDWR | O_APPEND, 0755);
 			if (_fd > -1)
 				_fileOperation = WRITE_FILE;
 		}
@@ -122,4 +115,12 @@ namespace ws
 		std::cout << "\033[1;33m >>> FILE DELETED >>> \033[0m" << std::endl;
 		return remove(_path.c_str());
 	}
+
+	void File::closeFile()
+	{
+		if (_fd > -1)
+			close(_fd);
+		_fileOperation = CLOSE_FILE;
+	}
+
 } // ws
