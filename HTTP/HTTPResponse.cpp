@@ -125,7 +125,7 @@ std::string ws::HTTPResponse::POST(ws::HTTPreq &req, ws::Connection &connection,
 		}
 		connection.uploadFile.addToFile(tmp);
 
-		if (tmp.length() < connection.request.length())
+		if (tmp.length() < connection.request.length() && connection.isUploadStarted)
 		{
 			connection.isUploadComplete = true;
 
@@ -142,10 +142,9 @@ std::string ws::HTTPResponse::POST(ws::HTTPreq &req, ws::Connection &connection,
 			std::cout << "$$$$$\033[0m" << std::endl;
 		}
 	}
-
-	if (connection.isUploadComplete)
-		return "HTTP/1.1 200 Ok/r/n";
-	else
+//	if (connection.isUploadComplete)
+//		return "HTTP/1.1 200 Ok/r/n";
+//	else
 		return std::string();
 };
 
