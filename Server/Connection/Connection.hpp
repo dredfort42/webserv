@@ -11,6 +11,14 @@
 namespace ws
 {
 
+
+	enum POST_MODE {
+		APPLICATION,
+		MULTIPART,
+		TEXT,
+		NONE,
+	};
+
 	struct Connection
 	{
 		Connection(int socket, Config &config);
@@ -28,6 +36,8 @@ namespace ws
 		std::string 	uploadFileBoundary;
 		bool			isUploadStarted;
 		bool 			isUploadComplete;
+		bool 			isCGIStarted;
+		POST_MODE		mode;
 	};
 
 } // ws

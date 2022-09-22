@@ -42,10 +42,13 @@ namespace ws
 
 	int CGI::executor()
 	{
+		if (_requestArguments.empty() == false)
+			_commandLineArguments += "&" + _requestArguments;
+		std::cout << _commandLineArguments << " argvS\n";
+		std::cout << _requestArguments << " argvS\n";
 		char *argv[] = {const_cast<char *>(_executableFile.c_str()),
 						const_cast<char *>(_pathToFileToExecute.c_str()),
 						const_cast<char *>(_commandLineArguments.c_str()),
-						const_cast<char *>(_requestArguments.c_str()),
 						NULL};
 
 		std::cout << "\033[1;32m >>> [0] " << argv[0] << " >>> \033[0m"
@@ -53,8 +56,6 @@ namespace ws
 		std::cout << "\033[1;32m >>> [1] " << argv[1] << " >>> \033[0m"
 				  << std::endl;
 		std::cout << "\033[1;32m >>> [2] " << argv[2] << " >>> \033[0m"
-				  << std::endl;
-		std::cout << "\033[1;32m >>> [3] " << argv[3] << " >>> \033[0m"
 				  << std::endl;
 
 		int pipeFd[2];
