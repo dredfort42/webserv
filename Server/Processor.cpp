@@ -27,7 +27,8 @@ namespace ws
 			if (connection.isUploadComplete)
 			{
 			//	connection.HTTPreq.connect = CLOSE;
-				connection.response = "HTTP/1.1 303 See Other\r\nLocation: " + connection.HTTPreq.path + "?" + connection.uploadFileName + "\r\n\r\n";
+				connection.mode = NONE;
+				connection.response = "HTTP/1.1 303 See Other\r\nLocation: " + connection.HTTPreq.path + "\r\n\r\n";
 			}
 		}
 		

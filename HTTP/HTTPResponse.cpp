@@ -46,10 +46,18 @@ std::string ws::HTTPResponse::POST(ws::HTTPreq &req,
 								   ws::Location *loc)
 {
 	std::string tmp = connection.request;
-	if (tmp.find("application/x-www-form-urlencoded") != std::string::npos)
+	if (connection.mode == APPLICATION || tmp.find("application/x-www-form-urlencoded") != std::string::npos)
+	{
+		std::cout << "POST_CGI\n";
+		connection.mode = APPLICATION;
 		return POST_CGI(req, connection, loc);
-	else if (tmp.find("multipart/form-data") != std::string::npos)
+	}
+	else if (connection.mode == MULTIPART || tmp.find("multipart/form-data") != std::string::npos)
+	{
+		std::cout << "POST_DATA\n";
+		connection.mode = MULTIPART;
 		return POST_DATA(req, connection, loc);
+	}
 	else
 		return errorPage("500", connection.config, loc, req);
 }
@@ -215,18 +223,19 @@ std::string ws::HTTPResponse::load(HTTPreq &req, Connection &connection)
 
 	ws::Location *loc = findLocation(req.path, connection.config.Locations);
 
-	if (loc)
-		std::cout << *loc;
+//	if (loc)
+//		std::cout << *loc;
 
 	if (loc && loc->method.find(req.method) == std::string::npos)
 		return errorPage("400", connection.config, loc, req);
 	else if (connection.config.method.find(req.method) == std::string::npos)
 		return errorPage("400", connection.config, loc, req);
-
 	if (req.method == "GET")
 		return GET(req, connection, loc);
 	else if (req.method == "POST")
+	{
 		return POST(req, connection, loc);
+	}
 	else if (req.method == "DELETE")
 		return DELETE(req, connection, loc);
 
@@ -304,7 +313,7 @@ std::string ws::HTTPResponse::addHeader(std::string &msg, ws::HTTPreq &req,
 		if (accept.find(extension) != std::string::npos)
 			break;
 	}
-	if (accept.find(extension) == std::string::npos)
+	if (accept.find(extension) == std::string::npos || req.path.find(".php") != std::string::npos)
 		accept = "*/*";
 
 	head.append(accept + "\n");
