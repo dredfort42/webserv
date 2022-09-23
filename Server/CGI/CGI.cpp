@@ -37,13 +37,16 @@ namespace ws
 		_requestArguments = tmpReq;
 
 		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-		_code = executor();
+		if (connection.mode == APPLICATION && _requestArguments.empty())
+			_code = 200;
+		else
+			_code = executor();
 	}
 
 	int CGI::executor()
 	{
 		if (_requestArguments.empty() == false)
-			_commandLineArguments += "&" + _requestArguments;
+			_commandLineArguments = _requestArguments + "true&" + _commandLineArguments ;
 		std::cout << _commandLineArguments << " argvS\n";
 		std::cout << _requestArguments << " argvS\n";
 		char *argv[] = {const_cast<char *>(_executableFile.c_str()),

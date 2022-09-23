@@ -23,6 +23,14 @@
                         echo '<h2 style="text-align:center">No such file!</h2>';
                         header("Refresh:2; url=index.php");
                     }
+                    if(isset($_POST['deletebutton'])) {
+                        echo "<h1> TEST________ </h1>";
+                            if (unlink($image)) {
+                            header("Refresh:0");
+                        } else {
+                            echo 'There was an error deleting the file ' . $image;
+                        }
+                    }
                 ?>
             </div>
 		</div>
