@@ -26,9 +26,7 @@ std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection,
 								  ws::Location *loc)
 {
 	std::string response;
-	if (loc &&
-		(req.path.find(".php") != std::string::npos || req.path.find(".py")
-													   != std::string::npos))
+	if (loc && loc->binPath.empty() == false)
 	{
 		CGI cgi(req.path, loc, connection);
 		response = cgi.getResponse();
@@ -223,9 +221,11 @@ std::string ws::HTTPResponse::load(HTTPreq &req, Connection &connection)
 
 	ws::Location *loc = findLocation(req.path, connection.config.Locations);
 
-//	if (loc)
-//		std::cout << *loc;
-
+	if (loc)
+		std::cout << *loc;
+	else
+		std::cout << "NO LOCATION\n";
+	std::cout << (connection.config.method.find(req.method) == std::string::npos) << " BOOL METHOD\n";
 	if (loc && loc->method.find(req.method) == std::string::npos)
 		return errorPage("400", connection.config, loc, req);
 	else if (connection.config.method.find(req.method) == std::string::npos)
@@ -233,9 +233,7 @@ std::string ws::HTTPResponse::load(HTTPreq &req, Connection &connection)
 	if (req.method == "GET")
 		return GET(req, connection, loc);
 	else if (req.method == "POST")
-	{
 		return POST(req, connection, loc);
-	}
 	else if (req.method == "DELETE")
 		return DELETE(req, connection, loc);
 
@@ -261,7 +259,9 @@ std::string ws::HTTPResponse::errorPage(const std::string &err, ws::Config &cnf,
 		path = loc->errorPage.at(err);
 	else if (cnf.errorPage[err].empty() == false)
 		path = cnf.errorPage.at(err);
-	else
+	else if (err == "400")
+		return badRequest();
+	else if (err == "404")
 		return notFound();
 	std::cout << path << " ERROR PATH\n";
 	myFd.setPath(path, OPEN_FILE);
@@ -277,9 +277,9 @@ std::string ws::HTTPResponse::notFound()
 	std::string response, msg;
 	response.append("HTTP/1.1 404 Not Found\r\n");
 	response.append("Content-Type: text/plain\n");
-	response.append("Content-Length: 11\n\n");
+	response.append("Content-Length: 0\n\n");
 //	response.append("Content-Length: ");
-	response.append("Not Found!\n"); // Добавить чтение их html 
+//	response.append("Not Found!\n"); // Добавить чтение их html 
 
 	return (response);
 }
@@ -287,11 +287,11 @@ std::string ws::HTTPResponse::notFound()
 std::string ws::HTTPResponse::badRequest()
 {
 	std::string response, msg;
-	response.append("HTTP/1.1 400 Bad request\r\n");
-	response.append("Content-Type: text/plain\n");
-	response.append("Content-Length: 13\n");
+	response.append("HTTP/1.1 405\r\n");
+	response.append("Content-Type: text/html\n");
+	response.append("Content-Length: 0\n\n");
 //	response.append("Content-Length: ");
-	response.append("Bad request!\n"); // Добавить чтение их html 
+//	response.append(""); // Добавить чтение их html 
 
 	return (response);
 }
@@ -324,16 +324,50 @@ std::string ws::HTTPResponse::addHeader(std::string &msg, ws::HTTPreq &req,
 	return head;
 }
 
-std::string
-ws::HTTPResponse::responseFromRoot(HTTPreq &req, Config &cnf, Location *loc)
+bool	ws::HTTPResponse::endWith(std::string &str, std::string &end)
+{
+	std::string::reverse_iterator s, e;
+	s = str.rbegin();
+	e = end.rbegin();
+	while (e != end.rend() || s != str.rend())
+	{
+		if (*s != *e)
+			return false;
+		s++;
+		e++;
+	}
+	if (e != end.rend())
+		return false;
+	return true;
+}
+
+std::string	ws::HTTPResponse::responseFromRoot(HTTPreq &req, Config &cnf, Location *loc)
 {
 	if (cnf.method.find(req.method) == std::string::npos)
 		return errorPage("400", cnf, loc, req);
 	else
 	{
-		if (((loc && loc->autoindex) || (cnf.autoindex)) &&
-			*(req.path.rbegin()) == '/')
-			req.path += cnf.index;
+		std::cout << req.path << " REQ PATH\n";
+		std::string err = "200";
+		if (((loc && loc->autoindex && endWith(req.path, loc->path)) || (cnf.autoindex && req.path == "/")))
+		{
+			if (loc)
+			{
+				std::cout << endWith(req.path, loc->path) << " BOOL PATH\n";
+				req.path = "/" + loc->root + loc->index;
+				std::cout << "LOC\n";
+			}
+			else
+				req.path = "/" + cnf.index;
+			err = "308";
+		}
+		else if (loc)
+		{
+			std::cout << "SUBSTR " << loc->path.size() << " " << req.path.size() << "\n";
+			req.path = req.path.substr(loc->path.size(), req.path.size());
+		}
+		std::cout << req.path << "REQ PATH\n";
+		std::cout << cnf.root + req.path << " PATH\n";
 		ws::File myFd(cnf.root + req.path, OPEN_FILE);
 		if (myFd._fd < 0)
 			return errorPage("404", cnf, loc, req);
@@ -341,9 +375,7 @@ ws::HTTPResponse::responseFromRoot(HTTPreq &req, Config &cnf, Location *loc)
 		{
 			std::vector<uint8_t> vect = myFd.readFile();// Мега костыль
 			std::string msg(vect.begin(), vect.end());
-
-			if (msg.empty())
-				return errorPage("404", cnf, loc, req);
+			std::cout << "HELLO 200\n";
 			return addHeader(msg, req, "200");
 		}
 	}

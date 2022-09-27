@@ -32,6 +32,7 @@ namespace ws {
 			std::string badRequest();
 			std::string addHeader(std::string& msg, ws::HTTPreq& req, const std::string& code);
 			std::string	Split(std::string &line, std::string delimiter);
+			bool		endWith(std::string &str, std::string &end);
 			
 			std::string GET(HTTPreq &req, Connection &connection, Location *loc);
 			std::string POST(HTTPreq &req, Connection &connection, Location *loc);

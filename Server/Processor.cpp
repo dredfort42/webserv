@@ -13,7 +13,7 @@ namespace ws
 		try {
 			ws::HTTPparser req(connection.request);
 
-		//	std::cout << req.getRequest();
+			std::cout << req.getRequest();
 			connection.HTTPreq = req.getRequest();
 
 			std::string resp = response.load(connection.HTTPreq, connection);

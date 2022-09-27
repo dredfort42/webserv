@@ -63,13 +63,15 @@ void	ws::HTTPparser::checkHeaderLine(std::string& line) {
 
 void	ws::HTTPparser::decode() {
 	std::string line;
-	//std::cout << "REQUEST \n" << this->_raw;
+	std::cout << "REQUEST \n" << this->_raw;
 	line = Split(this->_raw, "\n");
 	checkStatusLine(line);
 	while (this->_raw.empty() == false) {
 		line = Split(this->_raw, "\n");
 		checkHeaderLine(line);
 	}
+//	if (_req.connect == EMPTY)
+//		_req.connect = CLOSE;
 };
 //Fill functions
 
