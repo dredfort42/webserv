@@ -39,7 +39,7 @@ namespace ws
 				connection.response.clear();
 				connection.bytesSent = 0;
 			} else
-				connection._isReadyToClose = true;
+				connection.isReadyToClose = true;
 		}
 	}
 

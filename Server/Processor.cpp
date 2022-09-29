@@ -28,22 +28,37 @@ namespace ws
 
 	void Server::processor(Connection &connection)
 	{
+		ws::HTTPResponse response;
+		std::cout << connection.HTTPreq.path << " PATH\n";
 		try {
 			ws::HTTPparser req(connection.request);
-			
+
 			std::cout << req.getRequest();
 			connection.HTTPreq = req.getRequest();
+
+			std::string resp = response.load(connection.HTTPreq, connection);
+			connection.response = resp;
+
 		}
 		catch (const std::exception& ex)
 		{
-			std::cout << ex.what();
+		//	std::cout << ex.what() << "\n";
+			std::string resp = response.load(connection.HTTPreq, connection);
+			if (connection.isUploadComplete)
+			{
+			//	connection.HTTPreq.connect = CLOSE;
+				connection.mode = NONE;
+				connection.response = "HTTP/1.1 303 See Other\r\nLocation: " + connection.HTTPreq.path + "\r\n\r\n";
+			}
 		}
+
 
 		ws::HTTPResponse response;
 		connection.setConfig =  makeConfig(connection);
 		std::string resp = response.load(connection.HTTPreq, connection);
 		connection.response = resp;
 		
+		//	std::cout << connection.response;
 		//// TMP /////////////////////////////////////////////////////////
 	//	std::string message;
 	//	message.append("Response to socket: ");

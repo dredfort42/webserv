@@ -10,11 +10,11 @@
 namespace ws
 {
 
-	CGI::CGI(std::string &path, int &clientSocket, Location *loc)
+	CGI::CGI(std::string &path, Location *loc, ws::Connection &connection)
 	{
 		std::string tmpFilePath = std::getenv("PWD");
 		tmpFilePath.append("/Server/CGI/tmp/");
-		tmpFilePath.append(std::to_string(clientSocket));
+		tmpFilePath.append(std::to_string(connection.socket));
 		tmpFilePath.append("_CGI_");
 		tmpFilePath.append(std::to_string(clock()));
 
@@ -29,30 +29,46 @@ namespace ws
 		_executableFile = loc->binPath;
 		_response.clear();
 
+		_pathToFileToExecute = split(_commandLine, "?");
+		_commandLineArguments = _commandLine;
+
+		std::string tmpReq = connection.request;
+		split(tmpReq, "\r\n\r\n");
+		_requestArguments = tmpReq;
+
 		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-		_code = executor();
+		if (connection.mode == APPLICATION && _requestArguments.empty())
+			_code = 200;
+		else
+		{
+			_code = executor();
+		}
 	}
 
 	int CGI::executor()
 	{
-		std::string pathToFileToExecute = split(_commandLine, "?");
-		std::string arguments = _commandLine;
+		if (_requestArguments.empty() == false)
+			_commandLineArguments = _requestArguments + "true&" + _commandLineArguments ;
+		std::cout << _commandLineArguments << " argvS\n";
+		std::cout << _requestArguments << " argvS\n";
 		char *argv[] = {const_cast<char *>(_executableFile.c_str()),
-						const_cast<char *>(pathToFileToExecute.c_str()),
-						const_cast<char *>(arguments.c_str()),
+						const_cast<char *>(_pathToFileToExecute.c_str()),
+						const_cast<char *>(_commandLineArguments.c_str()),
 						NULL};
 
-		std::cout << "\033[1;32m >>> " << argv[0] << " >>> \033[0m"
+		std::cout << "\033[1;32m >>> [0] " << argv[0] << " >>> \033[0m"
 				  << std::endl;
-		std::cout << "\033[1;32m >>> " << argv[1] << " >>> \033[0m"
+		std::cout << "\033[1;32m >>> [1] " << argv[1] << " >>> \033[0m"
 				  << std::endl;
-		std::cout << "\033[1;32m >>> " << argv[2] << " >>> \033[0m"
+		std::cout << "\033[1;32m >>> [2] " << argv[2] << " >>> \033[0m"
 				  << std::endl;
 
 		int pipeFd[2];
 
 		if (pipe(pipeFd) != 0)
+		{
 			return 500;
+		}
 		pid_t pid = fork();
 		if (!pid)
 		{
@@ -73,17 +89,19 @@ namespace ws
 			int status;
 
 			if (waitpid(pid, &status, 0) == -1)
+			{
 				return 500;
+			}
 			if (WIFEXITED(status) && WEXITSTATUS(status))
 				return 502;
 		} else
 			return 502;
-
 		std::vector<uint8_t> tmpData = _tmpFile.readFile();
 		if (_tmpFile.removeFile())
 			return 500;
 		std::cout << "\033[1;32m >>> TMP FILE DELETED >>> \033[0m" << std::endl;
 		_response = std::string(tmpData.begin(), tmpData.end());
+		std::cout << "RESPONSE " << _response << "\n";
 		return 200;
 	}
 

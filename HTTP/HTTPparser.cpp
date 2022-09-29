@@ -37,6 +37,7 @@ void	ws::HTTPparser::checkStatusLine(std::string& line) {
 	if (this->_req.method.empty())
 		throw parseHTTPexception("Invalid Method in Request");
 	this->_req.path = Split(line, " "); 
+	std::cout << this->_req.path << " PARSER PATH\n";
 	if (this->_req.path.empty())
 		throw parseHTTPexception("Empty location path in Request");
 //	if (this->_req.path.find(".php?") != std::string::npos)
@@ -70,6 +71,8 @@ void	ws::HTTPparser::decode() {
 		line = Split(this->_raw, "\n");
 		checkHeaderLine(line);
 	}
+//	if (_req.connect == EMPTY)
+//		_req.connect = CLOSE;
 };
 //Fill functions
 

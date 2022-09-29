@@ -24,6 +24,10 @@ namespace ws
 					_maxFd = _servicePool.front().getListeningSocket() + 1;
 			}
 		}
+		std::string tmpFilePath = std::getenv("PWD");
+		tmpFilePath.append("/Server/CGI/tmp/");
+		mkdir(tmpFilePath.c_str(), 0777);
+
 	}
 
 	void Server::run()

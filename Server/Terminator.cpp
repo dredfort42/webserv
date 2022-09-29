@@ -16,7 +16,7 @@ namespace ws
 			 it != _connectionPool.end();
 			 it++)
 		{
-			if (it->_isReadyToClose
+			if (it->isReadyToClose
 				|| difftime(currentTime, it->startTime) > WS_CONNECTION_TIMEOUT)
 			{
 				std::cout << "\033[31m[CLOSE]\033[0m Socket: ";

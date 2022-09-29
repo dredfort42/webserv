@@ -16,7 +16,10 @@ std::ostream&	operator<<(std::ostream &o, ws::Location const &loc)
 				{
 					o << std::setw(20) << it1->first << " | " << it1->second << " | errorPage\n";
 				}
-				o << std::setw(20) <<loc.redirect << " | redirect\n";
+				for (std::map<std::string, std::string>::const_iterator it2 = loc.redirect.begin(); it2 != loc.redirect.end(); it2++)
+				{
+					o << std::setw(20) << it2->first << " | " << it2->second << " | redirection\n";
+				}
 				o << std::setw(20) <<loc.raw << " | raw location\n";
 				o << "----------------------------------------" << std::endl;
 				return o;
