@@ -39,6 +39,7 @@ namespace ws
 		bool 			redirect;
 		bool 			isCGIStarted;
 		POST_MODE		mode;
+		resultConfig	setConfig;
 	};
 
 } // ws

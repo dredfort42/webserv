@@ -31,11 +31,11 @@ namespace ws {
 			std::vector<Config> getStruct();
 			void  		prepareLine(std::string& line, const char *err);
 			bool		checkLine(std::string& line, Location &loc);
-			bool		checkLine(std::string &line, Config &cnf);
-			void		fillStruct(std::string &buf, Config &cnf);
+			bool		checkLine(std::string &line, Config &cnf, siteConf &setup);
+			void		fillStruct(std::string &buf, Config &cnf, siteConf &setup);
 			bool		fillListen(std::string &line, Config &cnf);
-			bool		fillName(std::string &line, Config &cnf);
-			bool		fillBodySize(std::string &line, Config &cnf);
+			bool		fillName(std::string &line, siteConf &cnf);
+			bool		fillBodySize(std::string &line, siteConf &cnf);
 
 			template <class T>
 			bool		fillAutoInd(std::string &line, T &cnf);
@@ -52,7 +52,7 @@ namespace ws {
 			template <class T>
 			bool		fillIndex(std::string &line, T &cnf);
 			
-			void		fillLocation(std::string &line, std::string &buf, Config &cnf);
+			void		fillLocation(std::string &line, std::string &buf, siteConf &cnf);
 			
 			template <class T>
 			bool		fillUploadPath(std::string &line, T &cnf);
@@ -69,12 +69,13 @@ namespace ws {
 			std::string getPath() const;
 			std::string getRawText() const;
 			inline std::string &trim( std::string &line, const std::string &trimmer);
-			void		resetConfig(Config &cfg);
+			void		resetConfig(Config &cfg, siteConf &setup);
 			
-			void parseServerBlock(Config &cfg, const size_t &pos);
+			void parseServerBlock(Config &cfg, siteConf &setup, const size_t &pos);
 			void parseLocationBlock(std::string &line, ws::Location &loc);
 			void checkBrackets();
 			
+			void	checkConfigs(Config cfg, siteConf setup);
 			
 			int		stoi(std::string line);
 			size_t checkBracketsByPos(std::string::iterator pos);

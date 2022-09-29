@@ -30,6 +30,9 @@ std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection,
 	{
 		CGI cgi(req.path, loc, connection);
 		response = cgi.getResponse();
+		std::string code = cgi.getCode();
+		if (code != "200")
+			return errorPage(code, connection.setConfig, loc, req);
 		return addHeader(response, req, "200");
 	} else
 	{
@@ -201,13 +204,15 @@ ws::HTTPResponse::DELETE(ws::HTTPreq &req, ws::Connection &connection,
 		path = loc->root + loc->uploadPath;
 	else
 	{
-		if (connection.config.uploadPath.empty())
+		if (connection.setConfig.uploadPath.empty())
 		{
 			std::cout << "UPLOAD PATH NOT DEFINED";
-			return errorPage("500", connection.config, loc, req);
+			return errorPage("500", connection.setConfig, loc, req);
 		}
-		path = connection.config.root + connection.config.uploadPath;
+		path = connection.setConfig.root + connection.setConfig.uploadPath;
 	}
+	if (req.path.find(path) == std::string::npos)
+		return addHeader(response, req, "204");
 	path += std::string(req.path.substr(req.path.rfind("/") + 1));
 	std::cout << path;
 	ws::File myFd(path, OPEN_FILE);
@@ -216,7 +221,7 @@ ws::HTTPResponse::DELETE(ws::HTTPreq &req, ws::Connection &connection,
 //	std::vector<uint8_t> tmp = myFd.readFile();
 //	response = std::string(tmp.begin(), tmp.end()); 
 	myFd.removeFile();
-	return addHeader(response, req, "200");
+	return addHeader(response, req, "202");
 
 }
 
@@ -260,6 +265,7 @@ std::string ws::HTTPResponse::load(HTTPreq &req, Connection &connection)
 		return errorPage("400", connection.config, loc, req);
 	else if (connection.config.method.find(req.method) == std::string::npos)
 		return errorPage("400", connection.config, loc, req);
+
 	if (req.method == "GET")
 		return GET(req, connection, loc);
 	else if (req.method == "POST")
@@ -285,8 +291,9 @@ std::string ws::HTTPResponse::errorPage(const std::string &err, ws::Config &cnf,
 	std::vector<uint8_t> response;
 	std::string path;
 	ws::File myFd;
+	std::cout<< "ERR " << err << "\n";
 	if (loc && loc->errorPage[err].empty() == false)
-		path = loc->errorPage.at(err);
+		path = loc->errorPage[err];
 	else if (cnf.errorPage[err].empty() == false)
 		path = cnf.errorPage.at(err);
 	else if (err == "400")
@@ -374,7 +381,7 @@ bool	ws::HTTPResponse::endWith(std::string &str, std::string &end)
 std::string	ws::HTTPResponse::responseFromRoot(HTTPreq &req, Config &cnf, Location *loc)
 {
 	if (cnf.method.find(req.method) == std::string::npos)
-		return errorPage("400", cnf, loc, req);
+		return errorPage("405", cnf, loc, req);
 	else
 	{
 		std::cout << req.path << " REQ PATH\n";

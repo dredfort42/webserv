@@ -27,9 +27,13 @@ namespace ws {
 			Location*	findLocation(std::string &path, std::vector<Location> &Locations);
 
 			//std::string	makeMessage(Location *loc, Config& cnf, HTTPreq& req);
-			std::string errorPage(const std::string &err, Config &cnf, Location *loc, HTTPreq &req);
+			std::string errorPage(const std::string &err, resultConfig &cnf, Location *loc, HTTPreq &req);
+			std::string errorTemplate(int err);
 			std::string	notFound();
 			std::string badRequest();
+			std::string notAllowed();
+			std::string internalError();
+			std::string badGateway();
 			std::string addHeader(std::string& msg, ws::HTTPreq& req, const std::string& code);
 			std::string	Split(std::string &line, std::string delimiter);
 			bool		endWith(std::string &str, std::string &end);
@@ -42,6 +46,7 @@ namespace ws {
 							 Location *loc);
 			std::string DELETE(HTTPreq &req, Connection &connection, Location *loc);
 			std::string	responseFromRoot(HTTPreq &req, Config &cnf, Location *loc);
+
 
 			std::string redirect( Location *loc);
 			inline std::string& trim( std::string &line, const std::string &trimmer);

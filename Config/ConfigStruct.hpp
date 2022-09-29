@@ -20,7 +20,25 @@ namespace ws {
 		std::string										binPath;
 	};
 
+	struct siteConf {
+		std::string										serverName;
+		bool											autoindex;
+		std::string										root;
+		std::string										method;
+		std::string										index;
+		std::string										uploadPath;
+		int												bodySize;
+		std::map<std::string, std::string> 				errorPage;
+		std::vector<ws::Location>						Locations;
+	};
+
 	struct Config {
+		std::string										ip;
+		std::string										port;
+		std::map<std::string, siteConf>					setup;
+	};
+
+	struct resultConfig {
 		std::string										ip;
 		std::string										port;
 		std::string 									serverName;
@@ -29,7 +47,6 @@ namespace ws {
 		std::string										method;
 		std::string										index;
 		std::string										uploadPath;
-
 		int												bodySize;
 		std::map<std::string, std::string> 				errorPage;
 		std::vector<ws::Location>						Locations;
@@ -38,3 +55,4 @@ namespace ws {
 
 std::ostream&	operator<<(std::ostream &o, ws::Config const &cnf);
 std::ostream&	operator<<(std::ostream &o, ws::Location const &loc);
+std::ostream&	operator<<(std::ostream &o, ws::resultConfig const &cnf);

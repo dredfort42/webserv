@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+        <meta charset="utf-8">
+        <title>500 | HTTP server</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Simple server landing" />
+
+        <!-- Font -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+
+        <!-- Theme style  -->
+        <style>
+            html, body {
+                font-family: 'Roboto Mono', monospace;
+                font-size: 16px;
+            }
+
+            body {
+                background-color: #fff;
+            }
+
+            h2 {
+                color: #111;
+                font-size: 24px;
+                letter-spacing: .2px;
+                margin: 0;
+            }
+
+            a {
+                color: #4D77FF;
+                -webkit-transition: 0.5s;
+                -o-transition: 0.5s;
+                transition: 0.5s;
+            }
+
+            a:hover, a:active, a:focus {
+                color: #4D77FF;
+                outline: none;
+                text-decoration: none;
+            }
+
+            .container {
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .box {
+                text-align: center;
+            }
+
+            .box h2 {
+                align-items: center;
+                gap: 2px;
+            }
+
+            @keyframes cursor-blink {
+                0% {
+                    visibility: hidden;
+                }
+
+                100% {
+                    visibility: visible;
+                }
+            }
+
+            .box h2::after {
+                content: "";
+                width: 12px;
+                height: 25px;
+                background: #4D77FF;
+                display: inline-block;
+                transform: translateY(10%);
+                animation: cursor-blink 1s steps(2) infinite;
+            }
+
+            .hero {
+                margin: 0 0 2rem 0;
+                width: 75%;
+                text-align: center;
+                /* border: 3px solid #4D77FF; */
+                padding: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="hero">
+                <span class="box">
+                    <h2>500, internal server error.</h2>
+                </span>
+
+                <a href="/"><h3>Take me home!</h3></a>
+            </div>
+        </div>
+    </body>
+</html>

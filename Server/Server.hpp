@@ -40,6 +40,8 @@ namespace ws
 		void	responder(Connection &connection);
 		void 	terminator();
 
+
+		resultConfig makeConfig(Connection &connect);
 	public:
 		Server(std::vector<Config> config);
 
