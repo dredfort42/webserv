@@ -33,6 +33,11 @@ std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection,
 		return addHeader(response, req, "200");
 	} else
 	{
+		if (connection.redirect)
+		{
+			connection.config.root.clear();
+			req.path = req.path.substr(1);
+		}
 		response = responseFromRoot(req, connection.config, loc);
 		return response;
 	}
@@ -215,6 +220,22 @@ ws::HTTPResponse::DELETE(ws::HTTPreq &req, ws::Connection &connection,
 
 }
 
+std::string ws::HTTPResponse::redirect( Location *loc)
+{
+	std::string resp;
+
+	resp.append("HTTP/1.1 ");
+	resp.append(loc->redirect.begin()->first);
+	resp.append("\r\n");
+	resp.append("Location: ");
+	resp.append("http://" + loc->redirect.begin()->second);
+	resp.append("\r\n");
+	resp.append("Content-Type: */*\n");
+	resp.append("Content-Length: 0");
+	resp.append("\r\n");
+	resp.append("\r\n");
+	return resp;
+}
 std::string ws::HTTPResponse::load(HTTPreq &req, Connection &connection)
 {
 	std::string response;
@@ -222,7 +243,16 @@ std::string ws::HTTPResponse::load(HTTPreq &req, Connection &connection)
 	ws::Location *loc = findLocation(req.path, connection.config.Locations);
 
 	if (loc)
+	{
 		std::cout << *loc;
+		req.host = loc->redirect.begin()->second;
+		if (loc->redirect.empty() == false)
+		{
+			connection.redirect = true;
+			connection.HTTPreq.connect = CLOSE;
+			return redirect(loc);
+		}
+	}
 	else
 		std::cout << "NO LOCATION\n";
 	std::cout << (connection.config.method.find(req.method) == std::string::npos) << " BOOL METHOD\n";

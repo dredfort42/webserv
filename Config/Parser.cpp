@@ -257,7 +257,7 @@ bool	ws::Parser::fillUploadBinPath(std::string &line, T &cnf) {
 template <class T>
 bool	ws::Parser::fillRedirect(std::string &line, T &cnf) {
 	prepareLine(line, errFillUpPath);
-	cnf.redirect = line;
+	cnf.redirect[Split(line, " ")] = line;
 	return true;
 }
 

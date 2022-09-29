@@ -14,7 +14,7 @@ namespace ws {
 		std::string										index;
 		bool											autoindex;
 		std::map<std::string, std::string> 				errorPage;
-		std::string 									redirect;
+		std::map<std::string, std::string>				redirect;
 		std::string										method;
 		std::string										uploadPath;
 		std::string										binPath;

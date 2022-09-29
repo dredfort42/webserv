@@ -36,6 +36,7 @@ namespace ws
 		std::string 	uploadFileBoundary;
 		bool			isUploadStarted;
 		bool 			isUploadComplete;
+		bool 			redirect;
 		bool 			isCGIStarted;
 		POST_MODE		mode;
 	};

@@ -10,6 +10,7 @@ namespace ws
 	void Server::processor(Connection &connection)
 	{
 		ws::HTTPResponse response;
+		std::cout << connection.HTTPreq.path << " PATH\n";
 		try {
 			ws::HTTPparser req(connection.request);
 

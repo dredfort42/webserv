@@ -20,6 +20,9 @@ namespace ws
 		uploadFileBoundary.clear();
 		isUploadStarted = false;
 		isUploadComplete = false;
+		redirect = false;
+		isCGIStarted = false;
+		
 		time(&startTime);
 		
 	}

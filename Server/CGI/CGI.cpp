@@ -40,7 +40,9 @@ namespace ws
 		if (connection.mode == APPLICATION && _requestArguments.empty())
 			_code = 200;
 		else
+		{
 			_code = executor();
+		}
 	}
 
 	int CGI::executor()
@@ -64,7 +66,9 @@ namespace ws
 		int pipeFd[2];
 
 		if (pipe(pipeFd) != 0)
+		{
 			return 500;
+		}
 		pid_t pid = fork();
 		if (!pid)
 		{
@@ -85,17 +89,19 @@ namespace ws
 			int status;
 
 			if (waitpid(pid, &status, 0) == -1)
+			{
 				return 500;
+			}
 			if (WIFEXITED(status) && WEXITSTATUS(status))
 				return 502;
 		} else
 			return 502;
-
 		std::vector<uint8_t> tmpData = _tmpFile.readFile();
 		if (_tmpFile.removeFile())
 			return 500;
 		std::cout << "\033[1;32m >>> TMP FILE DELETED >>> \033[0m" << std::endl;
 		_response = std::string(tmpData.begin(), tmpData.end());
+		std::cout << "RESPONSE " << _response << "\n";
 		return 200;
 	}
 
