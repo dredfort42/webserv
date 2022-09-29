@@ -38,7 +38,9 @@ namespace ws
 
 		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 		if (connection.mode == APPLICATION && _requestArguments.empty())
+		{
 			_code = 200;
+		}
 		else
 		{
 			_code = executor();

@@ -45,7 +45,7 @@ namespace ws {
 			std::string POST_DATA(HTTPreq &req, Connection &connection,
 							 Location *loc);
 			std::string DELETE(HTTPreq &req, Connection &connection, Location *loc);
-			std::string	responseFromRoot(HTTPreq &req, Config &cnf, Location *loc);
+			std::string	responseFromRoot(HTTPreq &req, resultConfig &cnf, Location *loc);
 
 
 			std::string redirect( Location *loc);

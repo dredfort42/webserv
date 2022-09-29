@@ -38,10 +38,10 @@ std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection,
 	{
 		if (connection.redirect)
 		{
-			connection.config.root.clear();
+			connection.setConfig.root.clear();
 			req.path = req.path.substr(1);
 		}
-		response = responseFromRoot(req, connection.config, loc);
+		response = responseFromRoot(req, connection.setConfig, loc);
 		return response;
 	}
 }
@@ -65,7 +65,7 @@ std::string ws::HTTPResponse::POST(ws::HTTPreq &req,
 		return POST_DATA(req, connection, loc);
 	}
 	else
-		return errorPage("500", connection.config, loc, req);
+		return errorPage("500", connection.setConfig, loc, req);
 }
 
 std::string ws::HTTPResponse::POST_CGI(ws::HTTPreq &req,
@@ -81,7 +81,7 @@ std::string ws::HTTPResponse::POST_CGI(ws::HTTPreq &req,
 		response = cgi.getResponse();
 		return addHeader(response, req, "200");
 	}
-	return errorPage("500", connection.config, loc, req);
+	return errorPage("500", connection.setConfig, loc, req);
 }
 
 std::string ws::HTTPResponse::POST_DATA(ws::HTTPreq &req,
@@ -95,13 +95,13 @@ std::string ws::HTTPResponse::POST_DATA(ws::HTTPreq &req,
 			connection.uploadFile._path = loc->root + loc->uploadPath;
 		else
 		{
-			if (connection.config.uploadPath.empty())
+			if (connection.setConfig.uploadPath.empty())
 			{
 				std::cout << "UPLOAD PATH NOT DEFINED";
-				return errorPage("500", connection.config, loc, req);
+				return errorPage("500", connection.setConfig, loc, req);
 			}
 			connection.uploadFile._path =
-					connection.config.root + connection.config.uploadPath;
+					connection.setConfig.root + connection.setConfig.uploadPath;
 		}
 	}
 
@@ -245,7 +245,7 @@ std::string ws::HTTPResponse::load(HTTPreq &req, Connection &connection)
 {
 	std::string response;
 
-	ws::Location *loc = findLocation(req.path, connection.config.Locations);
+	ws::Location *loc = findLocation(req.path, connection.setConfig.Locations);
 
 	if (loc)
 	{
@@ -260,11 +260,11 @@ std::string ws::HTTPResponse::load(HTTPreq &req, Connection &connection)
 	}
 	else
 		std::cout << "NO LOCATION\n";
-	std::cout << (connection.config.method.find(req.method) == std::string::npos) << " BOOL METHOD\n";
+	std::cout << (connection.setConfig.method.find(req.method) == std::string::npos) << " BOOL METHOD\n";
 	if (loc && loc->method.find(req.method) == std::string::npos)
-		return errorPage("400", connection.config, loc, req);
-	else if (connection.config.method.find(req.method) == std::string::npos)
-		return errorPage("400", connection.config, loc, req);
+		return errorPage("400", connection.setConfig, loc, req);
+	else if (connection.setConfig.method.find(req.method) == std::string::npos)
+		return errorPage("400", connection.setConfig, loc, req);
 
 	if (req.method == "GET")
 		return GET(req, connection, loc);
@@ -285,7 +285,7 @@ ws::HTTPResponse::trim(std::string &line, const std::string &trimmer)
 	return line;
 };
 
-std::string ws::HTTPResponse::errorPage(const std::string &err, ws::Config &cnf,
+std::string ws::HTTPResponse::errorPage(const std::string &err, ws::resultConfig &cnf,
 										ws::Location *loc, ws::HTTPreq &req)
 {
 	std::vector<uint8_t> response;
@@ -378,7 +378,7 @@ bool	ws::HTTPResponse::endWith(std::string &str, std::string &end)
 	return true;
 }
 
-std::string	ws::HTTPResponse::responseFromRoot(HTTPreq &req, Config &cnf, Location *loc)
+std::string	ws::HTTPResponse::responseFromRoot(HTTPreq &req, resultConfig &cnf, Location *loc)
 {
 	if (cnf.method.find(req.method) == std::string::npos)
 		return errorPage("405", cnf, loc, req);

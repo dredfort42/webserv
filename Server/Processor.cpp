@@ -11,7 +11,7 @@ namespace ws
 	{
 		resultConfig res;
 		std::string id = c.HTTPreq.host;
-
+		std::cout << id << " ID\n";
 		res.ip = c.config.ip;
 		res.port = c.config.port;
 		res.serverName = id;
@@ -53,8 +53,8 @@ namespace ws
 		}
 
 
-		ws::HTTPResponse response;
 		connection.setConfig =  makeConfig(connection);
+		std::cout << connection.setConfig;
 		std::string resp = response.load(connection.HTTPreq, connection);
 		connection.response = resp;
 		
