@@ -413,6 +413,9 @@ std::string	ws::HTTPResponse::responseFromRoot(HTTPreq &req, resultConfig &cnf, 
 			std::vector<uint8_t> vect = myFd.readFile();// Мега костыль
 			std::string msg(vect.begin(), vect.end());
 			std::cout << "HELLO 200\n";
+			if (msg.empty())
+				return errorPage("404", cnf, loc, req);
+				
 			return addHeader(msg, req, "200");
 		}
 	}
