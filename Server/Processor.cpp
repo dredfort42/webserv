@@ -34,8 +34,8 @@ namespace ws
 
 			connection.HTTPreq = req.getRequest();
 			connection.setConfig =  makeConfig(connection);
-			std::cout << connection.setConfig;
-			std::cout << req.getRequest();
+			//std::cout << connection.setConfig;
+		//	std::cout << req.getRequest();
 
 			std::string resp = response.load(connection.HTTPreq, connection);
 			connection.response = resp;
@@ -43,11 +43,10 @@ namespace ws
 		}
 		catch (const std::exception& ex)
 		{
-			connection.setConfig =  makeConfig(connection);
 			std::string resp = response.load(connection.HTTPreq, connection);
 			if (connection.isUploadComplete)
 			{
-				connection.mode = NONE;
+				std::cout << "HELLO UPLOAD FINISHED\n";
 				connection.response = "HTTP/1.1 303 See Other\r\nLocation: " + connection.HTTPreq.path + "\r\n\r\n";
 			}
 		}
