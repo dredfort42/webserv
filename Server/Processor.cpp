@@ -11,7 +11,6 @@ namespace ws
 	{
 		resultConfig res;
 		std::string id = c.HTTPreq.host;
-		std::cout << id << " ID\n";
 		res.ip = c.config.ip;
 		res.port = c.config.port;
 		res.serverName = id;
@@ -33,8 +32,10 @@ namespace ws
 		try {
 			ws::HTTPparser req(connection.request);
 
-			std::cout << req.getRequest();
 			connection.HTTPreq = req.getRequest();
+			connection.setConfig =  makeConfig(connection);
+			std::cout << connection.setConfig;
+			std::cout << req.getRequest();
 
 			std::string resp = response.load(connection.HTTPreq, connection);
 			connection.response = resp;
@@ -42,21 +43,17 @@ namespace ws
 		}
 		catch (const std::exception& ex)
 		{
-		//	std::cout << ex.what() << "\n";
+			connection.setConfig =  makeConfig(connection);
 			std::string resp = response.load(connection.HTTPreq, connection);
 			if (connection.isUploadComplete)
 			{
-			//	connection.HTTPreq.connect = CLOSE;
 				connection.mode = NONE;
 				connection.response = "HTTP/1.1 303 See Other\r\nLocation: " + connection.HTTPreq.path + "\r\n\r\n";
 			}
 		}
 
 
-		connection.setConfig =  makeConfig(connection);
 		std::cout << connection.setConfig;
-		std::string resp = response.load(connection.HTTPreq, connection);
-		connection.response = resp;
 		
 		//	std::cout << connection.response;
 		//// TMP /////////////////////////////////////////////////////////
