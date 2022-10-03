@@ -28,8 +28,8 @@ namespace ws{
 			Location *loc)
 	{
 		connection.mode = MULTIPART;
-		void(req.port);
-		void(loc->root);
+//		void(req.port);
+//		void(loc->root);
 
 		std::cout << "\n\n \033[0;33m \n";
 		std::cout << "File Boundary: " << connection.uploadFileBoundary << "\n";
@@ -38,9 +38,9 @@ namespace ws{
 		std::cout << "Upload Complete: " << (connection.isUploadComplete ? "YES" : "") << "\n";
 		std::cout << "\033[0m\n\n";
 
-		std::cout << "\n\n \033[3;34m \n";
-		std::cout << connection.request << std::endl;
-		std::cout << "\n\n \033[0m \n";
+//		std::cout << "\n\n \033[3;34m \n";
+//		std::cout << connection.request << std::endl;
+//		std::cout << "\n\n \033[0m \n";
 
 
 		if (connection.uploadFile._path.empty())
@@ -229,8 +229,8 @@ namespace ws{
 ////				connection.isUploadStarted = false;
 //			}
 //		}
-		std::cout << "==============================================\n";
-		std::cout << tmp << std::endl;
+//		std::cout << "==============================================\n";
+//		std::cout << tmp << std::endl;
 
 
 		return std::string();
