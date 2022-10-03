@@ -175,10 +175,10 @@ std::string ws::HTTPResponse::POST_DATA(ws::HTTPreq &req,
 		{
 			std::cout <<"------------------------------------\n";
 			std::cout << tmp << "\n";
-			std::cout << tmp.length() << " TMP SIZE\n";
 			std::cout <<"------------------------------------\n";
-			std::cout << connection.request << "\n";
+		//	std::cout << connection.request << "\n";
 			std::cout << connection.request.length() << " REQUEST SIZE\n";
+			std::cout << tmp.length() << " TMP SIZE\n";
 			std::cout <<"------------------------------------\n";
 
 			connection.isUploadComplete = true;
