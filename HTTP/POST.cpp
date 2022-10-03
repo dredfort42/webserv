@@ -1,5 +1,5 @@
 #include "HTTPResponse.hpp"
-#include "../Server/CGI/CGI.hpp"
+//#include "../Server/CGI/CGI.hpp"
 
 namespace ws{
 
@@ -77,7 +77,12 @@ namespace ws{
 
 		if (connection.isUploadStarted)
 		{
-			tmp = Split(tmp, "--" + connection.uploadFileBoundary);
+			if (tmp.find("--" + connection.uploadFileBoundary) !=
+			std::string::npos)
+			{
+				connection.isUploadComplete = true;
+				tmp = Split(tmp, "--" + connection.uploadFileBoundary);
+			}
 
 			if (connection.uploadFile._fd == -1)
 			{
@@ -90,7 +95,7 @@ namespace ws{
 			}
 			connection.uploadFile.addToFile(tmp);
 
-			if (tmp.length() < connection.request.length() &&
+			if (connection.isUploadComplete &&
 					connection.isUploadStarted)
 			{
 				//	std::cout <<"------------------------------------\n";
@@ -101,7 +106,7 @@ namespace ws{
 				//	std::cout << tmp.length() << " TMP SIZE\n";
 				//	std::cout <<"------------------------------------\n";
 
-				connection.isUploadComplete = true;
+
 
 				std::cout << "\033[1;31m$$$$$" << std::endl;
 				std::cout << "EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_" << std::endl;
