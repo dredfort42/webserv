@@ -36,17 +36,17 @@ std::string ws::HTTPResponse::GET(ws::HTTPreq &req, ws::Connection &connection,
 		return addHeader(response, req, "200");
 	} else
 	{
-		if (connection.redirect)
-		{
-			connection.setConfig.root.clear();
-			req.path = req.path.substr(1);
-		}
+	//	if (connection.redirect)
+	//	{
+	//		connection.setConfig.root.clear();
+	//		req.path = req.path.substr(1);
+	//	}
 		response = responseFromRoot(req, connection.setConfig, loc);
 		return response;
 	}
 }
 
-
+/*
 std::string ws::HTTPResponse::POST(ws::HTTPreq &req,
 								   ws::Connection &connection,
 								   ws::Location *loc)
@@ -173,13 +173,13 @@ std::string ws::HTTPResponse::POST_DATA(ws::HTTPreq &req,
 		if (tmp.length() < connection.request.length() &&
 			connection.isUploadStarted)
 		{
-			std::cout <<"------------------------------------\n";
-			std::cout << tmp << "\n";
-			std::cout <<"------------------------------------\n";
-		//	std::cout << connection.request << "\n";
-			std::cout << connection.request.length() << " REQUEST SIZE\n";
-			std::cout << tmp.length() << " TMP SIZE\n";
-			std::cout <<"------------------------------------\n";
+		//	std::cout <<"------------------------------------\n";
+		//	std::cout << tmp << "\n";
+		//	std::cout <<"------------------------------------\n";
+		////	std::cout << connection.request << "\n";
+		//	std::cout << connection.request.length() << " REQUEST SIZE\n";
+		//	std::cout << tmp.length() << " TMP SIZE\n";
+		//	std::cout <<"------------------------------------\n";
 
 			connection.isUploadComplete = true;
 
@@ -201,7 +201,7 @@ std::string ws::HTTPResponse::POST_DATA(ws::HTTPreq &req,
 //	else
 	return std::string();
 };
-
+*/
 std::string
 ws::HTTPResponse::DELETE(ws::HTTPreq &req, ws::Connection &connection,
 						 ws::Location *loc)
@@ -276,8 +276,8 @@ std::string ws::HTTPResponse::load(HTTPreq &req, Connection &connection)
 
 	if (req.method == "GET")
 		return GET(req, connection, loc);
-	else if (req.method == "POST")
-		return POST(req, connection, loc);
+//	else if (req.method == "POST")
+//		return POST(req, connection, loc);
 	else if (req.method == "DELETE")
 		return DELETE(req, connection, loc);
 
@@ -301,14 +301,23 @@ std::string ws::HTTPResponse::errorPage(const std::string &err, ws::resultConfig
 	ws::File myFd;
 	std::cout<< "ERR " << err << "\n";
 	if (loc && loc->errorPage[err].empty() == false)
-		path = loc->errorPage[err];
+	{
+		std::cout << "Location ERROR PATH\n";
+		path = loc->errorPage.at(err);
+	}
 	else if (cnf.errorPage[err].empty() == false)
+	{
+		std::cout << "Config  ERROR PATH\n";
 		path = cnf.errorPage.at(err);
+	}
 	else if (err == "400")
 		return badRequest();
 	else if (err == "404")
 		return notFound();
-	std::cout << path << " ERROR PATH\n";
+	else if (err == "502")
+		return badGateway();
+	else 
+		return notFound();
 	myFd.setPath(path, OPEN_FILE);
 	if (myFd._fd < 0)
 		return notFound();
@@ -341,6 +350,16 @@ std::string ws::HTTPResponse::badRequest()
 	return (response);
 }
 
+std::string ws::HTTPResponse::badGateway()
+{
+	std::string response, msg;
+	response.append("HTTP/1.1 502\r\n");
+	response.append("Content-Type: text/plain\n");
+	response.append("Content-Length: 12\n\n");
+	response.append("BAD GATEWAY\n"); // Добавить чтение их html 
+
+	return (response);
+}
 std::string ws::HTTPResponse::addHeader(std::string &msg, ws::HTTPreq &req,
 										const std::string &code)
 {
