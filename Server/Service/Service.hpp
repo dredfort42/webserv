@@ -14,7 +14,7 @@
 #include "../../HTTP/HTTPstruct.hpp"
 
 #define WS_BACKLOG 64
-#define WS_BUFFER_SIZE 10240
+#define WS_BUFFER_SIZE 512
 #define WS_CONNECTION_TIMEOUT 60 // time interval in seconds
 
 namespace ws
