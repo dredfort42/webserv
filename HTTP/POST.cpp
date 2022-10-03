@@ -94,7 +94,7 @@ namespace ws{
 				connection.uploadFile._fileOperation = WRITE_FILE;
 			}
 			connection.uploadFile.addToFile(tmp);
-
+			usleep(500);
 			if (connection.isUploadComplete &&
 					connection.isUploadStarted)
 			{
