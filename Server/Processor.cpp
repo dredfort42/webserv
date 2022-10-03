@@ -47,14 +47,15 @@ namespace ws
 			if (connection.isUploadComplete)
 			{
 				std::cout << "HELLO UPLOAD FINISHED\n";
-				connection.response = "HTTP/1.1 303 See Other\r\nLocation: " + connection.HTTPreq.path + "\r\n\r\n";
+				connection.HTTPreq.connect = CLOSE;
+				connection.response = "HTTP/1.1 303\r\nLocation: " + connection.HTTPreq.path + "\r\n\r\n";
 			}
 		}
 
 
 		std::cout << connection.setConfig;
 		
-		//	std::cout << connection.response;
+	//	std::cout << connection.response;
 		//// TMP /////////////////////////////////////////////////////////
 	//	std::string message;
 	//	message.append("Response to socket: ");
