@@ -5,17 +5,17 @@ namespace ws{
 
 	std::string HTTPResponse::POST(HTTPreq &req, Connection &connection, Location *loc)
 	{
-		if (connection.mode == MULTIPART || connection.request.find("multipart/form-data") != std::string::npos)
-		{
+//		if (connection.mode == MULTIPART || connection.request.find("multipart/form-data") != std::string::npos)
+//		{
 	//		std::cout << "-----------------------\n" << connection.request << "\n----------------\nREQEST\n-------------\n";
 			connection.mode = MULTIPART;
 	///		std::cout << "CONNECTION POST_DATA\n";
 			std::string response = POST_DATA(req, connection, loc);
 	//		std::cout << "----------------------------\n"<< response << "\n----------------\nRESPONSE\n-------------\n";
 			return response;
-		}
-		else
-			return errorPage("500", connection.setConfig, loc, req);
+//		}
+//		else
+//			return errorPage("500", connection.setConfig, loc, req);
 	}
 
 	std::string HTTPResponse::POST_DATA(HTTPreq &req,
