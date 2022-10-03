@@ -438,11 +438,11 @@ std::string ws::HTTPResponse::Split(std::string &line, std::string delimiter)
 	{
 		token = line;
 		line.erase();
-		return (this->trim(token, " \t\r"));
+		return (token);
 	}
 
 	token = line.substr(0, pos);
 	line.erase(0, pos + delimiter.length());
 	line.append("\0");
-	return (trim(token, " \t\r"));
+	return (token);
 }
