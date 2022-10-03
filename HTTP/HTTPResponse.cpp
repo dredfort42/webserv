@@ -23,26 +23,6 @@ ws::Location *ws::HTTPResponse::findLocation(std::string &path,
 
 
 /*
-std::string ws::HTTPResponse::POST(ws::HTTPreq &req,
-								   ws::Connection &connection,
-								   ws::Location *loc)
-{
-	std::string tmp = connection.request;
-	if (connection.mode == APPLICATION || tmp.find("application/x-www-form-urlencoded") != std::string::npos)
-	{
-		std::cout << "POST_CGI\n";
-		connection.mode = APPLICATION;
-		return POST_CGI(req, connection, loc);
-	}
-	else if (connection.mode == MULTIPART || tmp.find("multipart/form-data") != std::string::npos)
-	{
-		std::cout << "POST_DATA\n";
-		connection.mode = MULTIPART;
-		return POST_DATA(req, connection, loc);
-	}
-	else
-		return errorPage("500", connection.setConfig, loc, req);
-}
 
 std::string ws::HTTPResponse::POST_CGI(ws::HTTPreq &req,
 									   ws::Connection &connection,
@@ -199,6 +179,9 @@ std::string ws::HTTPResponse::load(HTTPreq &req, Connection &connection)
 	else
 		std::cout << "NO LOCATION\n";
 
+	if (connection.uploadFileBoundary.empty() == false)
+		return POST(req, connection, loc);
+
 	std::cout << (connection.setConfig.method.find(req.method) == std::string::npos) << " BOOL METHOD\n";
 	if (loc && loc->method.find(req.method) == std::string::npos)
 	{
@@ -214,8 +197,8 @@ std::string ws::HTTPResponse::load(HTTPreq &req, Connection &connection)
 	
 	if (req.method == "GET")
 		return GET(req, connection, loc);
-//	else if (req.method == "POST")
-//		return POST(req, connection, loc);
+	else if (req.method == "POST")
+		return POST(req, connection, loc);
 	else if (req.method == "DELETE")
 		return DELETE(req, connection, loc);
 

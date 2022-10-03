@@ -29,27 +29,25 @@ namespace ws
 	{
 		ws::HTTPResponse response;
 		std::cout << connection.HTTPreq.path << " PATH\n";
-		try {
+		
+		if (connection.uploadFileBoundary.empty())
+		{
 			ws::HTTPparser req(connection.request);
-
 			connection.HTTPreq = req.getRequest();
 			connection.setConfig = makeConfig(connection);
 			std::cout << connection.setConfig;
+		}
 
-			std::string resp = response.load(connection.HTTPreq, connection);
+		std::string resp = response.load(connection.HTTPreq, connection);
+		if (connection.isUploadComplete)
+		{
+			std::cout << "HELLO UPLOAD FINISHED\n";
+			connection.HTTPreq.connect = CLOSE;
+		//	connection.response = "HTTP/1.1 303\r\nLocation: " + connection.HTTPreq.path + "\r\n\r\n";
+		}
+		else
 			connection.response = resp;
 
-		}
-		catch (const std::exception& ex)
-		{
-			response.load(connection.HTTPreq, connection);
-			if (connection.isUploadComplete)
-			{
-				std::cout << "HELLO UPLOAD FINISHED\n";
-				connection.HTTPreq.connect = CLOSE;
-				connection.response = "HTTP/1.1 303\r\nLocation: " + connection.HTTPreq.path + "\r\n\r\n";
-			}
-		}
 
 		
 		FD_SET(connection.socket, &_masterWriteSet);
