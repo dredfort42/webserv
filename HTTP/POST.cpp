@@ -119,6 +119,8 @@ namespace ws{
 				std::cout << "_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF" << std::endl;
 				std::cout << "EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_EOF_" << std::endl;
 				std::cout << "$$$$$\033[0m" << std::endl;
+
+//				connection.isUploadStarted = false;
 			}
 		}
 		return std::string();

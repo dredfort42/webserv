@@ -30,7 +30,7 @@ namespace ws
 		ws::HTTPResponse response;
 		std::cout << connection.HTTPreq.path << " PATH\n";
 		
-		if (connection.uploadFileBoundary.empty())
+		if (connection.mode == NONE)
 		{
 			ws::HTTPparser req(connection.request);
 			connection.HTTPreq = req.getRequest();
