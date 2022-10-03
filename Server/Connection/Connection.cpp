@@ -22,7 +22,7 @@ namespace ws
 		isUploadComplete = false;
 		redirect = false;
 		isCGIStarted = false;
-		
+		mode = NONE;
 		time(&startTime);
 		
 	}
