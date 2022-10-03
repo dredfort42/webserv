@@ -16,6 +16,8 @@ SRCS 		=	Config/Parser.cpp\
 				HTTP/HTTPparser.cpp\
 				HTTP/HTTPstruct.cpp\
 				HTTP/HTTPResponse.cpp\
+				HTTP/GET.cpp\
+				HTTP/DELETE.cpp\
 				main.cpp\
 				Server/File/File.cpp\
                 Server/CGI/CGI.cpp\

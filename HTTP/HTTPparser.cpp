@@ -11,6 +11,7 @@ ws::HTTPparser& ws::HTTPparser::operator=(const HTTPparser &other) {
 	this->_req = other._req;
 	return *this;
 };
+
 // Getters
 std::string&	ws::HTTPparser::getRaw() {
 	return this->_raw;
@@ -24,25 +25,12 @@ ws::HTTPreq&		ws::HTTPparser::getRequest(){
 	}
 	return this->_req;
 };
+
 // Processing Request
 
-//void	ws::HTTPparser::parseVars() {
-	
-//};
-
 void	ws::HTTPparser::checkStatusLine(std::string& line) {
-	// According to standart Request must be formated like :
-	// Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
 	this->_req.method = Split(line, " ");
-	if (this->_req.method.empty())
-		throw parseHTTPexception("Invalid Method in Request");
 	this->_req.path = Split(line, " "); 
-	if (this->_req.path.empty())
-		throw parseHTTPexception("Empty location path in Request");
-//	if (this->_req.path.find(".php?") != std::string::npos)
-//		parseVars();
-	if (line.find("HTTP/1.1") == std::string::npos)
-		throw parseHTTPexception("Wrong ver. of HTTP protocol in Request");
 };
 
 void	ws::HTTPparser::checkHeaderLine(std::string& line) {
@@ -70,15 +58,11 @@ void	ws::HTTPparser::decode() {
 		line = Split(this->_raw, "\n");
 		checkHeaderLine(line);
 	}
-//	if (_req.connect == EMPTY)
-//		_req.connect = CLOSE;
 };
 //Fill functions
 
 void	ws::HTTPparser::fillHost(std::string& line)
 {
-	if (this->_req.host.empty() == false)
-		throw parseHTTPexception("Double host init!\n");
 	prepareLine(line, "Host field is empty!\n");
 	if (line.find(":") == std::string::npos)
 	{
@@ -94,8 +78,6 @@ void	ws::HTTPparser::fillHost(std::string& line)
 };
 
 void	ws::HTTPparser::fillConnection(std::string &line) {
-	if (this->_req.connect != EMPTY)
-		throw parseHTTPexception("Double connection init!\n");
 	prepareLine(line, "Connection field is empty!\n");
 	if (line.find("keep-alive") != std::string::npos)
 		this->_req.connect = KEEP_ALIVE;
@@ -104,30 +86,19 @@ void	ws::HTTPparser::fillConnection(std::string &line) {
 };
 
 void	ws::HTTPparser::fillAccept(std::string &line) {
-	if (this->_req.accept.empty() == false)
-	{
-		std::cout << line;
-		throw parseHTTPexception("Double accept init!\n");
-	}
 	prepareLine(line, "Accept field is empty!\n");
 	this->_req.accept = line;
 };
 
 void	ws::HTTPparser::fillAcceptEnc(std::string &line) {
-	if (this->_req.acceptEnc.empty() == false)
-		throw parseHTTPexception("Double accept-encinit!\n");
 	prepareLine(line, "Accept-Encoding field is empty!\n");
 	this->_req.acceptEnc = line;
 };
 void	ws::HTTPparser::fillAcceptLang(std::string &line) {
-	if (this->_req.acceptLang.empty() == false)
-		throw parseHTTPexception("Double accept-lang init!\n");
 	prepareLine(line, "Accept-Language field is empty!\n");
 	this->_req.acceptLang = line;
 };
 void	ws::HTTPparser::fillUsr(std::string &line) {
-	if (this->_req.User_Agent.empty() == false)
-		throw parseHTTPexception("Double User-Agent init!\n");
 	prepareLine(line, "User-Agent field is empty!\n");
 	this->_req.User_Agent = line;
 };
