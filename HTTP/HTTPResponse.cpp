@@ -173,6 +173,12 @@ std::string ws::HTTPResponse::POST_DATA(ws::HTTPreq &req,
 		if (tmp.length() < connection.request.length() &&
 			connection.isUploadStarted)
 		{
+			std::cout <<"------------------------------------\n";
+			std::cout << tmp.length() << " TMP SIZE\n";
+			std::cout <<"------------------------------------\n";
+			std::cout << connection.request.length() << " REQUEST SIZE\n";
+			std::cout <<"------------------------------------\n";
+
 			connection.isUploadComplete = true;
 
 			std::cout << "\033[1;31m$$$$$" << std::endl;
