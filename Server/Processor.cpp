@@ -43,7 +43,7 @@ namespace ws
 		{
 			std::cout << "HELLO UPLOAD FINISHED\n";
 			connection.HTTPreq.connect = CLOSE;
-		//	connection.response = "HTTP/1.1 303\r\nLocation: " + connection.HTTPreq.path + "\r\n\r\n";
+			connection.response = "HTTP/1.1 303\r\nLocation: " + connection.HTTPreq.path + "\r\n\r\n";
 		}
 		else
 			connection.response = resp;
