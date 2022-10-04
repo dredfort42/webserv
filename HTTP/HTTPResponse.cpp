@@ -194,7 +194,7 @@ std::string ws::HTTPResponse::load(HTTPreq &req, Connection &connection)
 		return errorPage("400", connection.setConfig, loc, req);
 	}
 
-	
+	std::cout << "METHOD = " << req.method << "\n";	
 	if (req.method == "GET")
 		return GET(req, connection, loc);
 	else if (req.method == "POST")
